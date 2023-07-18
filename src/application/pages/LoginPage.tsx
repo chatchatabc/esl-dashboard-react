@@ -1,15 +1,25 @@
 import React from "react";
-import { authLogin } from "../../domain/services/authService";
+import { authGetToken, authLogin } from "../../domain/services/authService";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function LoginPage() {
+  const navigate = useNavigate();
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const data = Object.fromEntries(new FormData(e.currentTarget));
-    console.log(data);
     const response = await authLogin(data);
 
-    console.log(response);
+    if (response.errors) {
+      alert(response.errors[0].message);
+    } else {
+      navigate("/");
+    }
+  }
+
+  if (authGetToken()) {
+    return <Navigate to="/" />;
   }
 
   return (
