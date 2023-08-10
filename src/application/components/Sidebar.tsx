@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import HomeIcon from "../assets/HomeIcon";
 import MessageIcon from "../assets/MessageIcon";
 import UserIcon from "../assets/UserIcon";
+import TemplateIcon from "../assets/TemplateIcon";
 
 function Sidebar() {
   const location = useLocation();
@@ -22,6 +23,11 @@ function Sidebar() {
       label: "Messages",
       icon: <MessageIcon />,
       href: "/messages",
+    },
+    {
+      label: "Msg Templates",
+      icon: <TemplateIcon />,
+      href: "/message-templates",
     },
   ];
 
