@@ -31,7 +31,7 @@ function MyDropdown({ button, children }: Props) {
         }}
         className={`absolute grid duration-300 ${
           open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-        } shadow min-w-full top-full mt-1 bg-white`}
+        } shadow min-w-full top-full mt-1 bg-white rounded-lg overflow-hidden`}
       >
         <div className="overflow-hidden">{children}</div>
       </div>
