@@ -1,6 +1,6 @@
 import { UserLogin } from "../../../../esl-workers/src/domain/models/UserModel";
 import { trpcClient } from "../infras/trpcActions";
-import { utilGetCookie, utilSaveCookie } from "./utilService";
+import { utilDeleteCookie, utilGetCookie, utilSaveCookie } from "./utilService";
 
 export async function authLogin(params: UserLogin) {
   try {
@@ -21,4 +21,17 @@ export async function authLogin(params: UserLogin) {
 
 export function authGetUserId() {
   return utilGetCookie("userId");
+}
+
+export async function authLogout() {
+  try {
+    const res = await trpcClient.auth.logout.mutate();
+    if (res) {
+      utilDeleteCookie("userId");
+    }
+    return res;
+  } catch (e) {
+    console.log(e);
+    return undefined;
+  }
 }
