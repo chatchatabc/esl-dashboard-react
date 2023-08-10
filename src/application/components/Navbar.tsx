@@ -1,5 +1,4 @@
 import UserIcon from "../assets/UserIcon";
-import { Menu } from "@headlessui/react";
 import MyDropdown from "./MyDropdown";
 
 function Navbar() {
@@ -14,7 +13,7 @@ function Navbar() {
           button={
             <div className="space-x-2 flex items-center pl-2 rounded-md transition hover:bg-blue-100">
               <p>Welcome User!</p>
-              <div className="w-10 h-10 p-1 rounded-full text-blue-500">
+              <div className="w-10 h-10 p-1 rounded-full">
                 <UserIcon />
               </div>
             </div>
