@@ -1,5 +1,5 @@
 import React from "react";
-import { authGetToken, authLogin } from "../../domain/services/authService";
+import { authGetUserId, authLogin } from "../../domain/services/authService";
 import { Navigate, useNavigate } from "react-router-dom";
 
 function LoginPage() {
@@ -8,17 +8,21 @@ function LoginPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const data = Object.fromEntries(new FormData(e.currentTarget));
+    const objData = Object.fromEntries(new FormData(e.currentTarget));
+    const data = {
+      username: objData.username as string,
+      password: objData.password as string,
+    };
     const response = await authLogin(data);
 
-    if (response.errors) {
-      alert(response.errors[0].message);
+    if (!response) {
+      alert("Invalid username or password");
     } else {
       navigate("/");
     }
   }
 
-  if (authGetToken()) {
+  if (authGetUserId()) {
     return <Navigate to="/" />;
   }
 
