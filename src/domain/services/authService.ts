@@ -1,36 +1,24 @@
-import { restPost } from "../infras/apis/restActions";
+import { UserLogin } from "../../../../esl-workers/src/domain/models/UserModel";
+import { trpcClient } from "../infras/trpcActions";
+import { utilGetCookie, utilSaveCookie } from "./utilService";
 
-export async function authLogin(params: Record<string, any>) {
-  const response = await restPost("/auth/login", params, "AuthLogin");
+export async function authLogin(params: UserLogin) {
+  try {
+    const res = await trpcClient.auth.login.mutate(params);
 
-  if (response.data.errors) {
-    return response.data;
+    // if logged in successful
+    if (res) {
+      // save userId to cookie for local reference
+      utilSaveCookie("userId", String(res.id));
+    }
+
+    return res;
+  } catch (e) {
+    console.log(e);
+    return undefined;
   }
-
-  // Get token
-  const token = response.headers["x-access-token"];
-  if (!token) {
-    return {
-      errors: [
-        {
-          message: "Token not found",
-          title: "Token not found",
-        },
-      ],
-    };
-  }
-
-  // Set token to cookie
-  document.cookie = `token=${token}; path=/; max-age=86400`;
-  return response.data;
 }
 
-export function authGetToken() {
-  const cookies = document.cookie.split(";");
-  const token = cookies.find((cookie) => cookie.includes("token"));
-  if (!token) {
-    return null;
-  }
-
-  return token.split("=")[1];
+export function authGetUserId() {
+  return utilGetCookie("userId");
 }
