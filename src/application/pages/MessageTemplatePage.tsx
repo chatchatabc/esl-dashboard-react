@@ -3,8 +3,12 @@ import { messageTemplateGetAll } from "../../domain/services/messageTemplateServ
 import { ColumnsType } from "antd/es/table";
 import { MessageTemplate } from "../../../../esl-workers/src/domain/models/MessageModel";
 import { Button } from "antd";
+import { useAppDispatch } from "../redux/hooks";
+import { modalUpdate } from "../redux/features/modalSlice";
 
 function MessageTemplatePage() {
+  const dispatch = useAppDispatch();
+
   const statusLabel = {
     1: "Pending",
     2: "Approved",
@@ -24,8 +28,14 @@ function MessageTemplatePage() {
     },
     {
       key: "message",
-      dataIndex: "message",
       title: "Message",
+      render: (record: MessageTemplate) => {
+        return (
+          <p>
+            【{record.signature}】{record.message}
+          </p>
+        );
+      },
     },
     {
       key: "status",
@@ -68,7 +78,18 @@ function MessageTemplatePage() {
         <header className="p-2 flex items-center">
           <h2 className="text-xl font-medium mr-auto">Message Templates</h2>
 
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-md transition hover:bg-blue-400">
+          <button
+            onClick={() => {
+              dispatch(
+                modalUpdate({
+                  show: true,
+                  content: "messageTemplate",
+                  title: "Add Message Template",
+                })
+              );
+            }}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md transition hover:bg-blue-400"
+          >
             Add +
           </button>
         </header>
