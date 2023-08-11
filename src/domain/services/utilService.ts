@@ -19,3 +19,10 @@ export function utilSaveCookie(
 export function utilDeleteCookie(name: string) {
   document.cookie = `${name}=; path=/; max-age=0`;
 }
+
+export function utilFormatDateAndTime(locale: string, date: Date) {
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+}
