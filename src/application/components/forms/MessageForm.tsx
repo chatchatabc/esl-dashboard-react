@@ -1,5 +1,5 @@
 import { Button, Form, FormInstance, Input, Select } from "antd";
-import { messageCreate } from "../../../domain/services/messageService";
+import { messageSend } from "../../../domain/services/messageService";
 import React from "react";
 import { userGetAll } from "../../../domain/services/userService";
 import { User } from "../../../../../esl-workers/src/domain/models/UserModel";
@@ -45,7 +45,7 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
       layout="vertical"
       form={formRef}
       onFinish={(e) => {
-        handleSubmit(messageCreate, e, "Success", "Fail");
+        handleSubmit(messageSend, e, "Success", "Fail");
       }}
     >
       <Form.Item
