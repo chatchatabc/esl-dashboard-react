@@ -1,0 +1,57 @@
+import { Modal, message } from "antd";
+import { useForm } from "antd/es/form/Form";
+import React from "react";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import MessageForm from "./MessageForm";
+import { modalUpdate } from "../../redux/features/modalSlice";
+
+function DynamicModalForm() {
+  const [loading, setLoading] = React.useState(false);
+  const [form] = useForm();
+  const modal = useAppSelector((state) => state.modal);
+  const dispatch = useAppDispatch();
+
+  async function handleSubmit(
+    action: (params: Record<string, any>) => Promise<any>,
+    params: Record<string, any>,
+    messageSuccess: string,
+    messageFail: string
+  ) {
+    setLoading(true);
+
+    const response = await action(params);
+    if (!response) {
+      message.error(messageFail);
+    } else {
+      message.success(messageSuccess);
+      dispatch(modalUpdate({ show: false }));
+    }
+
+    setLoading(false);
+  }
+
+  return (
+    <Modal
+      open={modal.show}
+      title={modal.title}
+      onCancel={() => {
+        dispatch(modalUpdate({ show: false }));
+      }}
+      onOk={() => {
+        form.submit();
+      }}
+      confirmLoading={loading}
+      okButtonProps={{ className: "bg-blue-500" }}
+    >
+      {modal.content === "message" && (
+        <MessageForm
+          loading={loading}
+          formRef={form}
+          handleSubmit={handleSubmit}
+        />
+      )}
+    </Modal>
+  );
+}
+
+export default DynamicModalForm;

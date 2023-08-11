@@ -2,6 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { authGetUserId } from "../../domain/services/authService";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import DynamicModalForm from "../components/forms/DynamicModalForm";
 
 function MainLayout() {
   if (!authGetUserId()) {
@@ -27,6 +28,8 @@ function MainLayout() {
           <Outlet />
         </main>
       </section>
+
+      <DynamicModalForm />
     </div>
   );
 }
