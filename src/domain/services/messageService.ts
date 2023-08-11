@@ -7,6 +7,24 @@ import { trpcClient } from "../infras/trpcActions";
 export async function messageGetAll(params: { page?: number; size?: number }) {
   try {
     const res = await trpcClient.message.getAll.query(params);
+
+    if (res) {
+      const contentPromise = res.content.map(async (message) => {
+        const sender = await trpcClient.user.get.query({
+          userId: message.senderId,
+        });
+        const receiver = await trpcClient.user.get.query({
+          userId: message.receiverId,
+        });
+        return {
+          ...message,
+          sender,
+          receiver,
+        };
+      });
+      res.content = await Promise.all(contentPromise);
+    }
+
     return res;
   } catch (e) {
     console.log(e);
