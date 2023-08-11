@@ -86,7 +86,10 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
             formRef.setFieldsValue({ message: e });
           }}
           options={templates.map((template) => {
-            return { label: template.title, value: template.message };
+            return {
+              label: template.title,
+              value: `【${template.signature}】${template.message}`,
+            };
           })}
         />
       </Form.Item>
