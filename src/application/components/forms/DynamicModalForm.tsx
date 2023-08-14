@@ -45,29 +45,31 @@ function DynamicModalForm() {
       confirmLoading={loading}
       okButtonProps={{ className: "bg-blue-500" }}
     >
-      {modal.content === "message" && (
-        <MessageForm
-          loading={loading}
-          formRef={form}
-          handleSubmit={handleSubmit}
-        />
-      )}
+      <div className="max-h-[500px] overflow-auto">
+        {modal.content === "message" && (
+          <MessageForm
+            loading={loading}
+            formRef={form}
+            handleSubmit={handleSubmit}
+          />
+        )}
 
-      {modal.content === "messageTemplate" && (
-        <MessageTemplateForm
-          loading={loading}
-          formRef={form}
-          handleSubmit={handleSubmit}
-        />
-      )}
+        {modal.content === "messageTemplate" && (
+          <MessageTemplateForm
+            loading={loading}
+            formRef={form}
+            handleSubmit={handleSubmit}
+          />
+        )}
 
-      {modal.content === "user" && (
-        <UserForm
-          loading={loading}
-          formRef={form}
-          handleSubmit={handleSubmit}
-        />
-      )}
+        {modal.content === "user" && (
+          <UserForm
+            loading={loading}
+            formRef={form}
+            handleSubmit={handleSubmit}
+          />
+        )}
+      </div>
     </Modal>
   );
 }
