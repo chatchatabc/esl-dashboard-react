@@ -23,3 +23,13 @@ export async function messageTemplateCreate(
     return false;
   }
 }
+
+export async function messageTemplateVerify(params: { templateId: number }) {
+  try {
+    const res = await trpcClient.messageTemplate.verify.mutate(params);
+    return res;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}

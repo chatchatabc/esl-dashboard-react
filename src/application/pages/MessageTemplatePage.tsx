@@ -1,8 +1,11 @@
 import DynamicTable from "../components/DynamicTable";
-import { messageTemplateGetAll } from "../../domain/services/messageTemplateService";
+import {
+  messageTemplateGetAll,
+  messageTemplateVerify,
+} from "../../domain/services/messageTemplateService";
 import { ColumnsType } from "antd/es/table";
 import { MessageTemplate } from "../../../../esl-workers/src/domain/models/MessageModel";
-import { Button } from "antd";
+import { Button, Modal, message } from "antd";
 import { useAppDispatch } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
 
@@ -58,7 +61,31 @@ function MessageTemplatePage() {
       render: (record: MessageTemplate) => {
         return (
           <div className="flex space-x-2">
-            <Button disabled={record.status !== 1} type="link" size="small">
+            <Button
+              onClick={() => {
+                Modal.confirm({
+                  title: "Are you sure to verify?",
+                  content: "This would cost one API call in your SMS account.",
+                  onOk: async () => {
+                    const res = await messageTemplateVerify({
+                      templateId: record.id,
+                    });
+                    if (!res) {
+                      message.error("Fail to verify");
+                    } else {
+                      message.success("Success");
+                    }
+                  },
+                  maskClosable: true,
+                  okButtonProps: {
+                    className: "bg-blue-500",
+                  },
+                });
+              }}
+              disabled={record.status !== 1}
+              type="link"
+              size="small"
+            >
               Verify
             </Button>
 
