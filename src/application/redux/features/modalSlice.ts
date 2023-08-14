@@ -4,6 +4,7 @@ type Props = {
   title?: string;
   show: boolean;
   content?: string;
+  data?: Record<string, any>;
 };
 
 const initialState: Props = {
@@ -18,6 +19,7 @@ export const modalSlice = createSlice({
       state.title = action.payload.title;
       state.show = action.payload.show;
       state.content = action.payload.content;
+      state.data = action.payload.data;
     },
   },
 });

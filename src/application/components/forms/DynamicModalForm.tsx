@@ -32,6 +32,12 @@ function DynamicModalForm() {
     setLoading(false);
   }
 
+  React.useEffect(() => {
+    if (modal.data) {
+      form.setFieldsValue(modal.data);
+    }
+  }, [modal.data]);
+
   return (
     <Modal
       open={modal.show}
