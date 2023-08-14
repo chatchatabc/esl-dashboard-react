@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import MessageForm from "./MessageForm";
 import { modalUpdate } from "../../redux/features/modalSlice";
 import MessageTemplateForm from "./MessageTemplateForm";
+import UserForm from "./UserForm";
 
 function DynamicModalForm() {
   const [loading, setLoading] = React.useState(false);
@@ -54,6 +55,14 @@ function DynamicModalForm() {
 
       {modal.content === "messageTemplate" && (
         <MessageTemplateForm
+          loading={loading}
+          formRef={form}
+          handleSubmit={handleSubmit}
+        />
+      )}
+
+      {modal.content === "user" && (
+        <UserForm
           loading={loading}
           formRef={form}
           handleSubmit={handleSubmit}

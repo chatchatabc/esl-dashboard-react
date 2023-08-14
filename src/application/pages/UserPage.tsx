@@ -69,7 +69,7 @@ function UserPage() {
               dispatch(
                 modalUpdate({
                   show: true,
-                  content: "message",
+                  content: "user",
                   title: "Add Message",
                 })
               );
