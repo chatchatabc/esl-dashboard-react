@@ -41,6 +41,7 @@ function LogsCreditTable({ userId }: Props) {
 
   return (
     <DynamicTable
+      rowKey={(record: LogsCredit) => record.id}
       columns={columns}
       getData={(values: any) => {
         return logsCreditGetAllByUser({ ...values, userId });
