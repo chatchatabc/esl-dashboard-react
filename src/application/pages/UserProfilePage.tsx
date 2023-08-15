@@ -9,6 +9,7 @@ import { User } from "../../../../esl-workers/src/domain/models/UserModel";
 import { utilFormatCurrency } from "../../domain/services/utilService";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
+import LogsCreditTable from "../components/tables/LogsCreditTable";
 
 function UserProfilePage() {
   const { username = "" } = useParams();
@@ -54,7 +55,7 @@ function UserProfilePage() {
   }
 
   return (
-    <section className="p-4">
+    <section className="p-4 space-y-4">
       <section className="border rounded-lg shadow">
         <header className="p-2 flex items-center border-b">
           <h2 className="text-xl font-medium mr-auto">Profile Information</h2>
@@ -159,6 +160,32 @@ function UserProfilePage() {
               <p>{status?.label}</p>
             </section>
           </section>
+        </section>
+      </section>
+
+      <section className="border rounded-lg shadow">
+        <header className="p-2 flex items-center border-b">
+          <h2 className="text-xl font-medium mr-auto">Credit History</h2>
+
+          <button
+            onClick={() => {
+              dispatch(
+                modalUpdate({
+                  show: true,
+                  content: "credit",
+                  data: { userId: user.id },
+                  title: "Add Credit",
+                })
+              );
+            }}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+          >
+            Add
+          </button>
+        </header>
+
+        <section>
+          <LogsCreditTable />
         </section>
       </section>
     </section>
