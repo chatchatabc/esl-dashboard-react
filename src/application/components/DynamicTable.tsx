@@ -45,7 +45,16 @@ function DynamicTable({ getData, ...props }: Props) {
     <Table
       loading={loading}
       dataSource={data}
-      pagination={{ ...pagination, className: "pr-4" }}
+      pagination={{
+        ...pagination,
+        className: "pr-4",
+        onChange: (page, size) => {
+          setPagination((prev) => {
+            return { ...prev, current: page, pageSize: size };
+          });
+          setLoading(true);
+        },
+      }}
       {...props}
     />
   );
