@@ -8,6 +8,7 @@ import { MessageTemplate } from "../../../../esl-workers/src/domain/models/Messa
 import { Button, Modal, message } from "antd";
 import { useAppDispatch } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
+import { globalReset } from "../redux/features/globalSlice";
 
 function MessageTemplatePage() {
   const dispatch = useAppDispatch();
@@ -74,6 +75,7 @@ function MessageTemplatePage() {
                       message.error("Fail to verify");
                     } else {
                       message.success("Success");
+                      dispatch(globalReset());
                     }
                   },
                   maskClosable: true,
