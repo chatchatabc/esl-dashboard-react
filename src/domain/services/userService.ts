@@ -91,3 +91,16 @@ export async function userRevokePhoneVerification(params: { userId: number }) {
     return false;
   }
 }
+
+export async function userAddCredit(params: {
+  userId: number;
+  amount: number;
+}) {
+  try {
+    const res = await trpcClient.user.addCredit.mutate(params);
+    return res;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}

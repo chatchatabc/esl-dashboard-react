@@ -7,6 +7,7 @@ import { modalUpdate } from "../../redux/features/modalSlice";
 import MessageTemplateForm from "./MessageTemplateForm";
 import UserForm from "./UserForm";
 import { globalReset } from "../../redux/features/globalSlice";
+import CreditForm from "./CreditForm";
 
 function DynamicModalForm() {
   const [loading, setLoading] = React.useState(false);
@@ -75,6 +76,14 @@ function DynamicModalForm() {
 
         {modal.content === "user" && (
           <UserForm
+            loading={loading}
+            formRef={form}
+            handleSubmit={handleSubmit}
+          />
+        )}
+
+        {modal.content === "credit" && (
+          <CreditForm
             loading={loading}
             formRef={form}
             handleSubmit={handleSubmit}

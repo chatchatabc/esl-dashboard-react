@@ -53,7 +53,23 @@ function UserPage() {
       key: "credit",
       title: "Credits",
       render: (record: User) => {
-        return <p>{utilFormatCurrency(record.credit)}</p>;
+        return (
+          <button
+            onClick={() => {
+              dispatch(
+                modalUpdate({
+                  show: true,
+                  content: "credit",
+                  title: "Add Credit",
+                  data: { userId: record.id },
+                })
+              );
+            }}
+            className="underline hover:no-underline"
+          >
+            {utilFormatCurrency(record.credit)}
+          </button>
+        );
       },
     },
     {
