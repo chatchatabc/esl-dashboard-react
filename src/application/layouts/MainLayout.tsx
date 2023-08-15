@@ -19,12 +19,12 @@ function MainLayout() {
       {/* Section */}
       <section className="divide-x-2 divide-black flex flex-1">
         {/* Sidebar */}
-        <aside className="min-w-[200px]">
+        <aside className="min-w-[15vw]">
           <Sidebar />
         </aside>
 
         {/* Main content */}
-        <main className="flex-1">
+        <main className="w-[85vw]">
           <Outlet />
         </main>
       </section>

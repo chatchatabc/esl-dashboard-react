@@ -14,6 +14,8 @@ function UserPage() {
       key: "username",
       dataIndex: "username",
       title: "Username",
+      fixed: "left",
+      width: 200,
     },
     {
       key: "firstName",
@@ -24,6 +26,13 @@ function UserPage() {
       key: "lastName",
       dataIndex: "lastName",
       title: "Last Name",
+    },
+    {
+      key: "credit",
+      title: "Credits",
+      render: (record: User) => {
+        return <p>{record.credit}元</p>;
+      },
     },
     {
       key: "createdAt",
@@ -44,6 +53,8 @@ function UserPage() {
     {
       key: "actions",
       title: "Actions",
+      width: 100,
+      fixed: "right",
       render: (record: User) => {
         return (
           <div>
@@ -94,7 +105,11 @@ function UserPage() {
 
         {/* Table */}
         <section>
-          <DynamicTable columns={columns} getData={userGetAll} />
+          <DynamicTable
+            columns={columns}
+            getData={userGetAll}
+            scroll={{ x: 2000 }}
+          />
         </section>
       </section>
     </section>
