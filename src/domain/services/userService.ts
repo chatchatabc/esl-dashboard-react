@@ -71,3 +71,13 @@ export async function userGetByUsername(params: { username: string }) {
     return null;
   }
 }
+
+export async function userVerifyPhone(params: { userId: number }) {
+  try {
+    const res = await trpcClient.user.verifyPhone.mutate(params);
+    return res;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}

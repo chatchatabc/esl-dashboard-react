@@ -3,12 +3,14 @@ import { ColumnsType } from "antd/es/table";
 import { User } from "../../../../esl-workers/src/domain/models/UserModel";
 import { modalUpdate } from "../redux/features/modalSlice";
 import DynamicTable from "../components/DynamicTable";
-import { userGetAll } from "../../domain/services/userService";
+import { userGetAll, userVerifyPhone } from "../../domain/services/userService";
 import {
   utilFormatCurrency,
   utilFormatDateAndTime,
 } from "../../domain/services/utilService";
 import { useNavigate } from "react-router-dom";
+import { Modal, message } from "antd";
+import { globalReset } from "../redux/features/globalSlice";
 
 function UserPage() {
   const dispatch = useAppDispatch();
@@ -55,13 +57,44 @@ function UserPage() {
       title: "Phone Number",
       render: (record: User) => {
         return (
-          <p
-            className={`${
+          <button
+            onClick={() => {
+              Modal.confirm({
+                title: `${
+                  record.phoneVerifiedAt ? "Revoke" : "Verify"
+                } Phone verification`,
+                content: `Are you sure you want to ${
+                  record.phoneVerifiedAt ? "revoke" : "verify"
+                } phone verification?`,
+                onOk: async () => {
+                  if (record.phoneVerifiedAt) {
+                  } else {
+                    const res = await userVerifyPhone({ userId: record.id });
+                    if (!res) {
+                      message.error("Failed to verify phone");
+                    } else {
+                      message.success("Phone verified");
+                      dispatch(globalReset());
+                    }
+                  }
+                },
+                okButtonProps: {
+                  className: `${
+                    record.phoneVerifiedAt
+                      ? "bg-red-500 hover:bg-red-400"
+                      : "bg-green-500 hover:bg-green-400"
+                  } text-white rounded-md transition`,
+                },
+                okText: "Yes",
+                maskClosable: true,
+              });
+            }}
+            className={`underline ${
               record.phoneVerifiedAt ? "text-green-500" : "text-red-500"
-            }`}
+            } hover:no-underline`}
           >
             {record.phone}
-          </p>
+          </button>
         );
       },
     },
