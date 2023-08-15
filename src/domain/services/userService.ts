@@ -4,6 +4,7 @@ import {
   UserUpdateInput,
 } from "../../../../esl-workers/src/domain/models/UserModel";
 import { trpcClient } from "../infras/trpcActions";
+import { roleGet } from "./roleService";
 
 export async function userGetAll(params: { page?: number; size?: number }) {
   try {
@@ -51,4 +52,22 @@ export function userOptionStatus() {
     { label: "Inactive", value: 0 },
     { label: "Deleted", value: -1 },
   ];
+}
+
+export async function userGetByUsername(params: { username: string }) {
+  try {
+    const res = await trpcClient.user.getByUsername.query(params);
+
+    if (res) {
+      const role = await roleGet({ roleId: res.roleId });
+      if (role) {
+        res.role = role;
+      }
+    }
+
+    return res;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
 }

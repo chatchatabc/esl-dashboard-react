@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function NotFoundPage() {
+  const navigate = useNavigate();
+
   return (
     <section className="flex-1 flex justify-center items-center">
       {/* Container */}
@@ -13,10 +17,24 @@ function NotFoundPage() {
           </p>
         </section>
 
-        <footer className="mt-4">
-          <a href="/" className="inline-block underline hover:no-underline">
+        <footer className="mt-4 flex justify-between">
+          <button
+            onClick={() => {
+              navigate(-1);
+            }}
+            className="inline-block underline hover:no-underline"
+          >
+            Go back
+          </button>
+
+          <button
+            onClick={() => {
+              navigate("/");
+            }}
+            className="inline-block underline hover:no-underline"
+          >
             Go to Home Page
-          </a>
+          </button>
         </footer>
       </section>
     </section>
