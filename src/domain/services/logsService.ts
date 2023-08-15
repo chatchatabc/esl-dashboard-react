@@ -1,11 +1,12 @@
 import { trpcClient } from "../infras/trpcActions";
 
-export async function logsCreditGetAll(params: {
-  page?: number;
-  size?: number;
+export async function logsCreditGetAllByUser(params: {
+  page: number;
+  size: number;
+  userId: number;
 }) {
   try {
-    const res = await trpcClient.logs.getCreditAll.query(params);
+    const res = await trpcClient.logs.getCreditAllByUser.query(params);
     return res;
   } catch (e) {
     console.log(e);

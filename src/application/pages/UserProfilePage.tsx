@@ -185,7 +185,7 @@ function UserProfilePage() {
         </header>
 
         <section>
-          <LogsCreditTable />
+          <LogsCreditTable userId={user.id} />
         </section>
       </section>
     </section>

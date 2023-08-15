@@ -1,5 +1,5 @@
 import DynamicTable from "../DynamicTable";
-import { logsCreditGetAll } from "../../../domain/services/logsService";
+import { logsCreditGetAllByUser } from "../../../domain/services/logsService";
 import { ColumnsType } from "antd/es/table";
 import { LogsCredit } from "../../../../../esl-workers/src/domain/models/LogsModel";
 import {
@@ -7,7 +7,11 @@ import {
   utilFormatDateAndTime,
 } from "../../../domain/services/utilService";
 
-function LogsCreditTable() {
+type Props = {
+  userId: number;
+};
+
+function LogsCreditTable({ userId }: Props) {
   const columns: ColumnsType<LogsCredit> = [
     {
       key: "id",
@@ -35,7 +39,14 @@ function LogsCreditTable() {
     },
   ];
 
-  return <DynamicTable columns={columns} getData={logsCreditGetAll} />;
+  return (
+    <DynamicTable
+      columns={columns}
+      getData={(values: any) => {
+        return logsCreditGetAllByUser({ ...values, userId });
+      }}
+    />
+  );
 }
 
 export default LogsCreditTable;
