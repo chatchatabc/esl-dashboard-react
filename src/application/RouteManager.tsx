@@ -5,6 +5,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import MessagePage from "./pages/MessagePage";
 import MessageTemplatePage from "./pages/MessageTemplatePage";
 import UserPage from "./pages/UserPage";
+import UserProfilePage from "./pages/UserProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,16 @@ const router = createBrowserRouter([
       },
       {
         path: "users",
-        element: <UserPage />,
+        children: [
+          {
+            path: "",
+            element: <UserPage />,
+          },
+          {
+            path: ":username",
+            element: <UserProfilePage />,
+          },
+        ],
       },
       {
         path: "messages",

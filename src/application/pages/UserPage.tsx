@@ -8,17 +8,30 @@ import {
   utilFormatCurrency,
   utilFormatDateAndTime,
 } from "../../domain/services/utilService";
+import { useNavigate } from "react-router-dom";
 
 function UserPage() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const columns: ColumnsType<User> = [
     {
       key: "username",
-      dataIndex: "username",
       title: "Username",
       fixed: "left",
       width: 200,
+      render: (record: User) => {
+        return (
+          <button
+            onClick={() => {
+              navigate("/users/" + record.username);
+            }}
+            className="text-blue-500 underline hover:no-underline"
+          >
+            {record.username}
+          </button>
+        );
+      },
     },
     {
       key: "firstName",
@@ -100,7 +113,7 @@ function UserPage() {
   return (
     <section className="p-4">
       {/* First section */}
-      <section className="rounded-lg overflow-hidden shadow border">
+      <section className="rounded-lg shadow border">
         {/* Header */}
         <header className="p-2 flex items-center">
           <h2 className="text-xl font-medium mr-auto">Users</h2>
