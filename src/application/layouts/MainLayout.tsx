@@ -12,7 +12,7 @@ function MainLayout() {
   return (
     <div className="flex-1 flex flex-col divide-y-2 divide-black">
       {/* Header */}
-      <header className="container">
+      <header>
         <Navbar />
       </header>
 
