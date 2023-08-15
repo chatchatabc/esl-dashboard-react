@@ -4,7 +4,10 @@ import { User } from "../../../../esl-workers/src/domain/models/UserModel";
 import { modalUpdate } from "../redux/features/modalSlice";
 import DynamicTable from "../components/DynamicTable";
 import { userGetAll } from "../../domain/services/userService";
-import { utilFormatDateAndTime } from "../../domain/services/utilService";
+import {
+  utilFormatCurrency,
+  utilFormatDateAndTime,
+} from "../../domain/services/utilService";
 
 function UserPage() {
   const dispatch = useAppDispatch();
@@ -31,7 +34,22 @@ function UserPage() {
       key: "credit",
       title: "Credits",
       render: (record: User) => {
-        return <p>{record.credit}元</p>;
+        return <p>{utilFormatCurrency(record.credit)}</p>;
+      },
+    },
+    {
+      key: "phone",
+      title: "Phone Number",
+      render: (record: User) => {
+        return (
+          <p
+            className={`${
+              record.phoneVerifiedAt ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {record.phone}
+          </p>
+        );
       },
     },
     {
