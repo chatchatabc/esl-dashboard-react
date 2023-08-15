@@ -26,6 +26,7 @@ function DynamicModalForm() {
       message.error(messageFail);
     } else {
       message.success(messageSuccess);
+      form.resetFields();
       dispatch(modalUpdate({ show: false }));
     }
 
@@ -35,6 +36,8 @@ function DynamicModalForm() {
   React.useEffect(() => {
     if (modal.data) {
       form.setFieldsValue(modal.data);
+    } else {
+      form.resetFields();
     }
   }, [modal.data]);
 
