@@ -26,3 +26,10 @@ export function utilFormatDateAndTime(locale: string, date: Date) {
     timeStyle: "short",
   }).format(date);
 }
+
+export function utilFormatCurrency(amount: number) {
+  return new Intl.NumberFormat("zh-CN", {
+    style: "currency",
+    currency: "CNY",
+  }).format(amount);
+}
