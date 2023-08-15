@@ -3,7 +3,11 @@ import { ColumnsType } from "antd/es/table";
 import { User } from "../../../../esl-workers/src/domain/models/UserModel";
 import { modalUpdate } from "../redux/features/modalSlice";
 import DynamicTable from "../components/DynamicTable";
-import { userGetAll, userVerifyPhone } from "../../domain/services/userService";
+import {
+  userGetAll,
+  userRevokePhoneVerification,
+  userVerifyPhone,
+} from "../../domain/services/userService";
 import {
   utilFormatCurrency,
   utilFormatDateAndTime,
@@ -67,15 +71,20 @@ function UserPage() {
                   record.phoneVerifiedAt ? "revoke" : "verify"
                 } phone verification?`,
                 onOk: async () => {
+                  let res: any;
                   if (record.phoneVerifiedAt) {
+                    res = await userRevokePhoneVerification({
+                      userId: record.id,
+                    });
                   } else {
-                    const res = await userVerifyPhone({ userId: record.id });
-                    if (!res) {
-                      message.error("Failed to verify phone");
-                    } else {
-                      message.success("Phone verified");
-                      dispatch(globalReset());
-                    }
+                    res = await userVerifyPhone({ userId: record.id });
+                  }
+
+                  if (!res) {
+                    message.error("Something went wrong");
+                  } else {
+                    message.success("Success");
+                    dispatch(globalReset());
                   }
                 },
                 okButtonProps: {

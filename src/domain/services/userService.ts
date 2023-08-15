@@ -81,3 +81,13 @@ export async function userVerifyPhone(params: { userId: number }) {
     return false;
   }
 }
+
+export async function userRevokePhoneVerification(params: { userId: number }) {
+  try {
+    const res = await trpcClient.user.revokePhoneVerification.mutate(params);
+    return res;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
