@@ -6,6 +6,7 @@ import MessageForm from "./MessageForm";
 import { modalUpdate } from "../../redux/features/modalSlice";
 import MessageTemplateForm from "./MessageTemplateForm";
 import UserForm from "./UserForm";
+import { globalReset } from "../../redux/features/globalSlice";
 
 function DynamicModalForm() {
   const [loading, setLoading] = React.useState(false);
@@ -28,6 +29,7 @@ function DynamicModalForm() {
       message.success(messageSuccess);
       form.resetFields();
       dispatch(modalUpdate({ show: false }));
+      dispatch(globalReset());
     }
 
     setLoading(false);

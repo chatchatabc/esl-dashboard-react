@@ -1,5 +1,6 @@
 import { Table, TableProps, message } from "antd";
 import React from "react";
+import { useAppSelector } from "../redux/hooks";
 
 type Props = TableProps<any> & {
   getData: (params: { page?: number; size?: number }) => Promise<any>;
@@ -13,6 +14,11 @@ function DynamicTable({ getData, ...props }: Props) {
     pageSize: 10,
     total: 0,
   });
+  const global = useAppSelector((state) => state.global);
+
+  React.useEffect(() => {
+    setLoading(true);
+  }, [global.reset]);
 
   React.useEffect(() => {
     if (loading) {
@@ -33,14 +39,14 @@ function DynamicTable({ getData, ...props }: Props) {
         setLoading(false);
       })();
     }
-  }, []);
+  }, [loading]);
 
   return (
     <Table
       loading={loading}
-      {...props}
       dataSource={data}
       pagination={{ ...pagination, className: "pr-4" }}
+      {...props}
     />
   );
 }

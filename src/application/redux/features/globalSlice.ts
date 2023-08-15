@@ -18,7 +18,7 @@ export const globalSlice = createSlice({
       state.loading = action.payload;
     },
     globalReset: (state) => {
-      state.reset += state.reset;
+      state.reset += 1;
     },
   },
 });
