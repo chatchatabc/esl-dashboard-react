@@ -7,6 +7,8 @@ import {
 } from "../../domain/services/userService";
 import { User } from "../../../../esl-workers/src/domain/models/UserModel";
 import { utilFormatCurrency } from "../../domain/services/utilService";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { modalUpdate } from "../redux/features/modalSlice";
 
 function UserProfilePage() {
   const { username = "" } = useParams();
@@ -14,6 +16,8 @@ function UserProfilePage() {
   const [user, setUser] = React.useState<User | null>(null);
   const statusList = userOptionStatus();
   const status = statusList.find((item) => item.value === user?.status);
+  const dispatch = useAppDispatch();
+  const global = useAppSelector((state) => state.global);
 
   React.useEffect(() => {
     if (loading) {
@@ -25,7 +29,11 @@ function UserProfilePage() {
         setLoading(false);
       })();
     }
-  }, []);
+  }, [loading]);
+
+  React.useEffect(() => {
+    setLoading(true);
+  }, [global.reset]);
 
   if (loading) {
     return (
@@ -51,7 +59,19 @@ function UserProfilePage() {
         <header className="p-2 flex items-center border-b">
           <h2 className="text-xl font-medium mr-auto">Profile Information</h2>
 
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400">
+          <button
+            onClick={() => {
+              dispatch(
+                modalUpdate({
+                  show: true,
+                  content: "user",
+                  data: user,
+                  title: "Edit user",
+                })
+              );
+            }}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+          >
             Edit
           </button>
         </header>
