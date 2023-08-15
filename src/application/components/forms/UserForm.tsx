@@ -5,6 +5,7 @@ import {
   userCreate,
   userGetAllRole,
   userOptionStatus,
+  userUpdate,
 } from "../../../domain/services/userService";
 
 type Props = {
@@ -44,7 +45,14 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
       layout="vertical"
       form={formRef}
       onFinish={(e) => {
+        e.credit = Number(e.credit);
         if (e.id) {
+          handleSubmit(
+            userUpdate,
+            e,
+            "Successfully updated user!",
+            "Failed to update user!"
+          );
         } else {
           handleSubmit(
             userCreate,
@@ -72,31 +80,35 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
         <Input placeholder="Username" />
       </Form.Item>
 
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="password"
-        label="Password"
-      >
-        <Input.Password placeholder="Password" />
-      </Form.Item>
+      {formRef.getFieldValue("id") === undefined && (
+        <>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Need some input here",
+              },
+            ]}
+            name="password"
+            label="Password"
+          >
+            <Input.Password placeholder="Password" />
+          </Form.Item>
 
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="confirmPassword"
-        label="Confirm Password"
-      >
-        <Input.Password placeholder="Confirm Password" />
-      </Form.Item>
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: "Need some input here",
+              },
+            ]}
+            name="confirmPassword"
+            label="Confirm Password"
+          >
+            <Input.Password placeholder="Confirm Password" />
+          </Form.Item>
+        </>
+      )}
 
       <Form.Item
         rules={[

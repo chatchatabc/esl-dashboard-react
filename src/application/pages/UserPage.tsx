@@ -44,10 +44,22 @@ function UserPage() {
     {
       key: "actions",
       title: "Actions",
-      render: () => {
+      render: (record: User) => {
         return (
           <div>
-            <button className="text-blue-500 underline hover:no-underline">
+            <button
+              onClick={() => {
+                dispatch(
+                  modalUpdate({
+                    show: true,
+                    content: "user",
+                    title: "Edit User",
+                    data: record,
+                  })
+                );
+              }}
+              className="text-blue-500 underline hover:no-underline"
+            >
               Edit
             </button>
           </div>
