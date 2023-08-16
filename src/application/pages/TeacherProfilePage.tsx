@@ -30,11 +30,21 @@ function TeacherProfilePage() {
   }, []);
 
   if (loading) {
-    return <div>Loading</div>;
+    return (
+      <div className="flex-1 py-24">
+        <div className="flex justify-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+        </div>
+      </div>
+    );
   }
 
   if (!user || !teacher) {
-    return <NotFoundPage />;
+    return (
+      <div className="flex-1 py-24">
+        <NotFoundPage />
+      </div>
+    );
   }
 
   return (
