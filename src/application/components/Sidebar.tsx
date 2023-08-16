@@ -13,7 +13,7 @@ function Sidebar() {
     {
       label: "Home",
       icon: <HomeIcon />,
-      href: "/",
+      href: "/home",
     },
     {
       label: "Users",
@@ -46,7 +46,7 @@ function Sidebar() {
               <a
                 href={navLink.href}
                 className={`flex rounded-md items-center ${
-                  pathname === navLink.href ? "bg-blue-200" : ""
+                  pathname.startsWith(navLink.href) ? "bg-blue-200" : ""
                 } transition hover:bg-blue-200`}
               >
                 <span className="mr-2 w-10 h-10 p-1">{navLink.icon}</span>

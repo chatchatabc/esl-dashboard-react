@@ -1,12 +1,18 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { authGetUserId } from "../../domain/services/authService";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import DynamicModalForm from "../components/forms/DynamicModalForm";
 
 function MainLayout() {
+  const { pathname } = useLocation();
+
   if (!authGetUserId()) {
     return <Navigate to="/login" />;
+  }
+
+  if (pathname === "/") {
+    return <Navigate to="/home" />;
   }
 
   return (
