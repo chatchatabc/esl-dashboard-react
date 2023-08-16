@@ -20,6 +20,11 @@ function Sidebar() {
       href: "/users",
     },
     {
+      label: "Teachers",
+      icon: <UserIcon />,
+      href: "/teachers",
+    },
+    {
       label: "Messages",
       icon: <MessageIcon />,
       href: "/messages",
