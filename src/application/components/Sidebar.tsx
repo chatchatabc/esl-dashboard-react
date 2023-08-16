@@ -3,6 +3,7 @@ import HomeIcon from "../assets/HomeIcon";
 import MessageIcon from "../assets/MessageIcon";
 import UserIcon from "../assets/UserIcon";
 import TemplateIcon from "../assets/TemplateIcon";
+import TeacherIcon from "../assets/TeacherIcon";
 
 function Sidebar() {
   const location = useLocation();
@@ -21,7 +22,7 @@ function Sidebar() {
     },
     {
       label: "Teachers",
-      icon: <UserIcon />,
+      icon: <TeacherIcon />,
       href: "/teachers",
     },
     {
