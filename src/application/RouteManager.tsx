@@ -7,6 +7,7 @@ import MessageTemplatePage from "./pages/MessageTemplatePage";
 import UserPage from "./pages/UserPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import TeacherPage from "./pages/TeacherPage";
+import TeacherProfilePage from "./pages/TeacherProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -32,7 +33,16 @@ const router = createBrowserRouter([
       },
       {
         path: "teachers",
-        element: <TeacherPage />,
+        children: [
+          {
+            path: "",
+            element: <TeacherPage />,
+          },
+          {
+            path: ":username",
+            element: <TeacherProfilePage />,
+          },
+        ],
       },
       {
         path: "messages",

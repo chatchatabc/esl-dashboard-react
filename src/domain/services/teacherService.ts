@@ -24,3 +24,14 @@ export async function teacherGetAll(params: CommonPaginationInput) {
     return null;
   }
 }
+
+export async function teacherGet(params: { userId: number }) {
+  try {
+    const res = await trpcClient.teacher.get.query(params);
+
+    return res;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
