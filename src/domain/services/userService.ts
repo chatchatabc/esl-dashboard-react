@@ -6,7 +6,7 @@ import {
 import { trpcClient } from "../infras/trpcActions";
 import { roleGet } from "./roleService";
 
-export async function userGetAll(params: { page?: number; size?: number }) {
+export async function userGetAll(params: CommonPaginationInput) {
   try {
     const res = await trpcClient.user.getAll.query(params);
     return res;
