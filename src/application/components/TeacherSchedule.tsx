@@ -23,6 +23,7 @@ type Props = {
 
 function TeacherSchedule({ userId }: Props) {
   const calendarRef = React.useRef<FullCalendar | null>(null);
+  const calendar = calendarRef.current?.getApi();
   const [editing, setEditing] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [schedules, setSchedules] = React.useState<Schedule[]>([]);
@@ -32,7 +33,6 @@ function TeacherSchedule({ userId }: Props) {
   const global = useAppSelector((state) => state.global);
 
   async function handleSave() {
-    const calendar = calendarRef.current?.getApi();
     const calendarEvents = calendar?.getEvents() ?? [];
 
     const eventSchedules = calendarEvents.map((event, index) => {
@@ -118,7 +118,7 @@ function TeacherSchedule({ userId }: Props) {
   React.useEffect(() => {
     const newEvents: Record<string, any>[] = schedules
       .map((schedule) => {
-        const date = new Date();
+        const date = calendar?.getDate() ?? new Date();
         date.setDate(date.getDate() - date.getDay());
 
         const start = new Date(schedule.startTime);
@@ -153,20 +153,42 @@ function TeacherSchedule({ userId }: Props) {
     }
 
     setEvents(newEvents);
-  }, [schedules, editing]);
+  }, [schedules, editing, calendar?.getDate()]);
 
   return (
     <section>
-      <header className="flex items-center p-2">
+      <header className="flex items-center p-2 gap-x-2">
         <h2 className="text-xl font-medium mr-auto">Teacher's Schedule</h2>
 
         {editing && (
           <button
             onClick={handleSave}
-            className="px-4 py-2 mr-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
           >
             Save
           </button>
+        )}
+
+        {!editing && (
+          <>
+            <button
+              onClick={() => {
+                calendar?.prev();
+              }}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+            >
+              &lt;
+            </button>
+
+            <button
+              onClick={() => {
+                calendar?.next();
+              }}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+            >
+              &gt;
+            </button>
+          </>
         )}
 
         <button
@@ -189,8 +211,18 @@ function TeacherSchedule({ userId }: Props) {
           events={events}
           editable={editing}
           selectable={true}
+          views={{
+            timeGridWeek: editing
+              ? {
+                  dayHeaderContent: (header) => {
+                    const date = header.date;
+                    const dayName = date.toDateString().split(" ")[0];
+                    return dayName;
+                  },
+                }
+              : {},
+          }}
           select={(e) => {
-            const calendar = calendarRef.current?.getApi();
             if (editing) {
               calendar?.addEvent({
                 start: e.start,
