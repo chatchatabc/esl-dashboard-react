@@ -6,6 +6,7 @@ import { User } from "../../../../esl-workers/src/domain/models/UserModel";
 import { Teacher } from "../../../../esl-workers/src/domain/models/TeacherModel";
 import NotFoundPage from "./NotFoundPage";
 import { utilFormatDateAndTime } from "../../domain/services/utilService";
+import TeacherSchedule from "../components/TeacherSchedule";
 
 function TeacherProfilePage() {
   const { username = "" } = useParams();
@@ -48,7 +49,8 @@ function TeacherProfilePage() {
   }
 
   return (
-    <section className="p-4">
+    <section className="p-4 space-y-4">
+      {/* Teacher Information */}
       <section className="border shadow rounded-lg">
         <header className="p-2 border-b-2 flex items-center">
           <h2 className="text-xl font-medium mr-auto">Teachers Profile</h2>
@@ -105,6 +107,11 @@ function TeacherProfilePage() {
             </section>
           </section>
         </section>
+      </section>
+
+      {/* Teacher Schedule */}
+      <section className="border shadow rounded-lg">
+        <TeacherSchedule userId={user.id} />
       </section>
     </section>
   );
