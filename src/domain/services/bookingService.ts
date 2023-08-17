@@ -1,12 +1,13 @@
+import { BookingCreateInput } from "../../../../esl-workers/src/domain/models/BookingModel";
 import { trpcClient } from "../infras/trpcActions";
 
-export async function bookingGetAllByUser(params: {
+export async function bookingGetAll(params: {
   page: number;
   size: number;
   userId: number;
 }) {
   try {
-    const res = await trpcClient.booking.getAllByUser.query(params);
+    const res = await trpcClient.booking.getAll.query(params);
 
     if (res) {
       const contentPromise = res.content.map(async (booking) => {
@@ -30,6 +31,16 @@ export async function bookingGetAllByUser(params: {
       res.content = await Promise.all(contentPromise);
     }
 
+    return res;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
+export async function bookingCreate(params: BookingCreateInput) {
+  try {
+    const res = await trpcClient.booking.create.mutate(params);
     return res;
   } catch (e) {
     console.log(e);
