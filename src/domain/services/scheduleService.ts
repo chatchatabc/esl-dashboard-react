@@ -1,10 +1,11 @@
+import { CommonPaginationInput } from "../../../../esl-workers/src/domain/models/CommonModel";
 import {
   ScheduleCreateInput,
   ScheduleUpdateInput,
 } from "../../../../esl-workers/src/domain/models/ScheduleModel";
 import { trpcClient } from "../infras/trpcActions";
 
-export async function scheduleGetAll(params: { userId: number }) {
+export async function scheduleGetAll(params: CommonPaginationInput) {
   try {
     const res = await trpcClient.schedule.getAll.query({
       ...params,

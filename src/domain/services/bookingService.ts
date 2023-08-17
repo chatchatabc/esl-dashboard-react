@@ -1,13 +1,10 @@
 import { BookingCreateInput } from "../../../../esl-workers/src/domain/models/BookingModel";
+import { CommonPaginationInput } from "../../../../esl-workers/src/domain/models/CommonModel";
 import { trpcClient } from "../infras/trpcActions";
 
-export async function bookingGetAll(params: {
-  page: number;
-  size: number;
-  userId: number;
-}) {
+export async function bookingGetAll(params: CommonPaginationInput) {
   try {
-    const res = await trpcClient.booking.getAll.query(params);
+    const res = await trpcClient.booking.getAllAdmin.query(params);
 
     if (res) {
       const contentPromise = res.content.map(async (booking) => {
@@ -40,7 +37,7 @@ export async function bookingGetAll(params: {
 
 export async function bookingCreate(params: BookingCreateInput) {
   try {
-    const res = await trpcClient.booking.create.mutate(params);
+    const res = await trpcClient.booking.createAdmin.mutate(params);
     return res;
   } catch (e) {
     console.log(e);

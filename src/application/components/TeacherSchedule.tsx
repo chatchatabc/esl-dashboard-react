@@ -12,8 +12,10 @@ import {
   scheduleGetAll,
   scheduleUpdateMany,
 } from "../../domain/services/scheduleService";
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
+import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
+import { bookingGetAll } from "../../domain/services/bookingService";
 
 type Props = {
   userId: number;
@@ -24,8 +26,10 @@ function TeacherSchedule({ userId }: Props) {
   const [editing, setEditing] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [schedules, setSchedules] = React.useState<Schedule[]>([]);
+  const [bookings, setBookings] = React.useState<Booking[]>([]);
   const [events, setEvents] = React.useState<any[]>([]);
   const dispatch = useAppDispatch();
+  const global = useAppSelector((state) => state.global);
 
   async function handleSave() {
     const calendar = calendarRef.current?.getApi();
@@ -84,9 +88,26 @@ function TeacherSchedule({ userId }: Props) {
   }
 
   React.useEffect(() => {
+    setLoading(true);
+  }, [global.reset]);
+
+  React.useEffect(() => {
     if (loading) {
       (async () => {
-        const resSchedule = await scheduleGetAll({ userId });
+        const resSchedule = await scheduleGetAll({
+          userId,
+          page: 1,
+          size: 1000,
+        });
+        const resBookings = await bookingGetAll({
+          userId,
+          page: 1,
+          size: 1000,
+        });
+
+        console.log(resBookings);
+
+        setBookings(resBookings?.content ?? []);
         setSchedules(resSchedule?.content ?? []);
 
         setLoading(false);
@@ -95,7 +116,7 @@ function TeacherSchedule({ userId }: Props) {
   }, [loading]);
 
   React.useEffect(() => {
-    const newEvents = schedules
+    const newEvents: Record<string, any>[] = schedules
       .map((schedule) => {
         const date = new Date();
         date.setDate(date.getDate() - date.getDay());
@@ -115,6 +136,22 @@ function TeacherSchedule({ userId }: Props) {
         };
       })
       .flat();
+
+    if (!editing) {
+      bookings.forEach((booking) => {
+        const start = new Date(booking.start);
+        const end = new Date(booking.end);
+
+        newEvents.push({
+          start,
+          end,
+          title: `${booking.student?.firstName} ${booking.student?.lastName}`,
+          display: "auto",
+          color: "red",
+        });
+      });
+    }
+
     setEvents(newEvents);
   }, [schedules, editing]);
 
