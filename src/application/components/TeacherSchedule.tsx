@@ -16,6 +16,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
 import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
 import { bookingGetAll } from "../../domain/services/bookingService";
+import { CalendarApi } from "@fullcalendar/core/index.js";
 
 type Props = {
   userId: number;
@@ -23,7 +24,10 @@ type Props = {
 
 function TeacherSchedule({ userId }: Props) {
   const calendarRef = React.useRef<FullCalendar | null>(null);
-  const calendar = calendarRef.current?.getApi();
+  const [calendar, setCalendar] = React.useState<CalendarApi | undefined>(
+    undefined
+  );
+  const [calendarTitle, setCalendarTitle] = React.useState("");
   const [editing, setEditing] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [schedules, setSchedules] = React.useState<Schedule[]>([]);
@@ -88,6 +92,14 @@ function TeacherSchedule({ userId }: Props) {
   }
 
   React.useEffect(() => {
+    if (calendarRef) {
+      const calendar = calendarRef.current?.getApi();
+
+      setCalendar(calendar);
+    }
+  }, [calendarRef]);
+
+  React.useEffect(() => {
     setLoading(true);
   }, [global.reset]);
 
@@ -104,8 +116,6 @@ function TeacherSchedule({ userId }: Props) {
           page: 1,
           size: 1000,
         });
-
-        console.log(resBookings);
 
         setBookings(resBookings?.content ?? []);
         setSchedules(resSchedule?.content ?? []);
@@ -153,7 +163,7 @@ function TeacherSchedule({ userId }: Props) {
     }
 
     setEvents(newEvents);
-  }, [schedules, editing, calendar?.getDate()]);
+  }, [schedules, editing, calendarTitle]);
 
   return (
     <section>
@@ -173,6 +183,7 @@ function TeacherSchedule({ userId }: Props) {
           <>
             <button
               onClick={() => {
+                setCalendarTitle(calendar?.getDate().toISOString() ?? "next");
                 calendar?.prev();
               }}
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
@@ -182,6 +193,7 @@ function TeacherSchedule({ userId }: Props) {
 
             <button
               onClick={() => {
+                setCalendarTitle(calendar?.getDate().toISOString() ?? "prev");
                 calendar?.next();
               }}
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
