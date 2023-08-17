@@ -2,7 +2,7 @@ import DynamicTable from "../DynamicTable";
 import { ColumnsType } from "antd/es/table";
 import { utilFormatDateAndTime } from "../../../domain/services/utilService";
 import { Booking } from "../../../../../esl-workers/src/domain/models/BookingModel";
-import { bookingGetAllByUser } from "../../../domain/services/bookingService";
+import { bookingGetAll } from "../../../domain/services/bookingService";
 
 type Props = {
   userId: number;
@@ -53,7 +53,7 @@ function BookingTable({ userId }: Props) {
       rowKey={(record: Booking) => record.id}
       columns={columns}
       getData={(values: any) => {
-        return bookingGetAllByUser({ ...values, userId });
+        return bookingGetAll({ ...values, userId });
       }}
     />
   );

@@ -12,6 +12,8 @@ import {
   scheduleGetAll,
   scheduleUpdateMany,
 } from "../../domain/services/scheduleService";
+import { useAppDispatch } from "../redux/hooks";
+import { modalUpdate } from "../redux/features/modalSlice";
 
 type Props = {
   userId: number;
@@ -23,6 +25,7 @@ function TeacherSchedule({ userId }: Props) {
   const [loading, setLoading] = React.useState(true);
   const [schedules, setSchedules] = React.useState<Schedule[]>([]);
   const [events, setEvents] = React.useState<any[]>([]);
+  const dispatch = useAppDispatch();
 
   async function handleSave() {
     const calendar = calendarRef.current?.getApi();
@@ -148,13 +151,28 @@ function TeacherSchedule({ userId }: Props) {
           allDaySlot={false}
           events={events}
           editable={editing}
-          selectable={editing}
+          selectable={true}
           select={(e) => {
             const calendar = calendarRef.current?.getApi();
-            calendar?.addEvent({
-              start: e.start,
-              end: e.end,
-            });
+            if (editing) {
+              calendar?.addEvent({
+                start: e.start,
+                end: e.end,
+              });
+            } else {
+              dispatch(
+                modalUpdate({
+                  show: true,
+                  title: "Book a lesson",
+                  content: "booking",
+                  data: {
+                    teacherId: userId,
+                    start: e.start.toISOString(),
+                    end: e.end.toISOString(),
+                  },
+                })
+              );
+            }
           }}
           eventClick={(e) => {
             if (editing) {
