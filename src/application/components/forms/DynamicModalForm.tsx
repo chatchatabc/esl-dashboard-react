@@ -8,6 +8,8 @@ import MessageTemplateForm from "./MessageTemplateForm";
 import UserForm from "./UserForm";
 import { globalReset } from "../../redux/features/globalSlice";
 import CreditForm from "./CreditForm";
+import BookingForm from "./BookingForm";
+import dayjs from "dayjs";
 
 function DynamicModalForm() {
   const [loading, setLoading] = React.useState(false);
@@ -38,7 +40,14 @@ function DynamicModalForm() {
 
   React.useEffect(() => {
     if (modal.data) {
-      form.setFieldsValue(modal.data);
+      const obj = { ...modal.data };
+      Object.keys(obj).forEach((key) => {
+        if (typeof obj[key] === "string" && dayjs(obj[key]).isValid()) {
+          obj[key] = dayjs(obj[key]);
+        }
+      });
+
+      form.setFieldsValue(obj);
     } else {
       form.resetFields();
     }
@@ -84,6 +93,14 @@ function DynamicModalForm() {
 
         {modal.content === "credit" && (
           <CreditForm
+            loading={loading}
+            formRef={form}
+            handleSubmit={handleSubmit}
+          />
+        )}
+
+        {modal.content === "booking" && (
+          <BookingForm
             loading={loading}
             formRef={form}
             handleSubmit={handleSubmit}
