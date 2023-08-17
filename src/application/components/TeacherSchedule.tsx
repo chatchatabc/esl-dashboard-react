@@ -15,8 +15,13 @@ import {
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
 import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
-import { bookingGetAll } from "../../domain/services/bookingService";
-import { CalendarApi } from "@fullcalendar/core/index.js";
+import {
+  bookingCancel,
+  bookingGetAll,
+} from "../../domain/services/bookingService";
+import { CalendarApi, EventSourceInput } from "@fullcalendar/core/index.js";
+import { Modal, message } from "antd";
+import { utilFormatDateAndTime } from "../../domain/services/utilService";
 
 type Props = {
   userId: number;
@@ -115,6 +120,7 @@ function TeacherSchedule({ userId }: Props) {
           userId,
           page: 1,
           size: 1000,
+          status: 1,
         });
 
         setBookings(resBookings?.content ?? []);
@@ -126,7 +132,7 @@ function TeacherSchedule({ userId }: Props) {
   }, [loading]);
 
   React.useEffect(() => {
-    const newEvents: Record<string, any>[] = schedules
+    const newEvents: EventSourceInput = schedules
       .map((schedule) => {
         const date = calendar?.getDate() ?? new Date();
         date.setDate(date.getDate() - date.getDay());
@@ -158,6 +164,8 @@ function TeacherSchedule({ userId }: Props) {
           title: `${booking.student?.firstName} ${booking.student?.lastName}`,
           display: "auto",
           color: "red",
+          studentId: booking.studentId,
+          bookingId: booking.id,
         });
       });
     }
@@ -258,6 +266,27 @@ function TeacherSchedule({ userId }: Props) {
           eventClick={(e) => {
             if (editing) {
               e.event.remove();
+            } else {
+              Modal.confirm({
+                title: "Do you want to cancel this booking?",
+                content: `Booking schedule: ${utilFormatDateAndTime(
+                  "en-US",
+                  e.event.start!
+                )} to ${utilFormatDateAndTime("en-US", e.event.end!)}`,
+                okButtonProps: {
+                  danger: true,
+                },
+                onOk: async () => {
+                  const { bookingId, studentId } = e.event.extendedProps;
+                  const res = await bookingCancel({ bookingId, studentId });
+                  if (res) {
+                    e.event.remove();
+                    message.success("Booking canceled");
+                  } else {
+                    message.error("Error, unable to cancel booking");
+                  }
+                },
+              });
             }
           }}
         />
