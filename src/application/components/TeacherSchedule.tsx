@@ -49,7 +49,9 @@ function TeacherSchedule({ userId }: Props) {
         (schedule) => !eventSchedules.find((event) => event.id === schedule.id)
       );
       response = await scheduleDeleteMany({
-        schedules: deleteSchedules,
+        scheduleIds: deleteSchedules.map((schedule) => {
+          return schedule.id;
+        }),
         userId,
       });
     }

@@ -1,5 +1,4 @@
 import {
-  Schedule,
   ScheduleCreateInput,
   ScheduleUpdateInput,
 } from "../../../../esl-workers/src/domain/models/ScheduleModel";
@@ -46,7 +45,7 @@ export async function scheduleCreateMany(params: {
 }
 
 export async function scheduleDeleteMany(params: {
-  schedules: Schedule[];
+  scheduleIds: number[];
   userId: number;
 }) {
   try {
