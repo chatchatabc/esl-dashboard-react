@@ -3,6 +3,10 @@ import { userGetAll } from "../../../domain/services/userService";
 import { User } from "../../../../../esl-workers/src/domain/models/UserModel";
 import React from "react";
 import { bookingCreate } from "../../../domain/services/bookingService";
+import { teacherGetAll } from "../../../domain/services/teacherService";
+import { Teacher } from "../../../../../esl-workers/src/domain/models/TeacherModel";
+import { Course } from "../../../../../esl-workers/src/domain/models/CourseModel";
+import { courseGetAll } from "../../../domain/services/courseService";
 
 type Props = {
   loading: boolean;
@@ -18,7 +22,8 @@ type Props = {
 function BookingForm({ loading, handleSubmit, formRef }: Props) {
   const [localLoading, setLocalLoading] = React.useState(true);
   const [students, setStudents] = React.useState<User[]>([]);
-  const [teachers, setTeachers] = React.useState<User[]>([]);
+  const [teachers, setTeachers] = React.useState<Teacher[]>([]);
+  const [courses, setCourses] = React.useState<Course[]>([]);
 
   React.useEffect(() => {
     if (localLoading) {
@@ -33,14 +38,22 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
           setStudents(resStudents.content);
         }
 
-        const resTeachers = await userGetAll({
+        const resTeachers = await teacherGetAll({
           page: 1,
           size: 10000,
-          roleId: 3,
         });
 
         if (resTeachers) {
           setTeachers(resTeachers.content);
+        }
+
+        const resCourses = await courseGetAll({
+          page: 1,
+          size: 10000,
+        });
+
+        if (resCourses) {
+          setCourses(resCourses.content);
         }
 
         setLocalLoading(false);
@@ -78,9 +91,16 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
         <Select
           placeholder="Select a teacher"
           options={teachers.map((teacher) => {
+            if (teacher.user) {
+              return {
+                value: teacher.id,
+                label: `${teacher.user.firstName} ${teacher.user.lastName}`,
+              };
+            }
+
             return {
               value: teacher.id,
-              label: `${teacher.firstName} ${teacher.lastName}`,
+              label: teacher.alias,
             };
           })}
         />
@@ -88,7 +108,7 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
 
       {/* Student */}
       <Form.Item
-        name="studentId"
+        name="userId"
         rules={[
           {
             required: true,
@@ -103,6 +123,28 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
             return {
               value: student.id,
               label: `${student.firstName} ${student.lastName}`,
+            };
+          })}
+        />
+      </Form.Item>
+
+      {/* Course */}
+      <Form.Item
+        name="courseId"
+        rules={[
+          {
+            required: true,
+            message: "Need some input here",
+          },
+        ]}
+        label="Course"
+      >
+        <Select
+          placeholder="Select a course"
+          options={courses.map((course) => {
+            return {
+              value: course.id,
+              label: `(${course.price}点) ${course.name}`,
             };
           })}
         />
