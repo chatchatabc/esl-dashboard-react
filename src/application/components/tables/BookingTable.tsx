@@ -28,22 +28,14 @@ function BookingTable({ userId }: Props) {
       key: "studentId",
       title: "Student",
       render: (record: Booking) => {
-        return (
-          <p>
-            {record.student?.firstName} {record.student?.lastName}
-          </p>
-        );
+        return <p>{record.user?.alias}</p>;
       },
     },
     {
       key: "teacherId",
       title: "Teacher",
       render: (record: Booking) => {
-        return (
-          <p>
-            {record.teacher?.firstName} {record.teacher?.lastName}
-          </p>
-        );
+        return <p>{record.teacher?.alias}</p>;
       },
     },
   ];

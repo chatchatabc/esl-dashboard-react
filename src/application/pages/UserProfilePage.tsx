@@ -137,7 +137,7 @@ function UserProfilePage() {
             </header>
 
             <section>
-              <p>{utilFormatCurrency(user.credit)}</p>
+              <p>{utilFormatCurrency(user.credits)}</p>
             </section>
           </section>
 

@@ -1,9 +1,10 @@
 import {
   BookingCancelInputAdmin,
-  BookingCreateInput,
+  BookingCreateInputAdmin,
 } from "../../../../esl-workers/src/domain/models/BookingModel";
 import { CommonPaginationInput } from "../../../../esl-workers/src/domain/models/CommonModel";
 import { trpcClient } from "../infras/trpcActions";
+import { teacherGet } from "./teacherService";
 
 export async function bookingGetAll(params: CommonPaginationInput) {
   try {
@@ -11,16 +12,14 @@ export async function bookingGetAll(params: CommonPaginationInput) {
 
     if (res) {
       const contentPromise = res.content.map(async (booking) => {
-        const student = await trpcClient.user.get.query({
-          userId: booking.studentId ?? 0,
+        const user = await trpcClient.user.get.query({
+          userId: booking.userId ?? 0,
         });
-        if (student) {
-          booking.student = student;
+        if (user) {
+          booking.user = user;
         }
 
-        const teacher = await trpcClient.user.get.query({
-          userId: booking.teacherId ?? 0,
-        });
+        const teacher = await teacherGet({ teacherId: booking.teacherId });
         if (teacher) {
           booking.teacher = teacher;
         }
@@ -38,7 +37,7 @@ export async function bookingGetAll(params: CommonPaginationInput) {
   }
 }
 
-export async function bookingCreate(params: BookingCreateInput) {
+export async function bookingCreate(params: BookingCreateInputAdmin) {
   try {
     const res = await trpcClient.booking.createAdmin.mutate(params);
     return res;
