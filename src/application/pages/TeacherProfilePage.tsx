@@ -1,5 +1,5 @@
 import React from "react";
-import { teacherGet } from "../../domain/services/teacherService";
+import { teacherGetByUser } from "../../domain/services/teacherService";
 import { userGetByUsername } from "../../domain/services/userService";
 import { useParams } from "react-router-dom";
 import { User } from "../../../../esl-workers/src/domain/models/UserModel";
@@ -21,7 +21,7 @@ function TeacherProfilePage() {
         const resUser = await userGetByUsername({ username });
         setUser(resUser);
         if (resUser) {
-          const resTeacher = await teacherGet({ userId: resUser.id });
+          const resTeacher = await teacherGetByUser({ userId: resUser.id });
           setTeacher(resTeacher);
         }
 
@@ -111,7 +111,7 @@ function TeacherProfilePage() {
 
       {/* Teacher Schedule */}
       <section className="border shadow rounded-lg">
-        <TeacherSchedule userId={user.id} />
+        <TeacherSchedule teacherId={teacher.id} />
       </section>
     </section>
   );

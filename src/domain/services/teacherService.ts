@@ -44,3 +44,21 @@ export async function teacherGet(params: { teacherId: number }) {
     return null;
   }
 }
+
+export async function teacherGetByUser(params: { userId: number }) {
+  try {
+    const res = await trpcClient.teacher.getByUser.query(params);
+
+    if (res) {
+      const user = await trpcClient.user.get.query(params);
+      if (user) {
+        res.user = user;
+      }
+    }
+
+    return res;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}

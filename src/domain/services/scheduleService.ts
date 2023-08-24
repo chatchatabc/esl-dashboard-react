@@ -21,7 +21,7 @@ export async function scheduleGetAll(params: CommonPaginationInput) {
 
 export async function scheduleUpdateMany(params: {
   schedules: ScheduleUpdateInput[];
-  userId: number;
+  teacherId: number;
 }) {
   try {
     const response = await trpcClient.schedule.updateManyAdmin.mutate(params);
@@ -33,7 +33,7 @@ export async function scheduleUpdateMany(params: {
 }
 
 export async function scheduleCreateMany(params: {
-  userId: number;
+  teacherId: number;
   schedules: ScheduleCreateInput[];
 }) {
   try {
@@ -47,7 +47,7 @@ export async function scheduleCreateMany(params: {
 
 export async function scheduleDeleteMany(params: {
   scheduleIds: number[];
-  userId: number;
+  teacherId: number;
 }) {
   try {
     const response = await trpcClient.schedule.deleteManyAdmin.mutate(params);

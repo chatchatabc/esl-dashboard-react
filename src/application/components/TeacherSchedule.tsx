@@ -24,10 +24,10 @@ import { Modal, message } from "antd";
 import { utilFormatDateAndTime } from "../../domain/services/utilService";
 
 type Props = {
-  userId: number;
+  teacherId: number;
 };
 
-function TeacherSchedule({ userId }: Props) {
+function TeacherSchedule({ teacherId }: Props) {
   const calendarRef = React.useRef<FullCalendar | null>(null);
   const [calendar, setCalendar] = React.useState<CalendarApi | undefined>(
     undefined
@@ -54,7 +54,7 @@ function TeacherSchedule({ userId }: Props) {
       return {
         startTime,
         endTime,
-        userId,
+        teacherId,
         id,
       };
     });
@@ -68,7 +68,7 @@ function TeacherSchedule({ userId }: Props) {
         scheduleIds: deleteSchedules.map((schedule) => {
           return schedule.id;
         }),
-        userId,
+        teacherId,
       });
     }
 
@@ -78,13 +78,16 @@ function TeacherSchedule({ userId }: Props) {
     const responseUpdate = updateSchedules.length
       ? await scheduleUpdateMany({
           schedules: updateSchedules,
-          userId,
+          teacherId,
         })
       : true;
 
     const newSchedules = eventSchedules.filter((schedule) => !schedule.id);
     if (newSchedules.length) {
-      response = await scheduleCreateMany({ schedules: newSchedules, userId });
+      response = await scheduleCreateMany({
+        schedules: newSchedules,
+        teacherId,
+      });
     }
 
     if (responseUpdate && response) {
@@ -112,12 +115,12 @@ function TeacherSchedule({ userId }: Props) {
     if (loading) {
       (async () => {
         const resSchedule = await scheduleGetAll({
-          userId,
+          teacherId,
           page: 1,
           size: 1000,
         });
         const resBookings = await bookingGetAll({
-          userId,
+          teacherId,
           page: 1,
           size: 1000,
           status: 1,
@@ -161,10 +164,10 @@ function TeacherSchedule({ userId }: Props) {
         newEvents.push({
           start,
           end,
-          title: `${booking.student?.firstName} ${booking.student?.lastName}`,
+          title: `${booking.user?.alias}`,
           display: "auto",
           color: "red",
-          studentId: booking.studentId,
+          userId: booking.userId,
           bookingId: booking.id,
         });
       });
@@ -255,7 +258,7 @@ function TeacherSchedule({ userId }: Props) {
                   title: "Book a lesson",
                   content: "booking",
                   data: {
-                    teacherId: userId,
+                    teacherId,
                     start: e.start.toISOString(),
                     end: e.end.toISOString(),
                   },
@@ -277,8 +280,8 @@ function TeacherSchedule({ userId }: Props) {
                   danger: true,
                 },
                 onOk: async () => {
-                  const { bookingId, studentId } = e.event.extendedProps;
-                  const res = await bookingCancel({ bookingId, studentId });
+                  const { bookingId, userId } = e.event.extendedProps;
+                  const res = await bookingCancel({ bookingId, userId });
                   if (res) {
                     e.event.remove();
                     message.success("Booking canceled");
