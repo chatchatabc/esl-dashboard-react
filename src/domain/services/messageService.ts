@@ -10,14 +10,14 @@ export async function messageGetAll(params: { page?: number; size?: number }) {
 
     if (res) {
       const contentPromise = res.content.map(async (message) => {
-        const user = await trpcClient.user.get.query({
-          userId: message.userId,
-        });
+        if (message.userId) {
+          const user = await trpcClient.user.get.query({
+            userId: message.userId,
+          });
+          message.user = user;
+        }
 
-        return {
-          ...message,
-          user,
-        };
+        return message;
       });
       res.content = await Promise.all(contentPromise);
     }

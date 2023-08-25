@@ -21,6 +21,7 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
   const [localLoading, setLocalLoading] = React.useState(true);
   const [users, setUsers] = React.useState<User[]>([]);
   const [templates, setTemplates] = React.useState<MessageTemplate[]>([]);
+  const [variables, setVariables] = React.useState<string[]>([]);
 
   React.useEffect(() => {
     if (localLoading) {
@@ -45,22 +46,35 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
       layout="vertical"
       form={formRef}
       onFinish={(e) => {
+        const templateVariables: Record<string, any> = {};
+        variables.forEach((variable) => {
+          templateVariables[variable] = e[`variables.${variable}`];
+        });
+        e.templateValues = JSON.stringify(templateVariables);
+
+        console.log(e);
         handleSubmit(messageSend, e, "Success", "Fail");
       }}
     >
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="receiverId"
-        label="Receiver"
-      >
+      <Form.Item name="userId" label="User">
         <Select
-          placeholder="Select a receiver"
+          placeholder="Select a user"
+          onChange={(e) => {
+            const user = users.find((user) => user.id === e);
+            if (user && user.phone) {
+              formRef.setFieldsValue({ phone: user.phone });
+            }
+          }}
           options={users.map((user) => {
+            const { firstName, lastName, alias } = user;
+            if (firstName && lastName) {
+              return {
+                label: `${firstName} ${lastName}`,
+                value: user.id,
+              };
+            } else if (alias) {
+              return { label: alias, value: user.id };
+            }
             return { label: user.username, value: user.id };
           })}
         />
@@ -72,23 +86,45 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
             required: true,
             message: "Need some input here",
           },
+          {
+            pattern: /^(\+)?[0-9]+$/,
+            message: "Only numbers are allowed",
+          },
         ]}
-        name="title"
-        label="Title"
+        name="phone"
+        label="Phone Number"
       >
-        <Input placeholder="Title" />
+        <Input placeholder="Phone Number" />
       </Form.Item>
 
-      <Form.Item name="messageTemplate" label="Message Template">
+      <Form.Item
+        rules={[
+          {
+            required: true,
+            message: "Need some input here",
+          },
+        ]}
+        name="messageTemplateId"
+        label="Message Template"
+      >
         <Select
           placeholder="Select a message template"
           onChange={(e) => {
-            formRef.setFieldsValue({ message: e });
+            const template = templates.find((t) => {
+              return t.id === e;
+            });
+
+            if (template) {
+              setVariables(template.variables.split(", "));
+              formRef.setFieldsValue({
+                message: `【${template.signature}】${template.message}`,
+              });
+            }
           }}
           options={templates.map((template) => {
             return {
               label: template.title,
-              value: `【${template.signature}】${template.message}`,
+              value: template.id,
             };
           })}
         />
@@ -104,8 +140,26 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
         name="message"
         label="Message"
       >
-        <Input.TextArea placeholder="Select a message template" />
+        <Input.TextArea placeholder="Select a message template" readOnly />
       </Form.Item>
+
+      {variables.map((variable) => {
+        return (
+          <Form.Item
+            key={variable}
+            rules={[
+              {
+                required: true,
+                message: "Need some input here",
+              },
+            ]}
+            name={`variables.${variable}`}
+            label={variable}
+          >
+            <Input placeholder={variable} />
+          </Form.Item>
+        );
+      })}
 
       <Form.Item hidden>
         <Button htmlType="submit" loading={loading}></Button>

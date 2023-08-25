@@ -1,4 +1,4 @@
-import { Button, Form, FormInstance, Input, Select } from "antd";
+import { Button, Form, FormInstance, Input } from "antd";
 import { messageTemplateCreate } from "../../../domain/services/messageTemplateService";
 
 type Props = {
