@@ -58,7 +58,7 @@ function TeacherProfilePage() {
       {/* Teacher Information */}
       <section className="border shadow rounded-lg">
         <header className="p-2 border-b-2 flex items-center">
-          <h2 className="text-xl font-medium mr-auto">Teachers Profile</h2>
+          <h2 className="text-xl font-medium mr-auto">Teacher's Profile</h2>
 
           <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400">
             Edit
@@ -117,7 +117,7 @@ function TeacherProfilePage() {
       {/* Teacher Courses */}
       <section className="border shadow rounded-lg">
         <header className="p-2 border-b-2 flex items-center">
-          <h2 className="text-xl font-medium mr-auto">Teacher Courses</h2>
+          <h2 className="text-xl font-medium mr-auto">Teacher's Courses</h2>
 
           <button
             onClick={() => {

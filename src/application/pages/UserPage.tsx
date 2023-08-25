@@ -67,7 +67,7 @@ function UserPage() {
             }}
             className="underline hover:no-underline"
           >
-            {utilFormatCurrency(record.credit)}
+            {utilFormatCurrency(record.credits)}
           </button>
         );
       },

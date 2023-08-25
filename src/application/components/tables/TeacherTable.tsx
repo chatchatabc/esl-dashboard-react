@@ -42,11 +42,6 @@ function TeacherTable() {
       },
     },
     {
-      title: "Price",
-      key: "price",
-      dataIndex: "price",
-    },
-    {
       title: "Created At",
       key: "createdAt",
       render: (record: Teacher) => {
