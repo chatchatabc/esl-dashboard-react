@@ -10,6 +10,7 @@ import { globalReset } from "../../redux/features/globalSlice";
 import CreditForm from "./CreditForm";
 import BookingForm from "./BookingForm";
 import dayjs from "dayjs";
+import CourseForm from "./CourseForm";
 
 function DynamicModalForm() {
   const [loading, setLoading] = React.useState(false);
@@ -101,6 +102,14 @@ function DynamicModalForm() {
 
         {modal.content === "booking" && (
           <BookingForm
+            loading={loading}
+            formRef={form}
+            handleSubmit={handleSubmit}
+          />
+        )}
+
+        {modal.content === "course" && (
+          <CourseForm
             loading={loading}
             formRef={form}
             handleSubmit={handleSubmit}

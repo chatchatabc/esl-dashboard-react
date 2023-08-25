@@ -8,6 +8,8 @@ import NotFoundPage from "./NotFoundPage";
 import { utilFormatDateAndTime } from "../../domain/services/utilService";
 import TeacherSchedule from "../components/TeacherSchedule";
 import TeacherCourseTable from "../components/tables/TeacherCourseTable";
+import { useAppDispatch } from "../redux/hooks";
+import { modalUpdate } from "../redux/features/modalSlice";
 
 function TeacherProfilePage() {
   const { username = "" } = useParams();
@@ -15,6 +17,8 @@ function TeacherProfilePage() {
   const [loading, setLoading] = React.useState(true);
   const [teacher, setTeacher] = React.useState<Teacher | null>(null);
   const [user, setUser] = React.useState<User | null>(null);
+
+  const dispatch = useAppDispatch();
 
   React.useEffect(() => {
     if (loading) {
@@ -112,7 +116,28 @@ function TeacherProfilePage() {
 
       {/* Teacher Courses */}
       <section className="border shadow rounded-lg">
-        <TeacherCourseTable teacherId={teacher.id} />
+        <header className="p-2 border-b-2 flex items-center">
+          <h2 className="text-xl font-medium mr-auto">Teacher Courses</h2>
+
+          <button
+            onClick={() => {
+              dispatch(
+                modalUpdate({
+                  show: true,
+                  content: "course",
+                  title: "Add Course",
+                  data: { teacherId: teacher.id },
+                })
+              );
+            }}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+          >
+            Add +
+          </button>
+        </header>
+        <section>
+          <TeacherCourseTable teacherId={teacher.id} />
+        </section>
       </section>
 
       {/* Teacher Schedule */}
