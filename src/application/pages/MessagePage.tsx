@@ -16,26 +16,17 @@ function MessagePage() {
       title: "Message",
     },
     {
-      key: "receiver",
-      title: "Receiver",
+      key: "user",
+      title: "User",
       render: (record: Message) => {
-        return (
-          <p>
-            {record.receiver?.firstName} {record.receiver?.lastName} |{" "}
-            {record.receiver?.phone}
-          </p>
-        );
-      },
-    },
-    {
-      key: "sender",
-      title: "Sender",
-      render: (record: Message) => {
-        return (
-          <p>
-            {record.sender?.firstName} {record.sender?.lastName}
-          </p>
-        );
+        if (record.user) {
+          return (
+            <p>
+              {record.user.firstName} {record.user.lastName} ({record.phone})
+            </p>
+          );
+        }
+        return <p>{record.phone}</p>;
       },
     },
     {
@@ -44,6 +35,13 @@ function MessagePage() {
       render: (record: Message) => {
         const date = new Date(record.sendAt ?? 0);
         return <p>{utilFormatDateAndTime("en-US", date)}</p>;
+      },
+    },
+    {
+      key: "action",
+      title: "Actions",
+      render: (_: Message) => {
+        return <div>Edit</div>;
       },
     },
   ];
