@@ -56,3 +56,28 @@ export async function bookingCancel(params: BookingCancelInputAdmin) {
     return false;
   }
 }
+
+export function bookingOptionStatus() {
+  return [
+    {
+      value: 1,
+      label: "Cancellable",
+    },
+    {
+      value: 2,
+      label: "Confirmed",
+    },
+    {
+      value: 3,
+      label: "Completed",
+    },
+    {
+      value: 4,
+      label: "Cancelled",
+    },
+    {
+      value: 5,
+      label: "Absent",
+    },
+  ];
+}

@@ -2,11 +2,16 @@ import DynamicTable from "../DynamicTable";
 import { ColumnsType } from "antd/es/table";
 import { utilFormatDateAndTime } from "../../../domain/services/utilService";
 import { Booking } from "../../../../../esl-workers/src/domain/models/BookingModel";
-import { bookingGetAll } from "../../../domain/services/bookingService";
+import {
+  bookingGetAll,
+  bookingOptionStatus,
+} from "../../../domain/services/bookingService";
 
 type Props = {
   userId: number;
 };
+
+const statusOptions = bookingOptionStatus();
 
 function BookingTable({ userId }: Props) {
   const columns: ColumnsType<Booking> = [
@@ -28,14 +33,41 @@ function BookingTable({ userId }: Props) {
       key: "studentId",
       title: "Student",
       render: (record: Booking) => {
-        return <p>{record.user?.alias}</p>;
+        return (
+          <p>
+            {record.user?.firstName} {record.user?.lastName}
+          </p>
+        );
       },
     },
     {
       key: "teacherId",
       title: "Teacher",
       render: (record: Booking) => {
-        return <p>{record.teacher?.alias}</p>;
+        return <p>Teacher {record.teacher?.alias}</p>;
+      },
+    },
+    {
+      key: "status",
+      title: "Status",
+      render: (record: Booking) => {
+        const status = statusOptions.find(
+          (item) => item.value === record.status
+        );
+
+        return (
+          <p
+            className={`${
+              record.status === 1
+                ? "text-blue-500"
+                : record.status === 2 || record.status === 3
+                ? "text-green-500"
+                : "text-red-500"
+            }`}
+          >
+            {status?.label}
+          </p>
+        );
       },
     },
   ];
@@ -45,7 +77,7 @@ function BookingTable({ userId }: Props) {
       rowKey={(record: Booking) => record.id}
       columns={columns}
       getData={(values: any) => {
-        return bookingGetAll({ ...values, userId });
+        return bookingGetAll({ ...values, userId, status: "" });
       }}
     />
   );

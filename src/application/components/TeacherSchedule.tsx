@@ -123,7 +123,6 @@ function TeacherSchedule({ teacherId }: Props) {
           teacherId,
           page: 1,
           size: 1000,
-          status: 1,
         });
 
         setBookings(resBookings?.content ?? []);
