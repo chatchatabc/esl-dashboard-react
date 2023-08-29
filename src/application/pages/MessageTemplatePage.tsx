@@ -1,25 +1,21 @@
 import DynamicTable from "../components/DynamicTable";
-import {
-  messageTemplateGetAll,
-  messageTemplateVerify,
-} from "../../domain/services/messageTemplateService";
+import { messageTemplateGetAll } from "../../domain/services/messageTemplateService";
 import { ColumnsType } from "antd/es/table";
 import { MessageTemplate } from "../../../../esl-workers/src/domain/models/MessageModel";
-import { Button, Modal, message } from "antd";
+import { Button } from "antd";
 import { useAppDispatch } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
-import { globalReset } from "../redux/features/globalSlice";
 
 function MessageTemplatePage() {
   const dispatch = useAppDispatch();
 
   const statusLabel = {
-    1: "Pending",
+    1: "Active",
     2: "Approved",
     3: "Rejected",
   };
   const statusColor = {
-    1: "text-yellow-500",
+    1: "text-green-500",
     2: "text-green-500",
     3: "text-red-500",
   };
@@ -62,7 +58,7 @@ function MessageTemplatePage() {
       render: (record: MessageTemplate) => {
         return (
           <div className="flex space-x-2">
-            <Button
+            {/* <Button
               onClick={() => {
                 Modal.confirm({
                   title: "Are you sure to verify?",
@@ -89,9 +85,23 @@ function MessageTemplatePage() {
               size="small"
             >
               Verify
-            </Button>
+            </Button> */}
 
-            <Button disabled={record.status === 2} type="link" size="small">
+            <Button
+              onClick={() => {
+                dispatch(
+                  modalUpdate({
+                    show: true,
+                    content: "messageTemplate",
+                    title: "Edit Message Template",
+                    data: record,
+                  })
+                );
+              }}
+              disabled={record.status === 2}
+              type="link"
+              size="small"
+            >
               Edit
             </Button>
           </div>

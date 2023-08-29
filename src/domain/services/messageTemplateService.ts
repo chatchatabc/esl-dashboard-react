@@ -1,5 +1,8 @@
 import { CommonPaginationInput } from "../../../../esl-workers/src/domain/models/CommonModel";
-import { MessageTemplateCreateInput } from "../../../../esl-workers/src/domain/models/MessageModel";
+import {
+  MessageTemplateCreateInput,
+  MessageTemplateUpdateInput,
+} from "../../../../esl-workers/src/domain/models/MessageModel";
 import { trpcClient } from "../infras/trpcActions";
 
 export async function messageTemplateGetAll(params: CommonPaginationInput) {
@@ -24,9 +27,11 @@ export async function messageTemplateCreate(
   }
 }
 
-export async function messageTemplateVerify(params: { templateId: number }) {
+export async function messageTemplateUpdate(
+  params: MessageTemplateUpdateInput
+) {
   try {
-    const res = await trpcClient.messageTemplate.verify.mutate(params);
+    const res = await trpcClient.messageTemplate.update.mutate(params);
     return res;
   } catch (e) {
     console.log(e);
