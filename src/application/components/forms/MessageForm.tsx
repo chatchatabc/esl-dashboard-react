@@ -1,10 +1,23 @@
-import { Button, Form, FormInstance, Input, Select } from "antd";
-import { messageSend } from "../../../domain/services/messageService";
+import {
+  Button,
+  DatePicker,
+  Form,
+  FormInstance,
+  Input,
+  Radio,
+  Select,
+} from "antd";
+import {
+  messageCreate,
+  messageSend,
+} from "../../../domain/services/messageService";
 import React from "react";
 import { userGetAll } from "../../../domain/services/userService";
 import { User } from "../../../../../esl-workers/src/domain/models/UserModel";
 import { messageTemplateGetAll } from "../../../domain/services/messageTemplateService";
 import { MessageTemplate } from "../../../../../esl-workers/src/domain/models/MessageModel";
+import Cron, { HEADER } from "react-cron-generator";
+import dayjs from "dayjs";
 
 type Props = {
   loading: boolean;
@@ -22,6 +35,7 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
   const [users, setUsers] = React.useState<User[]>([]);
   const [templates, setTemplates] = React.useState<MessageTemplate[]>([]);
   const [variables, setVariables] = React.useState<string[]>([]);
+  const [type, setType] = React.useState(1);
 
   React.useEffect(() => {
     if (localLoading) {
@@ -46,14 +60,33 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
       layout="vertical"
       form={formRef}
       onFinish={(e) => {
+        // Create template values
         const templateVariables: Record<string, any> = {};
         variables.forEach((variable) => {
           templateVariables[variable] = e[`variables.${variable}`];
         });
         e.templateValues = JSON.stringify(templateVariables);
 
-        console.log(e);
-        handleSubmit(messageSend, e, "Success", "Fail");
+        if (e.cron) {
+          e.cron = e.cron.split(" ").slice(0, 5).join(" ");
+          handleSubmit(
+            messageCreate,
+            e,
+            "Successfully created recurring message",
+            "Failed to create recurring message"
+          );
+        } else if (e.sendAt) {
+          e.sendAt = dayjs(e.sendAt).startOf("minute").valueOf();
+          e.cron = "0 0 1 1 1";
+          handleSubmit(
+            messageCreate,
+            e,
+            "Successfully created scheduled message",
+            "Failed to create scheduled message"
+          );
+        } else {
+          handleSubmit(messageSend, e, "Successfully sent", "Failed to send");
+        }
       }}
     >
       <Form.Item name="userId" label="User">
@@ -97,6 +130,56 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
         <Input placeholder="Phone Number" />
       </Form.Item>
 
+      <Form.Item label="Type">
+        <Radio.Group
+          value={type}
+          onChange={(e) => {
+            setType(e.target.value);
+          }}
+          options={[
+            {
+              label: "Send now",
+              value: 1,
+            },
+            {
+              label: "Schedule",
+              value: 2,
+            },
+            {
+              label: "Recurring",
+              value: 3,
+            },
+          ]}
+        ></Radio.Group>
+      </Form.Item>
+
+      {type === 2 && (
+        <Form.Item name="sendAt" label="Send at">
+          <DatePicker popupClassName="override" className="w-full" showTime />
+        </Form.Item>
+      )}
+
+      {type === 3 && (
+        <Form.Item name="cron" label="Schedule">
+          <Cron
+            onChange={(e) => {
+              console.log(e);
+            }}
+            showResultText={true}
+            showResultCron={false}
+            options={{
+              headers: [
+                HEADER.MONTHLY,
+                HEADER.WEEKLY,
+                HEADER.MINUTES,
+                HEADER.HOURLY,
+                HEADER.DAILY,
+              ],
+            }}
+          />
+        </Form.Item>
+      )}
+
       <Form.Item
         rules={[
           {
@@ -114,7 +197,7 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
               return t.id === e;
             });
 
-            if (template) {
+            if (template && template.variables) {
               setVariables(template.variables.split(", "));
               formRef.setFieldsValue({
                 message: `【${template.signature}】${template.message}`,
