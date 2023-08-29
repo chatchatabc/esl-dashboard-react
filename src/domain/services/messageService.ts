@@ -11,11 +11,14 @@ export async function messageGetAll(params: { page?: number; size?: number }) {
     if (res) {
       const contentPromise = res.content.map(async (message) => {
         if (message.userId) {
-          const user = await trpcClient.user.get.query({
+          message.user = await trpcClient.user.get.query({
             userId: message.userId,
           });
-          message.user = user;
         }
+
+        message.messageTemplate = await trpcClient.messageTemplate.get.query({
+          messageTemplateId: message.messageTemplateId,
+        });
 
         return message;
       });

@@ -12,8 +12,20 @@ function MessagePage() {
   const columns: ColumnsType<Message> = [
     {
       key: "message",
-      dataIndex: "message",
-      title: "Message",
+      title: "Message Template",
+      render: (record: Message) => {
+        let message = record.messageTemplate?.message;
+        const templateValues = JSON.parse(
+          record.templateValues ?? "{}"
+        ) as Record<string, any>;
+
+        Object.keys(templateValues).forEach((key) => {
+          const value = templateValues[key];
+          message = message?.replace(`#${key}#`, value);
+        });
+
+        return <p>{message}</p>;
+      },
     },
     {
       key: "user",
