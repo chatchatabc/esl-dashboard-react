@@ -2,6 +2,7 @@ import {
   BookingCancelInputAdmin,
   BookingCompleteInputAdmin,
   BookingCreateInputAdmin,
+  BookingUpdateInput,
 } from "../../../../esl-workers/src/domain/models/BookingModel";
 import { CommonPaginationInput } from "../../../../esl-workers/src/domain/models/CommonModel";
 import { trpcClient } from "../infras/trpcActions";
@@ -61,6 +62,16 @@ export async function bookingCancel(params: BookingCancelInputAdmin) {
 export async function bookingComplete(params: BookingCompleteInputAdmin) {
   try {
     const res = await trpcClient.booking.completeAdmin.mutate(params);
+    return res;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+
+export async function bookingUpdate(params: BookingUpdateInput) {
+  try {
+    const res = await trpcClient.booking.update.mutate(params);
     return res;
   } catch (e) {
     console.log(e);

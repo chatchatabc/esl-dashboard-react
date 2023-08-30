@@ -3,9 +3,9 @@ import { userGetAll } from "../../../domain/services/userService";
 import { User } from "../../../../../esl-workers/src/domain/models/UserModel";
 import React from "react";
 import {
-  bookingCancel,
-  bookingComplete,
   bookingCreate,
+  bookingOptionStatus,
+  bookingUpdate,
 } from "../../../domain/services/bookingService";
 import { teacherGetAll } from "../../../domain/services/teacherService";
 import { Teacher } from "../../../../../esl-workers/src/domain/models/TeacherModel";
@@ -88,28 +88,21 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
           e.amount = Number(e.amount);
         }
 
-        if (e.status === 3) {
-          return handleSubmit(
-            bookingComplete,
+        if (e.id) {
+          handleSubmit(
+            bookingUpdate,
             e,
-            "Booking completed successfully",
-            "Booking completed failed"
+            "Booking update successfully",
+            "Booking update failed"
           );
-        } else if (e.status === 4) {
-          return handleSubmit(
-            bookingCancel,
+        } else {
+          handleSubmit(
+            bookingCreate,
             e,
-            "Booking cancelled successfully",
-            "Booking cancelled failed"
+            "Booking created successfully",
+            "Booking created failed"
           );
         }
-
-        handleSubmit(
-          bookingCreate,
-          e,
-          "Booking created successfully",
-          "Booking created failed"
-        );
       }}
     >
       <Form.Item name="id" hidden></Form.Item>
@@ -262,44 +255,23 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
         </div>
       )}
 
-      {formValues.id && (
-        <Form.Item
-          name="status"
-          rules={[
-            {
-              required: true,
-              message: "Need some input here",
-            },
-          ]}
-          label="Status"
-        >
-          <Select
-            placeholder="Select a course"
-            options={[
-              {
-                label: "Cancellable",
-                value: 1,
-              },
-              {
-                label: "Confirmed",
-                value: 2,
-              },
-              {
-                label: "Completed",
-                value: 3,
-              },
-              {
-                label: "Cancelled",
-                value: 4,
-              },
-              {
-                label: "Absent",
-                value: 5,
-              },
-            ]}
-          />
-        </Form.Item>
-      )}
+      <Form.Item
+        name="status"
+        rules={[
+          {
+            required: true,
+            message: "Need some input here",
+          },
+        ]}
+        label="Status"
+        initialValue={1}
+      >
+        <Select
+          disabled={!formValues.id}
+          placeholder="Select a course"
+          options={bookingOptionStatus()}
+        />
+      </Form.Item>
 
       <Form.Item hidden>
         <Button htmlType="submit" loading={loading}></Button>
