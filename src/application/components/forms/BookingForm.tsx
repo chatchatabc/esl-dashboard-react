@@ -2,7 +2,10 @@ import { Button, DatePicker, Form, FormInstance, Input, Select } from "antd";
 import { userGetAll } from "../../../domain/services/userService";
 import { User } from "../../../../../esl-workers/src/domain/models/UserModel";
 import React from "react";
-import { bookingCreate } from "../../../domain/services/bookingService";
+import {
+  bookingCancel,
+  bookingCreate,
+} from "../../../domain/services/bookingService";
 import { teacherGetAll } from "../../../domain/services/teacherService";
 import { Teacher } from "../../../../../esl-workers/src/domain/models/TeacherModel";
 import { Course } from "../../../../../esl-workers/src/domain/models/CourseModel";
@@ -24,6 +27,7 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
   const [students, setStudents] = React.useState<User[]>([]);
   const [teachers, setTeachers] = React.useState<Teacher[]>([]);
   const [courses, setCourses] = React.useState<Course[]>([]);
+  const formValues = formRef.getFieldsValue();
 
   React.useEffect(() => {
     if (localLoading) {
@@ -83,6 +87,15 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
           e.amount = Number(e.amount);
         }
 
+        if (e.status === 4) {
+          return handleSubmit(
+            bookingCancel,
+            e,
+            "Booking cancelled successfully",
+            "Booking cancelled failed"
+          );
+        }
+
         handleSubmit(
           bookingCreate,
           e,
@@ -91,6 +104,8 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
         );
       }}
     >
+      <Form.Item name="id" hidden></Form.Item>
+
       <div className="flex -mx-1">
         {/* Teacher */}
         <Form.Item
@@ -105,6 +120,7 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
           label="Teacher"
         >
           <Select
+            disabled={formValues.id ? true : false}
             placeholder="Select a teacher"
             options={teachers.map((teacher) => {
               if (teacher.user) {
@@ -135,6 +151,7 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
           label="Student"
         >
           <Select
+            disabled={formValues.id ? true : false}
             placeholder="Select a student"
             options={students.map((student) => {
               return {
@@ -158,6 +175,7 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
         label="Course"
       >
         <Select
+          disabled={formValues.id ? true : false}
           placeholder="Select a course"
           options={courses.map((course) => {
             return {
@@ -181,7 +199,11 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
           name="start"
           label="Start Time"
         >
-          <DatePicker className="w-full" showTime />
+          <DatePicker
+            disabled={formValues.id ? true : false}
+            className="w-full"
+            showTime
+          />
         </Form.Item>
 
         {/* End Time */}
@@ -196,31 +218,80 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
           name="end"
           label="End Time"
         >
-          <DatePicker className="w-full" showTime />
+          <DatePicker
+            disabled={formValues.id ? true : false}
+            className="w-full"
+            showTime
+          />
         </Form.Item>
       </div>
 
-      <div className="flex -mx-1">
-        {/* Advance Booking */}
+      {!formValues.id && (
+        <div className="flex -mx-1">
+          {/* Advance Booking */}
+          <Form.Item
+            className="w-1/2 px-1"
+            name="advanceBooking"
+            label="Advance Booking"
+            rules={[
+              {
+                pattern: new RegExp(/^[0-9]*$/),
+                message: "Please input a number",
+              },
+            ]}
+          >
+            <Input placeholder="Optional" />
+          </Form.Item>
+
+          {/* Amount */}
+          <Form.Item
+            className="w-1/2 px-1"
+            name="amount"
+            label="Override Amount"
+          >
+            <Input placeholder="Optional" />
+          </Form.Item>
+        </div>
+      )}
+
+      {formValues.id && (
         <Form.Item
-          className="w-1/2 px-1"
-          name="advanceBooking"
-          label="Advance Booking"
+          name="status"
           rules={[
             {
-              pattern: new RegExp(/^[0-9]*$/),
-              message: "Please input a number",
+              required: true,
+              message: "Need some input here",
             },
           ]}
+          label="Status"
         >
-          <Input placeholder="Optional" />
+          <Select
+            placeholder="Select a course"
+            options={[
+              {
+                label: "Cancellable",
+                value: 1,
+              },
+              {
+                label: "Confirmed",
+                value: 2,
+              },
+              {
+                label: "Completed",
+                value: 3,
+              },
+              {
+                label: "Cancelled",
+                value: 4,
+              },
+              {
+                label: "Absent",
+                value: 5,
+              },
+            ]}
+          />
         </Form.Item>
-
-        {/* Amount */}
-        <Form.Item className="w-1/2 px-1" name="amount" label="Override Amount">
-          <Input placeholder="Optional" />
-        </Form.Item>
-      </div>
+      )}
 
       <Form.Item hidden>
         <Button htmlType="submit" loading={loading}></Button>
