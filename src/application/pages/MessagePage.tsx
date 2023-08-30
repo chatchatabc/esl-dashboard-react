@@ -71,8 +71,35 @@ function MessagePage() {
     {
       key: "action",
       title: "Actions",
-      render: (_: Message) => {
-        return <div>Edit</div>;
+      render: (record: Message) => {
+        return (
+          <div>
+            <button
+              disabled={record.status !== 1}
+              onClick={() => {
+                const sendAt = record.sendAt
+                  ? new Date(record.sendAt).toISOString()
+                  : undefined;
+
+                dispatch(
+                  modalUpdate({
+                    show: true,
+                    content: "message",
+                    title: "Edit Message",
+                    data: { ...record, sendAt },
+                  })
+                );
+              }}
+              className={`${
+                record.status !== 1
+                  ? "text-gray-500"
+                  : "text-blue-500 underline"
+              } hover:no-underline`}
+            >
+              Edit
+            </button>
+          </div>
+        );
       },
     },
   ];
@@ -103,7 +130,11 @@ function MessagePage() {
 
         {/* Table */}
         <section>
-          <DynamicTable columns={columns} getData={messageGetAll} />
+          <DynamicTable
+            rowKey={(record: Message) => record.id}
+            columns={columns}
+            getData={messageGetAll}
+          />
         </section>
       </section>
     </section>

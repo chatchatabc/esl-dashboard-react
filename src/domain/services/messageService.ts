@@ -1,6 +1,7 @@
 import {
   MessageCreateInput,
   MessageSendInput,
+  MessageUpdateInput,
 } from "../../../../esl-workers/src/domain/models/MessageModel";
 import { trpcClient } from "../infras/trpcActions";
 
@@ -45,6 +46,16 @@ export async function messageSend(params: MessageSendInput) {
 export async function messageCreate(params: MessageCreateInput) {
   try {
     const res = await trpcClient.message.create.mutate(params);
+    return res;
+  } catch (e) {
+    console.log(e);
+    return undefined;
+  }
+}
+
+export async function messageUpdate(params: MessageUpdateInput) {
+  try {
+    const res = await trpcClient.message.update.mutate(params);
     return res;
   } catch (e) {
     console.log(e);

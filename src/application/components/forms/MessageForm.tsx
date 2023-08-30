@@ -10,6 +10,7 @@ import {
 import {
   messageCreate,
   messageSend,
+  messageUpdate,
 } from "../../../domain/services/messageService";
 import React from "react";
 import { userGetAll } from "../../../domain/services/userService";
@@ -31,6 +32,7 @@ type Props = {
 };
 
 function MessageForm({ loading, handleSubmit, formRef }: Props) {
+  const [cronValue, setCronValue] = React.useState("0 0 1 1 1");
   const [localLoading, setLocalLoading] = React.useState(true);
   const [users, setUsers] = React.useState<User[]>([]);
   const [templates, setTemplates] = React.useState<MessageTemplate[]>([]);
@@ -55,6 +57,52 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
     }
   }, []);
 
+  // Show message template and available variables
+  React.useEffect(() => {
+    if (templates.length) {
+      const template = templates.find(
+        (template) => template.id === formRef.getFieldValue("messageTemplateId")
+      );
+
+      if (template && template.variables) {
+        setVariables(template.variables.split(", "));
+      }
+
+      if (template) {
+        formRef.setFieldsValue({
+          message: `【${template.signature}】${template.message}`,
+        });
+      }
+    }
+  }, [formRef.getFieldValue("id"), templates]);
+
+  // Set values for the shown variables
+  React.useEffect(() => {
+    if (variables.length) {
+      const templateVariables = JSON.parse(
+        formRef.getFieldValue("templateValues") ?? "{}"
+      );
+      variables.forEach((variable) => {
+        if (templateVariables[variable]) {
+          formRef.setFieldsValue({
+            [`variables.${variable}`]: templateVariables[variable],
+          });
+        }
+      });
+    }
+  }, [formRef.getFieldValue("id"), variables]);
+
+  // Set values for type
+  React.useEffect(() => {
+    if (formRef.getFieldValue("sendAt")) {
+      formRef.setFieldValue("type", 2);
+      setType(2);
+    } else {
+      formRef.setFieldValue("type", 3);
+      setType(3);
+    }
+  }, [formRef.getFieldValue("id")]);
+
   return (
     <Form
       layout="vertical"
@@ -66,29 +114,37 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
           templateVariables[variable] = e[`variables.${variable}`];
         });
         e.templateValues = JSON.stringify(templateVariables);
-
-        if (e.cron) {
-          e.cron = e.cron.split(" ").slice(0, 5).join(" ");
-          handleSubmit(
-            messageCreate,
-            e,
-            "Successfully created recurring message",
-            "Failed to create recurring message"
-          );
-        } else if (e.sendAt) {
+        e.cron = cronValue;
+        if (e.sendAt) {
           e.sendAt = dayjs(e.sendAt).startOf("minute").valueOf();
-          e.cron = "0 0 1 1 1";
+        }
+
+        if (e.id) {
+          handleSubmit(
+            messageUpdate,
+            e,
+            "Successfully updated",
+            "Failed to update"
+          );
+        } else if (e.type !== 1) {
           handleSubmit(
             messageCreate,
             e,
-            "Successfully created scheduled message",
-            "Failed to create scheduled message"
+            e.sendAt
+              ? "Successfully schedule message"
+              : "Successfully created recurring message",
+            e.sendAt
+              ? "Failed to schedule message"
+              : "Failed to create recurring message"
           );
         } else {
           handleSubmit(messageSend, e, "Successfully sent", "Failed to send");
         }
       }}
     >
+      <Form.Item name="id" hidden></Form.Item>
+      <Form.Item name="templateValues" hidden></Form.Item>
+
       <Form.Item name="userId" label="User">
         <Select
           placeholder="Select a user"
@@ -130,7 +186,7 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
         <Input placeholder="Phone Number" />
       </Form.Item>
 
-      <Form.Item label="Type">
+      <Form.Item label="Type" name="type">
         <Radio.Group
           value={type}
           onChange={(e) => {
@@ -153,32 +209,34 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
         ></Radio.Group>
       </Form.Item>
 
-      {type === 2 && (
-        <Form.Item name="sendAt" label="Send at">
-          <DatePicker popupClassName="override" className="w-full" showTime />
-        </Form.Item>
-      )}
+      <Form.Item name="sendAt" label="Send at" hidden={type !== 2}>
+        <DatePicker popupClassName="override" className="w-full" showTime />
+      </Form.Item>
 
-      {type === 3 && (
-        <Form.Item name="cron" label="Schedule">
-          <Cron
-            onChange={(e) => {
-              console.log(e);
-            }}
-            showResultText={true}
-            showResultCron={false}
-            options={{
-              headers: [
-                HEADER.MONTHLY,
-                HEADER.WEEKLY,
-                HEADER.MINUTES,
-                HEADER.HOURLY,
-                HEADER.DAILY,
-              ],
-            }}
-          />
-        </Form.Item>
-      )}
+      <Form.Item
+        name="cron"
+        label="Schedule"
+        hidden={type !== 3}
+        initialValue={"0 0 1 1 1"}
+      >
+        <Cron
+          onChange={(e) => {
+            setCronValue(e.split(" ").splice(0, 5).join(" "));
+          }}
+          value={cronValue}
+          showResultText={true}
+          showResultCron={true}
+          options={{
+            headers: [
+              HEADER.MONTHLY,
+              HEADER.WEEKLY,
+              HEADER.MINUTES,
+              HEADER.HOURLY,
+              HEADER.DAILY,
+            ],
+          }}
+        />
+      </Form.Item>
 
       <Form.Item
         rules={[
