@@ -4,6 +4,7 @@ import { User } from "../../../../../esl-workers/src/domain/models/UserModel";
 import React from "react";
 import {
   bookingCancel,
+  bookingComplete,
   bookingCreate,
 } from "../../../domain/services/bookingService";
 import { teacherGetAll } from "../../../domain/services/teacherService";
@@ -87,7 +88,14 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
           e.amount = Number(e.amount);
         }
 
-        if (e.status === 4) {
+        if (e.status === 3) {
+          return handleSubmit(
+            bookingComplete,
+            e,
+            "Booking completed successfully",
+            "Booking completed failed"
+          );
+        } else if (e.status === 4) {
           return handleSubmit(
             bookingCancel,
             e,
