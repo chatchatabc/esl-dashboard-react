@@ -9,11 +9,13 @@ import { utilFormatDateAndTime } from "../../domain/services/utilService";
 function MessagePage() {
   const dispatch = useAppDispatch();
   const statusLabel = {
+    0: "Inactive",
     1: "Active",
     2: "Sent",
     3: "Failed",
   };
   const statusColor = {
+    0: "text-gray-500",
     1: "text-blue-500",
     2: "text-green-500",
     3: "text-red-500",
@@ -73,31 +75,56 @@ function MessagePage() {
       title: "Actions",
       render: (record: Message) => {
         return (
-          <div>
+          <div className="flex gap-2">
             <button
-              disabled={record.status !== 1}
+              disabled={record.status === 2 || record.status === 3}
               onClick={() => {
                 const sendAt = record.sendAt
                   ? new Date(record.sendAt).toISOString()
                   : undefined;
+
+                const type = record.sendAt ? 2 : 3;
 
                 dispatch(
                   modalUpdate({
                     show: true,
                     content: "message",
                     title: "Edit Message",
-                    data: { ...record, sendAt },
+                    data: { ...record, sendAt, type },
                   })
                 );
               }}
               className={`${
-                record.status !== 1
+                record.status === 2 || record.status === 3
                   ? "text-gray-500"
                   : "text-blue-500 underline"
               } hover:no-underline`}
             >
               Edit
             </button>
+
+            {/* <button
+              disabled={record.status !== 1}
+              onClick={() => {
+                Modal.confirm({
+                  type: "warning",
+                  title: "Are you sure?",
+                  content: "Do you want to cancel this message?",
+                  maskClosable: true,
+                  okButtonProps: {
+                    danger: true,
+                  },
+                  onOk: async () => {
+
+                  },
+                });
+              }}
+              className={`${
+                record.status !== 1 ? "text-gray-500" : "text-red-500 underline"
+              } hover:no-underline`}
+            >
+              Cancel
+            </button> */}
           </div>
         );
       },

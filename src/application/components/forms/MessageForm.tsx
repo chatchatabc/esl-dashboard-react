@@ -1,12 +1,4 @@
-import {
-  Button,
-  DatePicker,
-  Form,
-  FormInstance,
-  Input,
-  Radio,
-  Select,
-} from "antd";
+import { Button, DatePicker, Form, FormInstance, Input, Select } from "antd";
 import {
   messageCreate,
   messageSend,
@@ -38,6 +30,7 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
   const [templates, setTemplates] = React.useState<MessageTemplate[]>([]);
   const [variables, setVariables] = React.useState<string[]>([]);
   const [type, setType] = React.useState(1);
+  const formValues = formRef.getFieldsValue();
 
   React.useEffect(() => {
     if (localLoading) {
@@ -57,24 +50,30 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
     }
   }, []);
 
-  // Show message template and available variables
   React.useEffect(() => {
-    if (templates.length) {
+    const { message, messageTemplateId, type, id, sendAt } = formValues;
+    if ((!message || !message.length) && messageTemplateId) {
       const template = templates.find(
-        (template) => template.id === formRef.getFieldValue("messageTemplateId")
+        (template) => template.id === messageTemplateId
       );
-
       if (template && template.variables) {
         setVariables(template.variables.split(", "));
       }
-
       if (template) {
         formRef.setFieldsValue({
           message: `【${template.signature}】${template.message}`,
         });
       }
     }
-  }, [formRef.getFieldValue("id"), templates]);
+
+    if (!type && id) {
+      if (sendAt) {
+        setType(2);
+      } else {
+        setType(3);
+      }
+    }
+  }, [formValues]);
 
   // Set values for the shown variables
   React.useEffect(() => {
@@ -90,18 +89,7 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
         }
       });
     }
-  }, [formRef.getFieldValue("id"), variables]);
-
-  // Set values for type
-  React.useEffect(() => {
-    if (formRef.getFieldValue("sendAt")) {
-      formRef.setFieldValue("type", 2);
-      setType(2);
-    } else {
-      formRef.setFieldValue("type", 3);
-      setType(3);
-    }
-  }, [formRef.getFieldValue("id")]);
+  }, [variables]);
 
   return (
     <Form
@@ -115,11 +103,17 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
         });
         e.templateValues = JSON.stringify(templateVariables);
         e.cron = cronValue;
-        if (e.sendAt) {
+        if (e.type === 2) {
           e.sendAt = dayjs(e.sendAt).startOf("minute").valueOf();
+        } else {
+          e.sendAt = undefined;
         }
 
         if (e.id) {
+          if (e.type === 1) {
+            e.sendAt = Date.now();
+            e.status = 2;
+          }
           handleSubmit(
             messageUpdate,
             e,
@@ -186,28 +180,54 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
         <Input placeholder="Phone Number" />
       </Form.Item>
 
-      <Form.Item label="Type" name="type">
-        <Radio.Group
-          value={type}
-          onChange={(e) => {
-            setType(e.target.value);
-          }}
-          options={[
-            {
-              label: "Send now",
-              value: 1,
-            },
-            {
-              label: "Schedule",
-              value: 2,
-            },
-            {
-              label: "Recurring",
-              value: 3,
-            },
-          ]}
-        ></Radio.Group>
-      </Form.Item>
+      <div className="flex -mx-1">
+        <Form.Item
+          className="w-1/2 px-1"
+          label="Type"
+          name="type"
+          initialValue={type}
+        >
+          <Select
+            onChange={(e) => {
+              setType(e);
+            }}
+            options={[
+              {
+                label: "Send now",
+                value: 1,
+              },
+              {
+                label: "Schedule",
+                value: 2,
+              },
+              {
+                label: "Recurring",
+                value: 3,
+              },
+            ]}
+          ></Select>
+        </Form.Item>
+
+        <Form.Item
+          className="w-1/2 px-1"
+          label="Status"
+          name="status"
+          initialValue={1}
+        >
+          <Select
+            options={[
+              {
+                label: "Active",
+                value: 1,
+              },
+              {
+                label: "Inactive",
+                value: 0,
+              },
+            ]}
+          ></Select>
+        </Form.Item>
+      </div>
 
       <Form.Item name="sendAt" label="Send at" hidden={type !== 2}>
         <DatePicker popupClassName="override" className="w-full" showTime />
@@ -225,7 +245,7 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
           }}
           value={cronValue}
           showResultText={true}
-          showResultCron={true}
+          showResultCron={false}
           options={{
             headers: [
               HEADER.MONTHLY,
