@@ -1,4 +1,4 @@
-import { Button, DatePicker, Form, FormInstance, Select } from "antd";
+import { Button, DatePicker, Form, FormInstance, Input, Select } from "antd";
 import { userGetAll } from "../../../domain/services/userService";
 import { User } from "../../../../../esl-workers/src/domain/models/UserModel";
 import React from "react";
@@ -69,6 +69,20 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
         e.start = e.start.toDate().getTime();
         e.end = e.end.toDate().getTime();
 
+        // Convert to number
+        if (e.advanceBooking && e.advanceBooking === "") {
+          delete e.advanceBooking;
+        } else if (e.advanceBooking) {
+          e.advanceBooking = Number(e.advanceBooking);
+        }
+
+        // Convert to number
+        if (e.amount && e.amount === "") {
+          delete e.amount;
+        } else if (e.amount) {
+          e.amount = Number(e.amount);
+        }
+
         handleSubmit(
           bookingCreate,
           e,
@@ -77,56 +91,60 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
         );
       }}
     >
-      {/* Teacher */}
-      <Form.Item
-        name="teacherId"
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        label="Teacher"
-      >
-        <Select
-          placeholder="Select a teacher"
-          options={teachers.map((teacher) => {
-            if (teacher.user) {
+      <div className="flex -mx-1">
+        {/* Teacher */}
+        <Form.Item
+          className="w-1/2 px-1"
+          name="teacherId"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          label="Teacher"
+        >
+          <Select
+            placeholder="Select a teacher"
+            options={teachers.map((teacher) => {
+              if (teacher.user) {
+                return {
+                  value: teacher.id,
+                  label: `${teacher.user.firstName} ${teacher.user.lastName}`,
+                };
+              }
+
               return {
                 value: teacher.id,
-                label: `${teacher.user.firstName} ${teacher.user.lastName}`,
+                label: teacher.alias,
               };
-            }
+            })}
+          />
+        </Form.Item>
 
-            return {
-              value: teacher.id,
-              label: teacher.alias,
-            };
-          })}
-        />
-      </Form.Item>
-
-      {/* Student */}
-      <Form.Item
-        name="userId"
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        label="Student"
-      >
-        <Select
-          placeholder="Select a student"
-          options={students.map((student) => {
-            return {
-              value: student.id,
-              label: `${student.firstName} ${student.lastName}`,
-            };
-          })}
-        />
-      </Form.Item>
+        {/* Student */}
+        <Form.Item
+          className="w-1/2 px-1"
+          name="userId"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          label="Student"
+        >
+          <Select
+            placeholder="Select a student"
+            options={students.map((student) => {
+              return {
+                value: student.id,
+                label: `${student.firstName} ${student.lastName}`,
+              };
+            })}
+          />
+        </Form.Item>
+      </div>
 
       {/* Course */}
       <Form.Item
@@ -150,33 +168,59 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
         />
       </Form.Item>
 
-      {/* Start Time */}
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="start"
-        label="Start Time"
-      >
-        <DatePicker className="w-full" showTime />
-      </Form.Item>
+      <div className="flex -mx-1">
+        {/* Start Time */}
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="start"
+          label="Start Time"
+        >
+          <DatePicker className="w-full" showTime />
+        </Form.Item>
 
-      {/* End Time */}
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="end"
-        label="End Time"
-      >
-        <DatePicker className="w-full" showTime />
-      </Form.Item>
+        {/* End Time */}
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="end"
+          label="End Time"
+        >
+          <DatePicker className="w-full" showTime />
+        </Form.Item>
+      </div>
+
+      <div className="flex -mx-1">
+        {/* Advance Booking */}
+        <Form.Item
+          className="w-1/2 px-1"
+          name="advanceBooking"
+          label="Advance Booking"
+          rules={[
+            {
+              pattern: new RegExp(/^[0-9]*$/),
+              message: "Please input a number",
+            },
+          ]}
+        >
+          <Input placeholder="Optional" />
+        </Form.Item>
+
+        {/* Amount */}
+        <Form.Item className="w-1/2 px-1" name="amount" label="Override Amount">
+          <Input placeholder="Optional" />
+        </Form.Item>
+      </div>
 
       <Form.Item hidden>
         <Button htmlType="submit" loading={loading}></Button>
