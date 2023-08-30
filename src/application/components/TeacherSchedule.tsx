@@ -15,16 +15,22 @@ import {
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
 import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
-import {
-  bookingCancel,
-  bookingGetAll,
-} from "../../domain/services/bookingService";
+import { bookingGetAll } from "../../domain/services/bookingService";
 import { CalendarApi, EventSourceInput } from "@fullcalendar/core/index.js";
-import { Modal, message } from "antd";
-import { utilFormatDateAndTime } from "../../domain/services/utilService";
-
 type Props = {
   teacherId: number;
+};
+
+const bookingColor = {
+  1: "gray",
+  2: "blue",
+  3: "green",
+};
+
+const bookingStatus = {
+  1: "Cancellable",
+  2: "Confirmed",
+  3: "Completed",
 };
 
 function TeacherSchedule({ teacherId }: Props) {
@@ -159,15 +165,17 @@ function TeacherSchedule({ teacherId }: Props) {
       bookings.forEach((booking) => {
         const start = new Date(booking.start);
         const end = new Date(booking.end);
+        const color = bookingColor[booking.status as keyof typeof bookingColor];
+        const status =
+          bookingStatus[booking.status as keyof typeof bookingStatus];
 
         newEvents.push({
           start,
           end,
-          title: `${booking.user?.alias}`,
+          title: `${status} | ${booking.user?.firstName} ${booking.user?.lastName}`,
           display: "auto",
-          color: "red",
-          userId: booking.userId,
-          bookingId: booking.id,
+          color,
+          booking,
         });
       });
     }
@@ -269,26 +277,17 @@ function TeacherSchedule({ teacherId }: Props) {
             if (editing) {
               e.event.remove();
             } else {
-              Modal.confirm({
-                title: "Do you want to cancel this booking?",
-                content: `Booking schedule: ${utilFormatDateAndTime(
-                  "en-US",
-                  e.event.start!
-                )} to ${utilFormatDateAndTime("en-US", e.event.end!)}`,
-                okButtonProps: {
-                  danger: true,
-                },
-                onOk: async () => {
-                  const { bookingId, userId } = e.event.extendedProps;
-                  const res = await bookingCancel({ bookingId, userId });
-                  if (res) {
-                    e.event.remove();
-                    message.success("Booking canceled");
-                  } else {
-                    message.error("Error, unable to cancel booking");
-                  }
-                },
-              });
+              const { booking } = e.event.extendedProps;
+              const start = new Date(booking.start).toISOString();
+              const end = new Date(booking.end).toISOString();
+              dispatch(
+                modalUpdate({
+                  show: true,
+                  title: "Booking Information",
+                  content: "booking",
+                  data: { ...booking, start, end },
+                })
+              );
             }
           }}
         />
