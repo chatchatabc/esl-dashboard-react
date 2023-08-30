@@ -8,6 +8,16 @@ import { utilFormatDateAndTime } from "../../domain/services/utilService";
 
 function MessagePage() {
   const dispatch = useAppDispatch();
+  const statusLabel = {
+    1: "Active",
+    2: "Sent",
+    3: "Failed",
+  };
+  const statusColor = {
+    1: "text-blue-500",
+    2: "text-green-500",
+    3: "text-red-500",
+  };
 
   const columns: ColumnsType<Message> = [
     {
@@ -47,6 +57,15 @@ function MessagePage() {
       render: (record: Message) => {
         const date = new Date(record.sendAt ?? 0);
         return <p>{utilFormatDateAndTime("en-US", date)}</p>;
+      },
+    },
+    {
+      key: "status",
+      title: "Status",
+      render: (record: Message) => {
+        const label = statusLabel[record.status as keyof typeof statusLabel];
+        const color = statusColor[record.status as keyof typeof statusColor];
+        return <p className={color}>{label}</p>;
       },
     },
     {
