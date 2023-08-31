@@ -25,6 +25,14 @@ type Props = {
 
 function BookingForm({ loading, handleSubmit, formRef }: Props) {
   const [localLoading, setLocalLoading] = React.useState(true);
+  const [selectedStudent, setSelectedStudent] = React.useState<User | null>(
+    null
+  );
+  const [selectedCourse, setSelectedCourse] = React.useState<Course | null>(
+    null
+  );
+  const [sessions, setSessions] = React.useState<number>(0);
+  const [advanceBooking, setAdvanceBooking] = React.useState("");
   const [students, setStudents] = React.useState<User[]>([]);
   const [teachers, setTeachers] = React.useState<Teacher[]>([]);
   const [courses, setCourses] = React.useState<Course[]>([]);
@@ -69,11 +77,19 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
   React.useEffect(() => {
     if (!formValues.courseId && courses.length) {
       formRef.setFieldValue("courseId", courses[0].id);
+      setSelectedCourse(courses[0]);
+    }
+    const start = formValues.start?.toDate().getTime();
+    const end = formValues.end?.toDate().getTime();
+    const newSession = (end - start) / 1800000;
+    if (newSession !== sessions) {
+      setSessions(newSession);
     }
   }, [formValues, courses]);
 
   return (
     <Form
+      className="overflow-hidden"
       layout="vertical"
       form={formRef}
       onFinish={(e) => {
@@ -169,6 +185,13 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
               }
               return false;
             }}
+            onChange={(e) => {
+              const student = students.find((student) => student.id === e);
+
+              if (student) {
+                setSelectedStudent(student);
+              }
+            }}
             options={students.map((student) => {
               return {
                 value: student.id,
@@ -256,7 +279,12 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
               },
             ]}
           >
-            <Input placeholder="Optional" />
+            <Input
+              onChange={(e) => {
+                setAdvanceBooking(e.target.value);
+              }}
+              placeholder="Optional"
+            />
           </Form.Item>
 
           {/* Amount */}
@@ -267,6 +295,39 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
           >
             <Input placeholder="Optional" />
           </Form.Item>
+        </div>
+      )}
+
+      {!formValues.id && (
+        <div className="flex -mx-1">
+          <section className="w-1/2 px-1">
+            <header>
+              <h3>User Credit Points</h3>
+            </header>
+
+            <section>
+              <p>{selectedStudent?.credits ?? "N/A"}</p>
+            </section>
+          </section>
+
+          <section className="w-1/2 px-1">
+            <header>
+              <h3>Booking amount</h3>
+            </header>
+
+            <section>
+              {selectedCourse ? (
+                <p>
+                  {selectedCourse.price *
+                    Number(advanceBooking === "" ? "1" : advanceBooking) *
+                    sessions}
+                  点
+                </p>
+              ) : (
+                <p>N/A</p>
+              )}
+            </section>
+          </section>
         </div>
       )}
 
