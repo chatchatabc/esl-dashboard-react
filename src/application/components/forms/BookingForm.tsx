@@ -81,16 +81,16 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
         e.end = e.end.toDate().getTime();
 
         // Convert to number
-        if (e.advanceBooking && e.advanceBooking === "") {
+        if (e.advanceBooking === "") {
           delete e.advanceBooking;
-        } else if (e.advanceBooking) {
+        } else {
           e.advanceBooking = Number(e.advanceBooking);
         }
 
         // Convert to number
-        if (e.amount && e.amount === "") {
+        if (e.amount === "") {
           delete e.amount;
-        } else if (e.amount) {
+        } else {
           e.amount = Number(e.amount);
         }
 
