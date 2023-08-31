@@ -5,3 +5,16 @@
 .override .ant-btn-primary {
   background-color: #1890ff;
 }
+
+.override .fc-timegrid-slots {
+  z-index: 100;
+}
+
+.override .fc-timegrid-slots tr:nth-of-type(odd) > td {
+  /* Background gray with 10% opacity */
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.override .fc-timegrid-slots tr:hover > td {
+  border: 1px solid rgba(0, 0, 0);
+}

@@ -229,8 +229,9 @@ function TeacherSchedule({ teacherId }: Props) {
         </button>
       </header>
 
-      <section>
+      <section className="override">
         <FullCalendar
+          nowIndicator={true}
           height={600}
           ref={calendarRef}
           plugins={[timeGridPlugin, interactionPlugin]}
