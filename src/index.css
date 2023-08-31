@@ -7,7 +7,7 @@
 }
 
 .overlap .fc-timegrid-slots {
-  z-index: 5;
+  z-index: 3;
 }
 
 .override .fc-timegrid-slots tr:nth-of-type(odd) > td {
