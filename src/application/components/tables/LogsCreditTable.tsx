@@ -20,7 +20,7 @@ function LogsCreditTable({ userId }: Props) {
     },
     {
       key: "id",
-      title: "Amount",
+      title: "Credit Points",
       render: (record: LogsCredit) => {
         return (
           <p
@@ -28,7 +28,7 @@ function LogsCreditTable({ userId }: Props) {
               record.amount < 0 ? "text-red-500" : "text-green-500"
             }`}
           >
-            {utilFormatCurrency(record.amount)}
+            {record.amount}点
           </p>
         );
       },

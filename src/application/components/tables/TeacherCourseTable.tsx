@@ -28,7 +28,7 @@ function TeacherCourseTable({ teacherId }: Props) {
       key: "price",
       title: "Price",
       render: (record: Course) => {
-        return <p key={record.price}>{utilFormatCurrency(record.price)}</p>;
+        return <p key={record.price}>{record.price}点</p>;
       },
     },
     {

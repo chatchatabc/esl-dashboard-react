@@ -67,7 +67,7 @@ function UserPage() {
             }}
             className="underline hover:no-underline"
           >
-            {utilFormatCurrency(record.credits)}
+            {record.credits}点
           </button>
         );
       },
