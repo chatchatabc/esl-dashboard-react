@@ -45,7 +45,7 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
       layout="vertical"
       form={formRef}
       onFinish={(e) => {
-        e.credit = Number(e.credit);
+        e.credits = Number(e.credits);
         if (e.id) {
           handleSubmit(
             userUpdate,
@@ -67,22 +67,40 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
         <Input />
       </Form.Item>
 
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="username"
-        label="Username"
-      >
-        <Input placeholder="Username" />
-      </Form.Item>
+      <div className="flex -mx-1">
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="username"
+          label="Username"
+        >
+          <Input placeholder="Username" />
+        </Form.Item>
+
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="alias"
+          label="Nickname"
+        >
+          <Input placeholder="Nickname" />
+        </Form.Item>
+      </div>
 
       {formRef.getFieldValue("id") === undefined && (
-        <>
+        <div className="flex -mx-1">
           <Form.Item
+            className="w-1/2 px-1"
             rules={[
               {
                 required: true,
@@ -96,6 +114,7 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
           </Form.Item>
 
           <Form.Item
+            className="w-1/2 px-1"
             rules={[
               {
                 required: true,
@@ -107,76 +126,122 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
           >
             <Input.Password placeholder="Confirm Password" />
           </Form.Item>
-        </>
+        </div>
       )}
 
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-          {
-            pattern: new RegExp(/^[0-9]*$/),
-            message: "Please input number only",
-          },
-        ]}
-        name="credit"
-        label="User Credits"
-      >
-        <Input placeholder="User Credits" />
-      </Form.Item>
+      <div className="flex -mx-1">
+        {/* Role */}
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="roleId"
+          label="User Role"
+        >
+          <Select
+            options={roles.map((role) => {
+              console.log(role);
+              return {
+                label: role.name,
+                value: role.id,
+              };
+            })}
+            placeholder="User Role"
+          />
+        </Form.Item>
 
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="roleId"
-        label="User Role"
-      >
-        <Select
-          options={roles.map((role) => {
-            return {
-              label: role.name,
-              value: role.id,
-            };
-          })}
-          placeholder="User Role"
-        />
-      </Form.Item>
+        {/* Status */}
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="status"
+          label="User Status"
+          initialValue={1}
+        >
+          <Select
+            disabled={formRef.getFieldValue("id") === undefined}
+            options={userOptionStatus()}
+            placeholder="User Status"
+          />
+        </Form.Item>
+      </div>
 
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="status"
-        label="User Status"
-        initialValue={1}
-      >
-        <Select
-          disabled={formRef.getFieldValue("id") === undefined}
-          options={userOptionStatus()}
-          placeholder="User Status"
-        />
-      </Form.Item>
+      <div className="flex -mx-1">
+        {/* First Name */}
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="firstName"
+          label="First Name"
+        >
+          <Input placeholder="First Name" />
+        </Form.Item>
 
-      <Form.Item name="firstName" label="First Name">
-        <Input placeholder="First Name" />
-      </Form.Item>
+        {/* Last Name */}
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="lastName"
+          label="Last Name"
+        >
+          <Input placeholder="Last Name" />
+        </Form.Item>
+      </div>
 
-      <Form.Item name="lastName" label="Last Name">
-        <Input placeholder="Last Name" />
-      </Form.Item>
+      <div className="flex -mx-1">
+        {/* Phone */}
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="phone"
+          label="Phone"
+        >
+          <Input placeholder="Phone" />
+        </Form.Item>
 
-      <Form.Item name="phone" label="Phone">
-        <Input placeholder="Phone" />
-      </Form.Item>
+        {/* Credits */}
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+            {
+              pattern: new RegExp(/^[0-9]*$/),
+              message: "Please input number only",
+            },
+          ]}
+          name="credits"
+          label="User Credits"
+        >
+          <Input placeholder="User Credits" />
+        </Form.Item>
+      </div>
 
       <Form.Item hidden>
         <Button htmlType="submit" loading={loading}></Button>
