@@ -1,11 +1,11 @@
 import { Button, Form, FormInstance, Input, Select } from "antd";
-import { messageTemplateUpdate } from "../../../domain/services/messageTemplateService";
 import React from "react";
 import { userGetAll } from "../../../domain/services/userService";
 import { User } from "../../../../../esl-workers/src/domain/models/UserModel";
 import {
   teacherCreate,
   teacherOptionStatus,
+  teacherUpdate,
 } from "../../../domain/services/teacherService";
 
 type Props = {
@@ -48,10 +48,10 @@ function TeacherForm({ loading, handleSubmit, formRef }: Props) {
       onFinish={(e) => {
         if (e.id) {
           handleSubmit(
-            messageTemplateUpdate,
+            teacherUpdate,
             e,
-            "Successfully updated message template",
-            "Failed to update message template"
+            "Successfully updated teacher",
+            "Failed to update teacher"
           );
         } else {
           handleSubmit(

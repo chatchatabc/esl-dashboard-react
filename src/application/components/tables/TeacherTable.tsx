@@ -4,9 +4,12 @@ import { ColumnsType } from "antd/es/table";
 import { Teacher } from "../../../../../esl-workers/src/domain/models/TeacherModel";
 import { utilFormatDateAndTime } from "../../../domain/services/utilService";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../redux/hooks";
+import { modalUpdate } from "../../redux/features/modalSlice";
 
 function TeacherTable() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const columns: ColumnsType<Teacher> = [
     {
@@ -65,7 +68,19 @@ function TeacherTable() {
       render: (record: Teacher) => {
         return (
           <div>
-            <button className="text-blue-500 underline hover:no-underline">
+            <button
+              onClick={() => {
+                dispatch(
+                  modalUpdate({
+                    show: true,
+                    title: "Edit Teacher",
+                    content: "teacher",
+                    data: record,
+                  })
+                );
+              }}
+              className="text-blue-500 underline hover:no-underline"
+            >
               Edit
             </button>
           </div>
