@@ -15,6 +15,11 @@ function LogsCreditTable({ userId }: Props) {
   const columns: ColumnsType<LogsCredit> = [
     {
       key: "id",
+      title: "Details",
+      dataIndex: "details",
+    },
+    {
+      key: "id",
       title: "Amount",
       render: (record: LogsCredit) => {
         return (

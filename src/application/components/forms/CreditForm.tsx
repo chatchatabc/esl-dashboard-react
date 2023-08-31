@@ -1,5 +1,5 @@
 import { Button, Form, FormInstance, Input } from "antd";
-import { userAddCredit } from "../../../domain/services/userService";
+import { creditAdd } from "../../../domain/services/creditService";
 
 type Props = {
   loading: boolean;
@@ -18,8 +18,11 @@ function CreditForm({ loading, handleSubmit, formRef }: Props) {
       layout="vertical"
       form={formRef}
       onFinish={(e) => {
+        e.currency = "CNY";
+        e.amount = Number(e.amount);
+        e.credits = Number(e.credits);
         handleSubmit(
-          userAddCredit,
+          creditAdd,
           e,
           "Successfully added credit",
           "Failed to add credit"
@@ -27,6 +30,29 @@ function CreditForm({ loading, handleSubmit, formRef }: Props) {
       }}
     >
       <Form.Item name="userId" hidden></Form.Item>
+
+      <Form.Item
+        rules={[
+          {
+            required: true,
+            message: "Need some input here",
+          },
+          {
+            message: "Must be a currency",
+            pattern: /^-?[0-9]+(\.[0-9]{1,2})?$/,
+          },
+        ]}
+        name="credits"
+        label="Credits"
+      >
+        <Input
+          classNames={{
+            prefix: "border-r pr-2",
+          }}
+          prefix={"点"}
+          placeholder="Credits"
+        />
+      </Form.Item>
 
       <Form.Item
         rules={[
