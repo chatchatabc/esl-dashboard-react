@@ -166,13 +166,11 @@ function TeacherSchedule({ teacherId }: Props) {
         const start = new Date(booking.start);
         const end = new Date(booking.end);
         const color = bookingColor[booking.status as keyof typeof bookingColor];
-        const status =
-          bookingStatus[booking.status as keyof typeof bookingStatus];
 
         newEvents.push({
           start,
           end,
-          title: `${status} | ${booking.user?.firstName} ${booking.user?.lastName}`,
+          title: `${booking.user?.alias}`,
           display: "auto",
           color,
           booking,
@@ -233,6 +231,7 @@ function TeacherSchedule({ teacherId }: Props) {
 
       <section>
         <FullCalendar
+          height={600}
           ref={calendarRef}
           plugins={[timeGridPlugin, interactionPlugin]}
           initialView="timeGridWeek"
