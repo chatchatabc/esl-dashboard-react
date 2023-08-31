@@ -1,4 +1,5 @@
 import { CommonPaginationInput } from "../../../../esl-workers/src/domain/models/CommonModel";
+import { TeacherCreateInput } from "../../../../esl-workers/src/domain/models/TeacherModel";
 import { trpcClient } from "../infras/trpcActions";
 
 export async function teacherGetAll(params: CommonPaginationInput) {
@@ -56,6 +57,29 @@ export async function teacherGetByUser(params: { userId: number }) {
       }
     }
 
+    return res;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
+export function teacherOptionStatus() {
+  return [
+    {
+      value: 1,
+      label: "Active",
+    },
+    {
+      value: 0,
+      label: "Inactive",
+    },
+  ];
+}
+
+export async function teacherCreate(params: TeacherCreateInput) {
+  try {
+    const res = await trpcClient.teacher.create.query(params);
     return res;
   } catch (e) {
     console.log(e);
