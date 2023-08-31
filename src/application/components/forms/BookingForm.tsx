@@ -66,6 +66,12 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
     }
   }, [localLoading]);
 
+  React.useEffect(() => {
+    if (!formValues.courseId && courses.length) {
+      formRef.setFieldValue("courseId", courses[0].id);
+    }
+  }, [formValues, courses]);
+
   return (
     <Form
       layout="vertical"
