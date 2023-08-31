@@ -229,7 +229,7 @@ function TeacherSchedule({ teacherId }: Props) {
         </button>
       </header>
 
-      <section className="override">
+      <section className={`override ${editing ? "" : "overlap"}`}>
         <FullCalendar
           nowIndicator={true}
           height={600}

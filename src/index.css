@@ -6,8 +6,8 @@
   background-color: #1890ff;
 }
 
-.override .fc-timegrid-slots {
-  z-index: 100;
+.overlap .fc-timegrid-slots {
+  z-index: 5;
 }
 
 .override .fc-timegrid-slots tr:nth-of-type(odd) > td {
