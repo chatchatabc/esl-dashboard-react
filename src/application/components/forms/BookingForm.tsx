@@ -160,10 +160,19 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
           <Select
             disabled={formValues.id ? true : false}
             placeholder="Select a student"
+            showSearch={true}
+            filterOption={(input, option) => {
+              if (option?.label) {
+                return (
+                  option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                );
+              }
+              return false;
+            }}
             options={students.map((student) => {
               return {
                 value: student.id,
-                label: `${student.firstName} ${student.lastName}`,
+                label: `${student.alias} | ${student.phone}`,
               };
             })}
           />
