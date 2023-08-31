@@ -144,7 +144,6 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
         >
           <Select
             options={roles.map((role) => {
-              console.log(role);
               return {
                 label: role.name,
                 value: role.id,

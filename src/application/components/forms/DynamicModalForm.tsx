@@ -43,7 +43,11 @@ function DynamicModalForm() {
     if (modal.data) {
       const obj = { ...modal.data };
       Object.keys(obj).forEach((key) => {
-        if (typeof obj[key] === "string" && dayjs(obj[key]).isValid()) {
+        if (
+          typeof obj[key] === "string" &&
+          obj[key].includes("T") &&
+          dayjs(obj[key]).isValid()
+        ) {
           obj[key] = dayjs(obj[key]);
         }
       });

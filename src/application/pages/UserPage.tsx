@@ -8,10 +8,7 @@ import {
   userRevokePhoneVerification,
   userVerifyPhone,
 } from "../../domain/services/userService";
-import {
-  utilFormatCurrency,
-  utilFormatDateAndTime,
-} from "../../domain/services/utilService";
+import { utilFormatDateAndTime } from "../../domain/services/utilService";
 import { useNavigate } from "react-router-dom";
 import { Modal, message } from "antd";
 import { globalReset } from "../redux/features/globalSlice";
