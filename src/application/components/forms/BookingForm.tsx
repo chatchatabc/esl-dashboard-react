@@ -31,6 +31,9 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
   const [selectedCourse, setSelectedCourse] = React.useState<Course | null>(
     null
   );
+  const [selectedTeacher, setSelectedTeacher] = React.useState<Teacher | null>(
+    null
+  );
   const [sessions, setSessions] = React.useState<number>(0);
   const [advanceBooking, setAdvanceBooking] = React.useState("");
   const [students, setStudents] = React.useState<User[]>([]);
@@ -38,6 +41,7 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
   const [courses, setCourses] = React.useState<Course[]>([]);
   const formValues = formRef.getFieldsValue();
 
+  // Get students and teachers
   React.useEffect(() => {
     if (localLoading) {
       (async () => {
@@ -60,32 +64,56 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
           setTeachers(resTeachers.content);
         }
 
-        const resCourses = await courseGetAll({
-          page: 1,
-          size: 10000,
-        });
-
-        if (resCourses) {
-          setCourses(resCourses.content);
-        }
-
         setLocalLoading(false);
       })();
     }
   }, [localLoading]);
 
+  // Get courses every time teacher is changed
   React.useEffect(() => {
+    if (selectedTeacher) {
+      (async () => {
+        const resCourses = await courseGetAll({
+          page: 1,
+          size: 10000,
+          teacherId: selectedTeacher.id,
+        });
+
+        if (resCourses) {
+          setCourses(resCourses.content);
+          formRef.setFieldValue("courseId", resCourses.content[0].id);
+        }
+      })();
+    }
+  }, [selectedTeacher]);
+
+  // Perform some actions when formValues is changed
+  React.useEffect(() => {
+    // Check if teacherId is changed
+    const teacherId = formValues.teacherId;
+    if (teacherId !== selectedTeacher?.id) {
+      const teacher = teachers.find(
+        (teacher) => teacher.id === formValues.teacherId
+      );
+      if (teacher) {
+        setSelectedTeacher(teacher);
+      }
+    }
+
+    // Check if courseId has value
     if (!formValues.courseId && courses.length) {
       formRef.setFieldValue("courseId", courses[0].id);
       setSelectedCourse(courses[0]);
     }
+
+    // Compute sessions
     const start = formValues.start?.toDate().getTime();
     const end = formValues.end?.toDate().getTime();
     const newSession = (end - start) / 1800000;
     if (newSession !== sessions) {
       setSessions(newSession);
     }
-  }, [formValues, courses]);
+  }, [formValues]);
 
   return (
     <Form
@@ -96,6 +124,7 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
         e.start = e.start.toDate().getTime();
         e.end = e.end.toDate().getTime();
 
+        console.log(e);
         // Convert to number
         if (e.advanceBooking === "") {
           delete e.advanceBooking;
@@ -145,6 +174,14 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
           <Select
             disabled={formValues.id ? true : false}
             placeholder="Select a teacher"
+            onChange={(e) => {
+              const teacher = teachers.find((teacher) => teacher.id === e);
+
+              if (teacher) {
+                setSelectedTeacher(teacher);
+                setLocalLoading(true);
+              }
+            }}
             options={teachers.map((teacher) => {
               if (teacher.user) {
                 return {
