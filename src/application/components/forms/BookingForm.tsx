@@ -124,19 +124,18 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
         e.start = e.start.toDate().getTime();
         e.end = e.end.toDate().getTime();
 
-        console.log(e);
         // Convert to number
-        if (e.advanceBooking === "") {
-          delete e.advanceBooking;
-        } else {
+        if (e.advanceBooking) {
           e.advanceBooking = Number(e.advanceBooking);
+        } else {
+          delete e.advanceBooking;
         }
 
         // Convert to number
-        if (e.amount === "") {
-          delete e.amount;
-        } else {
+        if (e.amount) {
           e.amount = Number(e.amount);
+        } else {
+          delete e.amount;
         }
 
         if (e.id) {
@@ -379,11 +378,7 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
         label="Status"
         initialValue={1}
       >
-        <Select
-          disabled={!formValues.id}
-          placeholder="Select a course"
-          options={bookingOptionStatus()}
-        />
+        <Select placeholder="Select a course" options={bookingOptionStatus()} />
       </Form.Item>
 
       <Form.Item hidden>
