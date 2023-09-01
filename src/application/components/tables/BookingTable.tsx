@@ -1,5 +1,5 @@
 import DynamicTable from "../DynamicTable";
-import { ColumnsType } from "antd/es/table";
+import { ColumnsType, TableProps } from "antd/es/table";
 import { utilFormatDateAndTime } from "../../../domain/services/utilService";
 import { Booking } from "../../../../../esl-workers/src/domain/models/BookingModel";
 import {
@@ -9,11 +9,11 @@ import {
 
 type Props = {
   userId: number;
-};
+} & TableProps<any>;
 
 const statusOptions = bookingOptionStatus();
 
-function BookingTable({ userId }: Props) {
+function BookingTable({ userId, ...props }: Props) {
   const columns: ColumnsType<Booking> = [
     {
       key: "start",
@@ -59,8 +59,10 @@ function BookingTable({ userId }: Props) {
           <p
             className={`${
               record.status === 1
+                ? "text-gray-500"
+                : record.status === 2
                 ? "text-blue-500"
-                : record.status === 2 || record.status === 3
+                : record.status === 3
                 ? "text-green-500"
                 : "text-red-500"
             }`}
@@ -79,6 +81,7 @@ function BookingTable({ userId }: Props) {
       getData={(values: any) => {
         return bookingGetAll({ ...values, userId, status: "" });
       }}
+      {...props}
     />
   );
 }

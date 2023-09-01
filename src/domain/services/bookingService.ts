@@ -3,6 +3,7 @@ import {
   BookingCompleteInputAdmin,
   BookingCreateInputAdmin,
   BookingUpdateInput,
+  BookingUpdateStatusManyInputByAdmin,
 } from "../../../../esl-workers/src/domain/models/BookingModel";
 import { CommonPaginationInput } from "../../../../esl-workers/src/domain/models/CommonModel";
 import { trpcClient } from "../infras/trpcActions";
@@ -102,4 +103,16 @@ export function bookingOptionStatus() {
       label: "Absent",
     },
   ];
+}
+
+export async function bookingUpdateStatusMany(
+  params: BookingUpdateStatusManyInputByAdmin
+) {
+  try {
+    const res = await trpcClient.booking.updateStatusManyByAdmin.mutate(params);
+    return res;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
 }

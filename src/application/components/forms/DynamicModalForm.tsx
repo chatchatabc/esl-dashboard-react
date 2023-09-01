@@ -12,6 +12,7 @@ import BookingForm from "./BookingForm";
 import dayjs from "dayjs";
 import CourseForm from "./CourseForm";
 import TeacherForm from "./TeacherForm";
+import BookingManyForm from "./BookingManyForm";
 
 function DynamicModalForm() {
   const [loading, setLoading] = React.useState(false);
@@ -107,6 +108,14 @@ function DynamicModalForm() {
 
         {modal.content === "booking" && (
           <BookingForm
+            loading={loading}
+            formRef={form}
+            handleSubmit={handleSubmit}
+          />
+        )}
+
+        {modal.content === "bookingMany" && (
+          <BookingManyForm
             loading={loading}
             formRef={form}
             handleSubmit={handleSubmit}

@@ -6,16 +6,20 @@ import {
   userOptionStatus,
 } from "../../domain/services/userService";
 import { User } from "../../../../esl-workers/src/domain/models/UserModel";
-import { utilFormatCurrency } from "../../domain/services/utilService";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
 import LogsCreditTable from "../components/tables/LogsCreditTable";
 import BookingTable from "../components/tables/BookingTable";
+import { Modal, message } from "antd";
+import { bookingUpdateStatusMany } from "../../domain/services/bookingService";
+import { globalReset } from "../redux/features/globalSlice";
+import EditIcon from "../assets/EditIcon";
 
 function UserProfilePage() {
   const { username = "" } = useParams();
   const [loading, setLoading] = React.useState(true);
   const [user, setUser] = React.useState<User | null>(null);
+  const [bookingIds, setBookingIds] = React.useState<number[]>([]);
   const statusList = userOptionStatus();
   const status = statusList.find((item) => item.value === user?.status);
   const dispatch = useAppDispatch();
@@ -170,25 +174,39 @@ function UserProfilePage() {
         <header className="p-2 flex items-center border-b">
           <h2 className="text-xl font-medium mr-auto">Bookings</h2>
 
+          <div className="flex space-x-2"></div>
           <button
+            disabled={bookingIds.length === 0}
             onClick={() => {
               dispatch(
                 modalUpdate({
                   show: true,
-                  content: "credit",
-                  data: { userId: user.id },
-                  title: "Add Credit",
+                  content: "bookingMany",
+                  data: { bookingIds },
+                  title: "Update multiple bookings",
                 })
               );
             }}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+            className={`p-2 ${
+              bookingIds.length === 0 ? "" : "bg-blue-500 hover:bg-blue-400"
+            } text-white rounded-md `}
           >
-            Add
+            <div className="w-6 h-6">
+              <EditIcon />
+            </div>
           </button>
         </header>
 
         <section>
-          <BookingTable userId={user.id} />
+          <BookingTable
+            rowSelection={{
+              selectedRowKeys: bookingIds,
+              onChange: (selectedRowKeys: any[]) => {
+                setBookingIds(selectedRowKeys);
+              },
+            }}
+            userId={user.id}
+          />
         </section>
       </section>
 
