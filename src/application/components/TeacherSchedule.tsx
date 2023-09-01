@@ -27,12 +27,6 @@ const bookingColor = {
   3: "green",
 };
 
-const bookingStatus = {
-  1: "Cancellable",
-  2: "Confirmed",
-  3: "Completed",
-};
-
 function TeacherSchedule({ teacherId }: Props) {
   const calendarRef = React.useRef<FullCalendar | null>(null);
   const [calendar, setCalendar] = React.useState<CalendarApi | undefined>(
@@ -229,7 +223,12 @@ function TeacherSchedule({ teacherId }: Props) {
         </button>
       </header>
 
-      <section className={`override ${editing ? "" : "overlap"}`}>
+      <section className={`override ${editing ? "" : "overlap"} relative`}>
+        {loading && (
+          <div className="absolute w-full h-full flex items-center justify-center z-10 bg-white bg-opacity-50">
+            <div className="ease-linear animate-spin rounded-full border-y-2 border-black h-20 w-20"></div>
+          </div>
+        )}
         <FullCalendar
           firstDay={1}
           scrollTimeReset={false}
