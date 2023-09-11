@@ -1,7 +1,6 @@
 import { Button, Form, FormInstance, Input, Select, message } from "antd";
 import { userOptionStatus } from "../../../domain/services/userService";
 import { trpc } from "../../../domain/infras/trpcActions";
-import React from "react";
 import { useAppDispatch } from "../../redux/hooks";
 import { modalUpdate } from "../../redux/features/modalSlice";
 
@@ -19,32 +18,30 @@ type Props = {
 function UserForm({ loading, formRef }: Props) {
   const dispatch = useAppDispatch();
   const trpcClient = trpc.useContext();
-  const userUpdateMutation = trpc.user.update.useMutation();
-  const userCreateMutation = trpc.user.create.useMutation();
+  const userUpdateMutation = trpc.user.update.useMutation({
+    onSuccess: () => {
+      trpcClient.user.getAll.invalidate();
+      message.success("Successfully updated user!");
+      dispatch(modalUpdate({ show: false }));
+    },
+    onError: (error) => {
+      message.error(error.message);
+    },
+  });
+  const userCreateMutation = trpc.user.create.useMutation({
+    onSuccess: () => {
+      trpcClient.user.getAll.invalidate();
+      message.success("Successfully created user!");
+      dispatch(modalUpdate({ show: false }));
+    },
+    onError: (error) => {
+      message.error(error.message);
+    },
+  });
   const rolesQuery = trpc.role.getAll.useQuery({
     page: 1,
     size: 100000,
   });
-
-  React.useEffect(() => {
-    if (userUpdateMutation.status === "success") {
-      message.success("Successfully updated user!");
-      dispatch(modalUpdate({ show: false }));
-      trpcClient.user.getAll.invalidate();
-    } else if (userUpdateMutation.status === "error") {
-      message.error("Failed to update user!");
-    }
-  }, [userUpdateMutation.status]);
-
-  React.useEffect(() => {
-    if (userCreateMutation.status === "success") {
-      message.success("Successfully create user!");
-      dispatch(modalUpdate({ show: false }));
-      trpcClient.user.getAll.invalidate();
-    } else if (userCreateMutation.status === "error") {
-      message.error("Failed to create user!");
-    }
-  }, [userCreateMutation.status]);
 
   return (
     <Form
