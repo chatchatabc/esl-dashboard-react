@@ -1,9 +1,13 @@
 import React from "react";
-import { authGetUserId, authLogin } from "../../domain/services/authService";
+import { authGetUser } from "../../domain/services/authService";
 import { Navigate, useNavigate } from "react-router-dom";
+import { trpc } from "../../domain/infras/trpcActions";
+import { message } from "antd";
+import { utilSaveCookie } from "../../domain/services/utilService";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const loginMutation = trpc.auth.login.useMutation();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -13,16 +17,23 @@ function LoginPage() {
       username: objData.username as string,
       password: objData.password as string,
     };
-    const response = await authLogin(data);
 
-    if (!response) {
-      alert("Invalid username or password");
-    } else {
-      navigate("/");
-    }
+    loginMutation.mutate(data);
   }
 
-  if (authGetUserId()) {
+  // Login mutation status handler
+  React.useEffect(() => {
+    if (loginMutation.status === "success" && loginMutation.data) {
+      message.success("Login success");
+      utilSaveCookie("user", JSON.stringify(loginMutation.data));
+      navigate("/");
+    } else if (loginMutation.status === "error") {
+      message.error(loginMutation.error.message);
+    }
+  }, [loginMutation.status]);
+
+  // Redirect to home if user is already logged in
+  if (authGetUser()) {
     return <Navigate to="/" />;
   }
 
@@ -66,7 +77,10 @@ function LoginPage() {
         </section>
 
         <footer className="mt-4 flex space-x-2">
-          <button className="px-3 py-1 rounded-md bg-blue-500 text-white">
+          <button
+            disabled={loginMutation.status === "loading"}
+            className="px-3 py-1 rounded-md bg-blue-500 text-white"
+          >
             Login
           </button>
           {/* <button type="button" className="px-3 py-1 text-blue-500">
