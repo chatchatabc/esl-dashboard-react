@@ -6,19 +6,20 @@ import MessageForm from "./MessageForm";
 import { modalUpdate } from "../../redux/features/modalSlice";
 import MessageTemplateForm from "./MessageTemplateForm";
 import UserForm from "./UserForm";
-import { globalReset } from "../../redux/features/globalSlice";
 import CreditForm from "./CreditForm";
 import BookingForm from "./BookingForm";
 import dayjs from "dayjs";
 import CourseForm from "./CourseForm";
 import TeacherForm from "./TeacherForm";
 import BookingManyForm from "./BookingManyForm";
+import { useRevalidator } from "react-router-dom";
 
 function DynamicModalForm() {
   const [loading, setLoading] = React.useState(false);
   const [form] = useForm();
   const modal = useAppSelector((state) => state.modal);
   const dispatch = useAppDispatch();
+  const revalidator = useRevalidator();
 
   async function handleSubmit(
     action: (params: Record<string, any>) => Promise<any>,
@@ -35,7 +36,7 @@ function DynamicModalForm() {
       message.success(messageSuccess);
       form.resetFields();
       dispatch(modalUpdate({ show: false }));
-      dispatch(globalReset());
+      revalidator.revalidate();
     }
 
     setLoading(false);
