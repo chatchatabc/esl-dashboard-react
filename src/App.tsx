@@ -8,7 +8,13 @@ import { httpBatchLink } from "@trpc/client";
 
 function App() {
   const [queryClient] = React.useState(() => {
-    return new QueryClient();
+    return new QueryClient({
+      defaultOptions: {
+        queries: {
+          staleTime: 60000,
+        },
+      },
+    });
   });
   const [trpcClient] = React.useState(() => {
     return trpc.createClient({
@@ -34,7 +40,7 @@ function App() {
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <ReduxProvider store={store}>
-          <RouteManager queryClient={queryClient} />
+          <RouteManager />
         </ReduxProvider>
       </QueryClientProvider>
     </trpc.Provider>

@@ -12,14 +12,12 @@ import dayjs from "dayjs";
 import CourseForm from "./CourseForm";
 import TeacherForm from "./TeacherForm";
 import BookingManyForm from "./BookingManyForm";
-import { useRevalidator } from "react-router-dom";
 
 function DynamicModalForm() {
   const [loading, setLoading] = React.useState(false);
   const [form] = useForm();
   const modal = useAppSelector((state) => state.modal);
   const dispatch = useAppDispatch();
-  const revalidator = useRevalidator();
 
   async function handleSubmit(
     action: (params: Record<string, any>) => Promise<any>,
@@ -36,7 +34,6 @@ function DynamicModalForm() {
       message.success(messageSuccess);
       form.resetFields();
       dispatch(modalUpdate({ show: false }));
-      revalidator.revalidate();
     }
 
     setLoading(false);

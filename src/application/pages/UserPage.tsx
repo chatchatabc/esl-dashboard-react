@@ -1,12 +1,17 @@
 import { useAppDispatch } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
-import { userGetAll } from "../../domain/services/userService";
-import { LoaderFunctionArgs, useLoaderData } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import UserTable from "../components/tables/UserTable";
+import { trpc } from "../../domain/infras/trpcActions";
 
 export default function UserPage() {
+  const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const data = useLoaderData() as any;
+
+  const page = Number(searchParams.get("page") ?? "1");
+  const size = Number(searchParams.get("size") ?? "10");
+
+  const userQuery = trpc.user.getAll.useQuery({ page, size });
 
   return (
     <section className="p-4">
@@ -34,26 +39,17 @@ export default function UserPage() {
 
         {/* Table */}
         <section>
-          <UserTable data={data} />
+          <UserTable
+            dataSource={userQuery.data?.content ?? []}
+            pagination={{
+              pageSize: size,
+              current: page,
+              total: userQuery.data?.totalElements,
+            }}
+            loading={userQuery.isLoading}
+          />
         </section>
       </section>
     </section>
   );
-}
-
-export async function userLoader({ request }: LoaderFunctionArgs) {
-  const url = new URL(request.url);
-  const page = Number(url.searchParams.get("page") ?? "1");
-  const size = Number(url.searchParams.get("size") ?? "10");
-
-  const data = await userGetAll({
-    page,
-    size,
-  });
-
-  if (!data) {
-    throw new Error("Something went wrong");
-  }
-
-  return data;
 }

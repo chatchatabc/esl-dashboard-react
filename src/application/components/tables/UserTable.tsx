@@ -1,6 +1,5 @@
 import { useAppDispatch } from "../../redux/hooks";
-import Table, { ColumnsType } from "antd/es/table";
-import { CommonContent } from "../../../../../esl-workers/src/domain/models/CommonModel";
+import Table, { ColumnsType, TableProps } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 import { modalUpdate } from "../../redux/features/modalSlice";
 import { Modal, message } from "antd";
@@ -11,11 +10,9 @@ import {
 } from "../../../domain/services/userService";
 import { utilFormatDateAndTime } from "../../../domain/services/utilService";
 
-type Props = {
-  data: CommonContent<User>;
-};
+type Props = TableProps<any>;
 
-function UserTable({ data }: Props) {
+function UserTable({ pagination, ...props }: Props) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -170,15 +167,13 @@ function UserTable({ data }: Props) {
     <Table
       rowKey={(record: User) => record.id}
       columns={columns}
-      dataSource={data.content}
       pagination={{
-        pageSize: data.size,
-        total: data.totalElements,
-        current: data.page,
+        ...pagination,
         onChange: (page, size) => {
           navigate(`?page=${page}&size=${size}`);
         },
       }}
+      {...props}
     />
   );
 }

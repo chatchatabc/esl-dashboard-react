@@ -1,12 +1,9 @@
-import { Button, Form, FormInstance, Input, Select } from "antd";
+import { Button, Form, FormInstance, Input, Select, message } from "antd";
+import { userOptionStatus } from "../../../domain/services/userService";
+import { trpc } from "../../../domain/infras/trpcActions";
 import React from "react";
-import { UserRole } from "../../../../../esl-workers/src/domain/models/UserModel";
-import {
-  userCreate,
-  userGetAllRole,
-  userOptionStatus,
-  userUpdate,
-} from "../../../domain/services/userService";
+import { useAppDispatch } from "../../redux/hooks";
+import { modalUpdate } from "../../redux/features/modalSlice";
 
 type Props = {
   loading: boolean;
@@ -19,26 +16,35 @@ type Props = {
   formRef: FormInstance;
 };
 
-function UserForm({ loading, handleSubmit, formRef }: Props) {
-  const [localLoading, setLocalLoading] = React.useState(true);
-  const [roles, setRoles] = React.useState<UserRole[]>([]);
+function UserForm({ loading, formRef }: Props) {
+  const dispatch = useAppDispatch();
+  const trpcClient = trpc.useContext();
+  const userUpdateMutation = trpc.user.update.useMutation();
+  const userCreateMutation = trpc.user.create.useMutation();
+  const rolesQuery = trpc.role.getAll.useQuery({
+    page: 1,
+    size: 100000,
+  });
 
   React.useEffect(() => {
-    if (localLoading) {
-      (async () => {
-        const res = await userGetAllRole({
-          page: 1,
-          size: 10000,
-        });
-
-        if (res) {
-          setRoles(res.content);
-        }
-
-        setLocalLoading(false);
-      })();
+    if (userUpdateMutation.status === "success") {
+      message.success("Successfully updated user!");
+      dispatch(modalUpdate({ show: false }));
+      trpcClient.user.getAll.invalidate();
+    } else if (userUpdateMutation.status === "error") {
+      message.error("Failed to update user!");
     }
-  }, []);
+  }, [userUpdateMutation.status]);
+
+  React.useEffect(() => {
+    if (userCreateMutation.status === "success") {
+      message.success("Successfully create user!");
+      dispatch(modalUpdate({ show: false }));
+      trpcClient.user.getAll.invalidate();
+    } else if (userCreateMutation.status === "error") {
+      message.error("Failed to create user!");
+    }
+  }, [userCreateMutation.status]);
 
   return (
     <Form
@@ -47,19 +53,9 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
       onFinish={(e) => {
         e.credits = Number(e.credits);
         if (e.id) {
-          handleSubmit(
-            userUpdate,
-            e,
-            "Successfully updated user!",
-            "Failed to update user!"
-          );
+          userUpdateMutation.mutate(e);
         } else {
-          handleSubmit(
-            userCreate,
-            e,
-            "Successfully created user!",
-            "Failed to create user!"
-          );
+          userCreateMutation.mutate(e);
         }
       }}
     >
@@ -143,12 +139,13 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
           label="User Role"
         >
           <Select
-            options={roles.map((role) => {
+            options={rolesQuery.data?.content.map((role) => {
               return {
                 label: role.name,
                 value: role.id,
               };
             })}
+            loading={rolesQuery.isLoading}
             placeholder="User Role"
           />
         </Form.Item>
