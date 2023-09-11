@@ -3,6 +3,7 @@ import { modalUpdate } from "../redux/features/modalSlice";
 import { userGetAll } from "../../domain/services/userService";
 import { LoaderFunctionArgs, useLoaderData } from "react-router-dom";
 import UserTable from "../components/tables/UserTable";
+import { QueryClient } from "@tanstack/react-query";
 
 export default function UserPage() {
   const dispatch = useAppDispatch();
@@ -41,18 +42,26 @@ export default function UserPage() {
   );
 }
 
-export async function userLoader({ request }: LoaderFunctionArgs) {
+export async function userLoader(
+  { request }: LoaderFunctionArgs,
+  queryClient: QueryClient
+) {
   const url = new URL(request.url);
   const page = Number(url.searchParams.get("page") ?? "1");
   const size = Number(url.searchParams.get("size") ?? "10");
 
-  const data = await userGetAll({
-    page,
-    size,
-  });
+  let data = queryClient.getQueryData(["users", { page, size }]);
 
   if (!data) {
-    throw new Error("Something went wrong");
+    data = await queryClient.fetchQuery({
+      queryKey: ["users", { page, size }],
+      queryFn: async () => {
+        return await userGetAll({
+          page,
+          size,
+        });
+      },
+    });
   }
 
   return data;
