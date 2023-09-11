@@ -5,7 +5,7 @@ import { LoaderFunctionArgs, useLoaderData } from "react-router-dom";
 import UserTable from "../components/tables/UserTable";
 import { QueryClient } from "@tanstack/react-query";
 import { CommonContent } from "../../../../esl-workers/src/domain/models/CommonModel";
-import { User } from "../../domain/models/UserModel";
+import { User } from "../../../../esl-workers/src/domain/models/UserModel";
 
 export default function UserPage() {
   const dispatch = useAppDispatch();
