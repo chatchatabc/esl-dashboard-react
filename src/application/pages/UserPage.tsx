@@ -4,10 +4,12 @@ import { userGetAll } from "../../domain/services/userService";
 import { LoaderFunctionArgs, useLoaderData } from "react-router-dom";
 import UserTable from "../components/tables/UserTable";
 import { QueryClient } from "@tanstack/react-query";
+import { CommonContent } from "../../../../esl-workers/src/domain/models/CommonModel";
+import { User } from "../../domain/models/UserModel";
 
 export default function UserPage() {
   const dispatch = useAppDispatch();
-  const data = useLoaderData() as any;
+  const data = useLoaderData() as CommonContent<User>;
 
   return (
     <section className="p-4">
