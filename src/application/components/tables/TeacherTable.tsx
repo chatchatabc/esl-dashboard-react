@@ -1,13 +1,16 @@
-import DynamicTable from "../DynamicTable";
-import { teacherGetAll } from "../../../domain/services/teacherService";
-import { ColumnsType } from "antd/es/table";
+import Table, { ColumnsType, TableProps } from "antd/es/table";
 import { Teacher } from "../../../../../esl-workers/src/domain/models/TeacherModel";
 import { utilFormatDateAndTime } from "../../../domain/services/utilService";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/hooks";
 import { modalUpdate } from "../../redux/features/modalSlice";
+import { CommonContent } from "../../../../../esl-workers/src/domain/models/CommonModel";
 
-function TeacherTable() {
+type Props = TableProps<any> & {
+  data?: CommonContent<Teacher> | null;
+};
+
+function TeacherTable({ data, ...props }: Props) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -90,10 +93,19 @@ function TeacherTable() {
   ];
 
   return (
-    <DynamicTable
-      getData={teacherGetAll}
+    <Table
+      dataSource={data?.content}
       columns={columns}
+      pagination={{
+        total: data?.totalElements,
+        pageSize: data?.size,
+        current: data?.page,
+        onChange: (page, size) => {
+          navigate(`?page=${page}&size=${size}`);
+        },
+      }}
       rowKey={(record: Teacher) => record.id}
+      {...props}
     />
   );
 }

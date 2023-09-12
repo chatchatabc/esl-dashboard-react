@@ -1,9 +1,28 @@
+import { useSearchParams } from "react-router-dom";
 import TeacherTable from "../components/tables/TeacherTable";
 import { modalUpdate } from "../redux/features/modalSlice";
 import { useAppDispatch } from "../redux/hooks";
+import { useQuery } from "@tanstack/react-query";
+import { teacherGetAll } from "../../domain/services/teacherService";
 
 function TeacherPage() {
   const dispatch = useAppDispatch();
+  const [searchParams] = useSearchParams();
+
+  const page = Number(searchParams.get("page") ?? "1");
+  const size = Number(searchParams.get("size") ?? "10");
+
+  const teacherQuery = useQuery({
+    queryKey: ["users", { page, size }],
+    queryFn: async () => {
+      const data = await teacherGetAll({
+        page,
+        size,
+      });
+
+      return data;
+    },
+  });
 
   return (
     <section className="p-4">
@@ -28,7 +47,7 @@ function TeacherPage() {
         </header>
 
         <section>
-          <TeacherTable />
+          <TeacherTable data={teacherQuery.data} />
         </section>
       </section>
     </section>
