@@ -16,6 +16,7 @@ import {
   bookingOptionStatus,
 } from "../../domain/services/bookingService";
 import { Select } from "antd";
+import { logsCreditGetAllByUser } from "../../domain/services/logsService";
 
 const statusList = userOptionStatus();
 const bookingStatusList = bookingOptionStatus();
@@ -60,6 +61,10 @@ function UserProfilePage() {
     page: 1,
     size: 10,
   });
+  const [creditsFilter, setCreditsFilter] = React.useState({
+    page: 1,
+    size: 10,
+  });
 
   const userQuery = useQuery({
     queryKey: ["user", { username }],
@@ -75,6 +80,22 @@ function UserProfilePage() {
     queryKey: ["bookings", { ...bookingsFilter, userId: user?.id }],
     queryFn: async () => {
       const data = await bookingGetAll({ ...bookingsFilter, userId: user?.id });
+      return data;
+    },
+  });
+
+  const creditsQuery = useQuery({
+    queryKey: ["credits", { ...creditsFilter, userId: user?.id }],
+    queryFn: async () => {
+      const userId = user?.id;
+      if (!userId) {
+        return { content: [], page: 1, totalElements: 0, size: 10 };
+      }
+
+      const data = await logsCreditGetAllByUser({
+        ...creditsFilter,
+        userId,
+      });
       return data;
     },
   });
@@ -315,7 +336,18 @@ function UserProfilePage() {
         </header>
 
         <section>
-          <LogsCreditTable userId={user.id} />
+          <LogsCreditTable
+            data={creditsQuery.data}
+            pagination={{
+              onChange: (page, size) => {
+                setCreditsFilter({
+                  ...creditsFilter,
+                  page,
+                  size,
+                });
+              },
+            }}
+          />
         </section>
       </section>
     </section>
