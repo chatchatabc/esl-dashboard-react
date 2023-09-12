@@ -60,6 +60,7 @@ function UserProfilePage() {
     day: undefined,
     page: 1,
     size: 10,
+    sort: "start,DESC",
   });
   const [creditsFilter, setCreditsFilter] = React.useState({
     page: 1,
