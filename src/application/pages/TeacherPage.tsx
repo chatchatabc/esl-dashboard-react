@@ -13,7 +13,7 @@ function TeacherPage() {
   const size = Number(searchParams.get("size") ?? "10");
 
   const teacherQuery = useQuery({
-    queryKey: ["users", { page, size }],
+    queryKey: ["teachers", { page, size }],
     queryFn: async () => {
       const data = await teacherGetAll({
         page,
