@@ -67,7 +67,7 @@ function UserProfilePage() {
   });
 
   const userQuery = useQuery({
-    queryKey: ["user", { username }],
+    queryKey: ["users", { username }],
     queryFn: async () => {
       const data = await userGetByUsername({ username });
       return data;

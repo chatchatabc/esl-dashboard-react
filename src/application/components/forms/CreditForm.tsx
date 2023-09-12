@@ -7,7 +7,8 @@ type Props = {
     action: (params: any) => Promise<any>,
     values: any,
     success: string,
-    fail: string
+    fail: string,
+    queryKey: any[][]
   ) => Promise<any>;
   formRef: FormInstance;
 };
@@ -25,7 +26,8 @@ function CreditForm({ loading, handleSubmit, formRef }: Props) {
           creditAdd,
           e,
           "Successfully added credit",
-          "Failed to add credit"
+          "Failed to add credit",
+          [["credits"], ["users"]]
         );
       }}
     >
