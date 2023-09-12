@@ -1,7 +1,7 @@
 import { useAppDispatch } from "../../redux/hooks";
 import Table, { ColumnsType, TableProps } from "antd/es/table";
 import { CommonContent } from "../../../../../esl-workers/src/domain/models/CommonModel";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { modalUpdate } from "../../redux/features/modalSlice";
 import { Modal, message } from "antd";
 import { User } from "../../../../../esl-workers/src/domain/models/UserModel";
@@ -18,6 +18,7 @@ type Props = TableProps<any> & {
 function UserTable({ data, ...props }: Props) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const columns: ColumnsType<User> = [
     {
@@ -176,7 +177,10 @@ function UserTable({ data, ...props }: Props) {
         total: data?.totalElements,
         current: data?.page,
         onChange: (page, size) => {
-          navigate(`?page=${page}&size=${size}`);
+          const params = new URLSearchParams(searchParams);
+          params.set("page", page.toString());
+          params.set("size", size.toString());
+          navigate(`?${params.toString()}`);
         },
       }}
       {...props}
