@@ -1,12 +1,11 @@
 import { Button, Form, FormInstance, Input, Select } from "antd";
-import React from "react";
-import { UserRole } from "../../../../../esl-workers/src/domain/models/UserModel";
 import {
   userCreate,
   userGetAllRole,
   userOptionStatus,
   userUpdate,
 } from "../../../domain/services/userService";
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {
   loading: boolean;
@@ -14,31 +13,20 @@ type Props = {
     action: (params: any) => Promise<any>,
     values: any,
     success: string,
-    fail: string
+    fail: string,
+    queryKey?: any[]
   ) => Promise<any>;
   formRef: FormInstance;
 };
 
 function UserForm({ loading, handleSubmit, formRef }: Props) {
-  const [localLoading, setLocalLoading] = React.useState(true);
-  const [roles, setRoles] = React.useState<UserRole[]>([]);
-
-  React.useEffect(() => {
-    if (localLoading) {
-      (async () => {
-        const res = await userGetAllRole({
-          page: 1,
-          size: 10000,
-        });
-
-        if (res) {
-          setRoles(res.content);
-        }
-
-        setLocalLoading(false);
-      })();
-    }
-  }, []);
+  const rolesQuery = useQuery({
+    queryKey: ["roles"],
+    queryFn: async () => {
+      const data = await userGetAllRole({ page: 1, size: 10000 });
+      return data;
+    },
+  });
 
   return (
     <Form
@@ -51,14 +39,16 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
             userUpdate,
             e,
             "Successfully updated user!",
-            "Failed to update user!"
+            "Failed to update user!",
+            ["users"]
           );
         } else {
           handleSubmit(
             userCreate,
             e,
             "Successfully created user!",
-            "Failed to create user!"
+            "Failed to create user!",
+            ["users"]
           );
         }
       }}
@@ -143,7 +133,7 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
           label="User Role"
         >
           <Select
-            options={roles.map((role) => {
+            options={rolesQuery.data?.content.map((role) => {
               return {
                 label: role.name,
                 value: role.id,

@@ -12,20 +12,21 @@ import dayjs from "dayjs";
 import CourseForm from "./CourseForm";
 import TeacherForm from "./TeacherForm";
 import BookingManyForm from "./BookingManyForm";
-import { useRevalidator } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 function DynamicModalForm() {
   const [loading, setLoading] = React.useState(false);
   const [form] = useForm();
   const modal = useAppSelector((state) => state.modal);
   const dispatch = useAppDispatch();
-  const revalidator = useRevalidator();
+  const queryClient = useQueryClient();
 
   async function handleSubmit(
     action: (params: Record<string, any>) => Promise<any>,
     params: Record<string, any>,
     messageSuccess: string,
-    messageFail: string
+    messageFail: string,
+    queryKey?: any[]
   ) {
     setLoading(true);
 
@@ -36,7 +37,11 @@ function DynamicModalForm() {
       message.success(messageSuccess);
       form.resetFields();
       dispatch(modalUpdate({ show: false }));
-      revalidator.revalidate();
+      if (queryKey) {
+        queryClient.invalidateQueries({
+          queryKey,
+        });
+      }
     }
 
     setLoading(false);
