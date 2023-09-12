@@ -14,7 +14,8 @@ type Props = {
     action: (params: any) => Promise<any>,
     values: any,
     success: string,
-    fail: string
+    fail: string,
+    queryKeys: any[][]
   ) => Promise<any>;
   formRef: FormInstance;
 };
@@ -51,14 +52,16 @@ function TeacherForm({ loading, handleSubmit, formRef }: Props) {
             teacherUpdate,
             e,
             "Successfully updated teacher",
-            "Failed to update teacher"
+            "Failed to update teacher",
+            [["teachers"]]
           );
         } else {
           handleSubmit(
             teacherCreate,
             e,
             "Successfully created teacher",
-            "Failed to create teacher"
+            "Failed to create teacher",
+            [["teachers"]]
           );
         }
       }}
