@@ -26,7 +26,7 @@ function DynamicModalForm() {
     params: Record<string, any>,
     messageSuccess: string,
     messageFail: string,
-    queryKey?: any[]
+    queryKeys?: any[][]
   ) {
     setLoading(true);
 
@@ -37,9 +37,11 @@ function DynamicModalForm() {
       message.success(messageSuccess);
       form.resetFields();
       dispatch(modalUpdate({ show: false }));
-      if (queryKey) {
-        queryClient.invalidateQueries({
-          queryKey,
+      if (queryKeys) {
+        queryKeys.forEach((queryKey) => {
+          queryClient.invalidateQueries({
+            queryKey,
+          });
         });
       }
     }
