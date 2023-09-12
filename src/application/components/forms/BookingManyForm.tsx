@@ -11,7 +11,8 @@ type Props = {
     action: (params: any) => Promise<any>,
     values: any,
     success: string,
-    fail: string
+    fail: string,
+    queryKey?: any[]
   ) => Promise<any>;
   formRef: FormInstance;
 };
@@ -26,7 +27,8 @@ function BookingManyForm({ loading, handleSubmit, formRef }: Props) {
           bookingUpdateStatusMany,
           e,
           "Successfully updated booking status.",
-          "Failed to update booking status."
+          "Failed to update booking status.",
+          ["bookings"]
         );
       }}
     >
