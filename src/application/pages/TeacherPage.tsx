@@ -47,7 +47,10 @@ function TeacherPage() {
         </header>
 
         <section>
-          <TeacherTable data={teacherQuery.data} />
+          <TeacherTable
+            loading={teacherQuery.isLoading}
+            data={teacherQuery.data}
+          />
         </section>
       </section>
     </section>
