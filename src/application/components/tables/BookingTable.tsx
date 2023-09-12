@@ -14,6 +14,17 @@ const statusOptions = bookingOptionStatus();
 function BookingTable({ data, ...props }: Props) {
   const columns: ColumnsType<Booking> = [
     {
+      key: "dayOfWeek",
+      title: "Day",
+      render: (record: Booking) => {
+        const date = new Date(record.start);
+        const dateFormat = new Intl.DateTimeFormat("zn-CH", {
+          weekday: "short",
+        });
+        return <p>{dateFormat.format(date)}</p>;
+      },
+    },
+    {
       key: "start",
       title: "Start Schedule",
       render: (record: Booking) => {

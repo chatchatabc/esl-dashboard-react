@@ -257,6 +257,12 @@ function UserProfilePage() {
             placeholder="Day"
             onChange={(e) => {
               console.log(e);
+              setBookingsFilter({
+                ...bookingsFilter,
+                page: 1,
+                day: e,
+              });
+              setBookingIds([]);
             }}
             options={days}
             allowClear
@@ -265,6 +271,7 @@ function UserProfilePage() {
 
         <section>
           <BookingTable
+            loading={bookingsQuery.isLoading}
             rowSelection={{
               selectedRowKeys: bookingIds,
               onChange: (selectedRowKeys: any[]) => {
