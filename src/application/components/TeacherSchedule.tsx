@@ -14,9 +14,9 @@ import {
 } from "../../domain/services/scheduleService";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
-import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
 import { bookingGetAll } from "../../domain/services/bookingService";
 import { CalendarApi, EventSourceInput } from "@fullcalendar/core/index.js";
+import { useQuery } from "@tanstack/react-query";
 type Props = {
   teacherId: number;
 };
@@ -35,8 +35,25 @@ function TeacherSchedule({ teacherId }: Props) {
   const [calendarTitle, setCalendarTitle] = React.useState("");
   const [editing, setEditing] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+
+  const bookingsQuery = useQuery({
+    queryKey: [
+      "bookings",
+      { teacherId, page: 1, size: 1000, status: [1, 2, 3, 5] },
+    ],
+    queryFn: async () => {
+      const data = await bookingGetAll({
+        page: 1,
+        size: 1000,
+        status: [1, 2, 3, 5],
+        teacherId,
+      });
+
+      return data;
+    },
+  });
+
   const [schedules, setSchedules] = React.useState<Schedule[]>([]);
-  const [bookings, setBookings] = React.useState<Booking[]>([]);
   const [events, setEvents] = React.useState<any[]>([]);
   const dispatch = useAppDispatch();
   const global = useAppSelector((state) => state.global);
@@ -119,13 +136,7 @@ function TeacherSchedule({ teacherId }: Props) {
           page: 1,
           size: 1000,
         });
-        const resBookings = await bookingGetAll({
-          teacherId,
-          page: 1,
-          size: 1000,
-        });
 
-        setBookings(resBookings?.content ?? []);
         setSchedules(resSchedule?.content ?? []);
 
         setLoading(false);
@@ -156,7 +167,7 @@ function TeacherSchedule({ teacherId }: Props) {
       .flat();
 
     if (!editing) {
-      bookings.forEach((booking) => {
+      bookingsQuery.data?.content.forEach((booking) => {
         const start = new Date(booking.start);
         const end = new Date(booking.end);
         const color = bookingColor[booking.status as keyof typeof bookingColor];
@@ -173,7 +184,7 @@ function TeacherSchedule({ teacherId }: Props) {
     }
 
     setEvents(newEvents);
-  }, [schedules, editing, calendarTitle]);
+  }, [schedules, editing, calendarTitle, bookingsQuery.data?.content]);
 
   return (
     <section>
@@ -224,7 +235,7 @@ function TeacherSchedule({ teacherId }: Props) {
       </header>
 
       <section className={`override ${editing ? "" : "overlap"} relative`}>
-        {loading && (
+        {(loading || bookingsQuery.isLoading) && (
           <div className="absolute w-full h-full flex items-center justify-center z-10 bg-white bg-opacity-50">
             <div className="ease-linear animate-spin rounded-full border-y-2 border-black h-20 w-20"></div>
           </div>
