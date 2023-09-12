@@ -1,19 +1,17 @@
-import DynamicTable from "../DynamicTable";
 import { ColumnsType, TableProps } from "antd/es/table";
 import { utilFormatDateAndTime } from "../../../domain/services/utilService";
 import { Booking } from "../../../../../esl-workers/src/domain/models/BookingModel";
-import {
-  bookingGetAll,
-  bookingOptionStatus,
-} from "../../../domain/services/bookingService";
+import { bookingOptionStatus } from "../../../domain/services/bookingService";
+import { CommonContent } from "../../../../../esl-workers/src/domain/models/CommonModel";
+import DynamicTable from "./DynamicTable";
 
 type Props = {
-  userId: number;
+  data?: CommonContent<Booking> | null;
 } & TableProps<any>;
 
 const statusOptions = bookingOptionStatus();
 
-function BookingTable({ userId, ...props }: Props) {
+function BookingTable({ data, ...props }: Props) {
   const columns: ColumnsType<Booking> = [
     {
       key: "start",
@@ -78,9 +76,7 @@ function BookingTable({ userId, ...props }: Props) {
     <DynamicTable
       rowKey={(record: Booking) => record.id}
       columns={columns}
-      getData={(values: any) => {
-        return bookingGetAll({ ...values, userId, status: "" });
-      }}
+      data={data}
       {...props}
     />
   );

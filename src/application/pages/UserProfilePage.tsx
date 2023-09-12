@@ -5,43 +5,81 @@ import {
   userGetByUsername,
   userOptionStatus,
 } from "../../domain/services/userService";
-import { User } from "../../../../esl-workers/src/domain/models/UserModel";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { useAppDispatch } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
 import LogsCreditTable from "../components/tables/LogsCreditTable";
 import BookingTable from "../components/tables/BookingTable";
-import { Modal, message } from "antd";
-import { bookingUpdateStatusMany } from "../../domain/services/bookingService";
-import { globalReset } from "../redux/features/globalSlice";
 import EditIcon from "../assets/EditIcon";
+import { useQuery } from "@tanstack/react-query";
+import {
+  bookingGetAll,
+  bookingOptionStatus,
+} from "../../domain/services/bookingService";
+import { Select } from "antd";
+
+const statusList = userOptionStatus();
+const bookingStatusList = bookingOptionStatus();
+const days = [
+  {
+    label: "Sunday",
+    value: 0,
+  },
+  {
+    label: "Monday",
+    value: 1,
+  },
+  {
+    label: "Tuesday",
+    value: 2,
+  },
+  {
+    label: "Wednesday",
+    value: 3,
+  },
+  {
+    label: "Thursday",
+    value: 4,
+  },
+  {
+    label: "Friday",
+    value: 5,
+  },
+  {
+    label: "Saturday",
+    value: 6,
+  },
+];
 
 function UserProfilePage() {
   const { username = "" } = useParams();
-  const [loading, setLoading] = React.useState(true);
-  const [user, setUser] = React.useState<User | null>(null);
-  const [bookingIds, setBookingIds] = React.useState<number[]>([]);
-  const statusList = userOptionStatus();
-  const status = statusList.find((item) => item.value === user?.status);
   const dispatch = useAppDispatch();
-  const global = useAppSelector((state) => state.global);
+  const [bookingIds, setBookingIds] = React.useState<number[]>([]);
+  const [bookingsFilter, setBookingsFilter] = React.useState({
+    status: [1, 2, 3, 4],
+    day: undefined,
+    page: 1,
+    size: 10,
+  });
 
-  React.useEffect(() => {
-    if (loading) {
-      (async () => {
-        const res = await userGetByUsername({ username });
-        if (res) {
-          setUser(res);
-        }
-        setLoading(false);
-      })();
-    }
-  }, [loading]);
+  const userQuery = useQuery({
+    queryKey: ["user", { username }],
+    queryFn: async () => {
+      const data = await userGetByUsername({ username });
+      return data;
+    },
+  });
+  const user = userQuery.data;
+  const userStatus = statusList.find((item) => item.value === user?.status);
 
-  React.useEffect(() => {
-    setLoading(true);
-  }, [global.reset]);
+  const bookingsQuery = useQuery({
+    queryKey: ["bookings", { ...bookingsFilter, userId: user?.id }],
+    queryFn: async () => {
+      const data = await bookingGetAll({ ...bookingsFilter, userId: user?.id });
+      return data;
+    },
+  });
 
-  if (loading) {
+  if (userQuery.isLoading) {
     return (
       <div className="flex-1 py-24">
         <div className="flex justify-center">
@@ -163,7 +201,7 @@ function UserProfilePage() {
             </header>
 
             <section>
-              <p>{status?.label}</p>
+              <p>{userStatus?.label}</p>
             </section>
           </section>
         </section>
@@ -197,6 +235,34 @@ function UserProfilePage() {
           </button>
         </header>
 
+        <section className="border-t flex p-4 gap-2 flex-wrap">
+          <Select
+            className="min-w-[250px]"
+            placeholder="Status"
+            mode="multiple"
+            onChange={(e) => {
+              setBookingsFilter({
+                ...bookingsFilter,
+                page: 1,
+                status: e.length ? e : [1, 2, 3, 4],
+              });
+              setBookingIds([]);
+            }}
+            options={bookingStatusList}
+            allowClear
+          />
+
+          <Select
+            className="min-w-[250px]"
+            placeholder="Day"
+            onChange={(e) => {
+              console.log(e);
+            }}
+            options={days}
+            allowClear
+          />
+        </section>
+
         <section>
           <BookingTable
             rowSelection={{
@@ -205,7 +271,16 @@ function UserProfilePage() {
                 setBookingIds(selectedRowKeys);
               },
             }}
-            userId={user.id}
+            pagination={{
+              onChange: (page, size) => {
+                setBookingsFilter({
+                  ...bookingsFilter,
+                  page,
+                  size,
+                });
+              },
+            }}
+            data={bookingsQuery.data}
           />
         </section>
       </section>
