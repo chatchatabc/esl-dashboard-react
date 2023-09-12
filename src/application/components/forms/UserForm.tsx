@@ -14,7 +14,7 @@ type Props = {
     values: any,
     success: string,
     fail: string,
-    queryKey?: any[]
+    queryKey?: any[][]
   ) => Promise<any>;
   formRef: FormInstance;
 };
@@ -40,7 +40,7 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
             e,
             "Successfully updated user!",
             "Failed to update user!",
-            ["users"]
+            [["users"]]
           );
         } else {
           handleSubmit(
@@ -48,7 +48,7 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
             e,
             "Successfully created user!",
             "Failed to create user!",
-            ["users"]
+            [["users"]]
           );
         }
       }}
