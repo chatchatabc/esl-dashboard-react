@@ -1,15 +1,28 @@
 import { useAppDispatch } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
 import { userGetAll } from "../../domain/services/userService";
-import { LoaderFunctionArgs, useLoaderData } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import UserTable from "../components/tables/UserTable";
-import { QueryClient } from "@tanstack/react-query";
-import { CommonContent } from "../../../../esl-workers/src/domain/models/CommonModel";
-import { User } from "../../../../esl-workers/src/domain/models/UserModel";
+import { useQuery } from "@tanstack/react-query";
 
 export default function UserPage() {
   const dispatch = useAppDispatch();
-  const data = useLoaderData() as CommonContent<User>;
+  const [searchParams] = useSearchParams();
+
+  const page = Number(searchParams.get("page") ?? "1");
+  const size = Number(searchParams.get("size") ?? "10");
+
+  const userQuery = useQuery({
+    queryKey: ["users", { page, size }],
+    queryFn: async () => {
+      const data = await userGetAll({
+        page,
+        size,
+      });
+
+      return data;
+    },
+  });
 
   return (
     <section className="p-4">
@@ -37,34 +50,9 @@ export default function UserPage() {
 
         {/* Table */}
         <section>
-          <UserTable data={data} />
+          <UserTable loading={userQuery.isLoading} data={userQuery.data} />
         </section>
       </section>
     </section>
   );
-}
-
-export async function userLoader(
-  { request }: LoaderFunctionArgs,
-  queryClient: QueryClient
-) {
-  const url = new URL(request.url);
-  const page = Number(url.searchParams.get("page") ?? "1");
-  const size = Number(url.searchParams.get("size") ?? "10");
-
-  let data = queryClient.getQueryData(["users", { page, size }]);
-
-  if (!data) {
-    data = await queryClient.fetchQuery({
-      queryKey: ["users", { page, size }],
-      queryFn: async () => {
-        return await userGetAll({
-          page,
-          size,
-        });
-      },
-    });
-  }
-
-  return data;
 }

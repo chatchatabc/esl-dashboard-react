@@ -4,71 +4,67 @@ import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import MessagePage from "./pages/MessagePage";
 import MessageTemplatePage from "./pages/MessageTemplatePage";
-import UserPage, { userLoader } from "./pages/UserPage";
+import UserPage from "./pages/UserPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import TeacherPage from "./pages/TeacherPage";
 import TeacherProfilePage from "./pages/TeacherProfilePage";
-import { useQueryClient } from "@tanstack/react-query";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      {
+        path: "home",
+        element: <h1>Home</h1>,
+      },
+      {
+        path: "users",
+        children: [
+          {
+            path: "",
+            element: <UserPage />,
+          },
+          {
+            path: ":username",
+            element: <UserProfilePage />,
+          },
+        ],
+      },
+      {
+        path: "teachers",
+        children: [
+          {
+            path: "",
+            element: <TeacherPage />,
+          },
+          {
+            path: ":username",
+            element: <TeacherProfilePage />,
+          },
+        ],
+      },
+      {
+        path: "messages",
+        element: <MessagePage />,
+      },
+      {
+        path: "message-templates",
+        element: <MessageTemplatePage />,
+      },
+    ],
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
+  },
+]);
 
 function RouteManager() {
-  const queryClient = useQueryClient();
-
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <MainLayout />,
-      children: [
-        {
-          path: "home",
-          element: <h1>Home</h1>,
-        },
-        {
-          path: "users",
-          children: [
-            {
-              path: "",
-              loader: (args) => userLoader(args, queryClient),
-              element: <UserPage />,
-            },
-            {
-              path: ":username",
-              element: <UserProfilePage />,
-            },
-          ],
-        },
-        {
-          path: "teachers",
-          children: [
-            {
-              path: "",
-              element: <TeacherPage />,
-            },
-            {
-              path: ":username",
-              element: <TeacherProfilePage />,
-            },
-          ],
-        },
-        {
-          path: "messages",
-          element: <MessagePage />,
-        },
-        {
-          path: "message-templates",
-          element: <MessageTemplatePage />,
-        },
-      ],
-    },
-    {
-      path: "/login",
-      element: <LoginPage />,
-    },
-    {
-      path: "*",
-      element: <NotFoundPage />,
-    },
-  ]);
-
   return <RouterProvider router={router} />;
 }
 
