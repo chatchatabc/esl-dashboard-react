@@ -18,7 +18,8 @@ type Props = {
     action: (params: any) => Promise<any>,
     values: any,
     success: string,
-    fail: string
+    fail: string,
+    queryKeys: any[][]
   ) => Promise<any>;
   formRef: FormInstance;
 };
@@ -118,7 +119,8 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
             messageUpdate,
             e,
             "Successfully updated",
-            "Failed to update"
+            "Failed to update",
+            [["messages"]]
           );
         } else if (e.type !== 1) {
           handleSubmit(
@@ -129,10 +131,13 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
               : "Successfully created recurring message",
             e.sendAt
               ? "Failed to schedule message"
-              : "Failed to create recurring message"
+              : "Failed to create recurring message",
+            [["messages"]]
           );
         } else {
-          handleSubmit(messageSend, e, "Successfully sent", "Failed to send");
+          handleSubmit(messageSend, e, "Successfully sent", "Failed to send", [
+            ["messages"],
+          ]);
         }
       }}
     >

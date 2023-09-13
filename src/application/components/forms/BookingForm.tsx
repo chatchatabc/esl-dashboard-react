@@ -19,7 +19,7 @@ type Props = {
     values: any,
     success: string,
     fail: string,
-    queryKeys: any[]
+    queryKeys: any[][]
   ) => Promise<any>;
   formRef: FormInstance;
 };
