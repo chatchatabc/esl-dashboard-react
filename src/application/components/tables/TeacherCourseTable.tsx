@@ -1,16 +1,15 @@
-import DynamicTable from "../DynamicTable";
-import { ColumnsType } from "antd/es/table";
-import { utilFormatCurrency } from "../../../domain/services/utilService";
+import DynamicTable from "./DynamicTable";
+import { ColumnsType, TableProps } from "antd/es/table";
 import { Course } from "../../../../../esl-workers/src/domain/models/CourseModel";
-import { courseGetAll } from "../../../domain/services/courseService";
 import { useAppDispatch } from "../../redux/hooks";
 import { modalUpdate } from "../../redux/features/modalSlice";
+import { CommonContent } from "../../../../../esl-workers/src/domain/models/CommonModel";
 
-type Props = {
-  teacherId: number;
+type Props = TableProps<any> & {
+  data?: CommonContent | null;
 };
 
-function TeacherCourseTable({ teacherId }: Props) {
+function TeacherCourseTable({ data, ...props }: Props) {
   const dispatch = useAppDispatch();
 
   const columns: ColumnsType<Course> = [
@@ -62,9 +61,8 @@ function TeacherCourseTable({ teacherId }: Props) {
     <DynamicTable
       rowKey={(record: Course) => record.id}
       columns={columns}
-      getData={(values: any) => {
-        return courseGetAll({ ...values, teacherId });
-      }}
+      data={data}
+      {...props}
     />
   );
 }
