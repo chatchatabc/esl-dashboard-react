@@ -28,23 +28,20 @@ const bookingColor = {
   3: "green",
 };
 
-// Get date of this week Sunday
-const date = new Date();
-date.setDate(date.getDate() - date.getDay());
-date.setHours(0);
-date.setMinutes(0);
-date.setSeconds(0);
-date.setMilliseconds(0);
-
 function TeacherSchedule({ teacherId }: Props) {
+  const dispatch = useAppDispatch();
+  const global = useAppSelector((state) => state.global);
+
   const calendarRef = React.useRef<FullCalendar | null>(null);
   const [calendar, setCalendar] = React.useState<CalendarApi | undefined>(
     undefined
   );
-  const [calendarDate] = React.useState(date);
-  const [calendarTitle, setCalendarTitle] = React.useState("");
+  const [calendarDate, setCalendarDate] = React.useState(new Date());
+
   const [editing, setEditing] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+  const [schedules, setSchedules] = React.useState<Schedule[]>([]);
+  const [events, setEvents] = React.useState<any[]>([]);
 
   const bookingsQuery = useQuery({
     queryKey: [
@@ -54,12 +51,12 @@ function TeacherSchedule({ teacherId }: Props) {
         page: 1,
         size: 1000,
         status: [1, 2, 3, 5],
-        start: calendarDate.getTime(),
+        start: calendar?.getDate().getTime() ?? 0,
       },
     ],
     queryFn: async () => {
       const start = calendarDate.getTime();
-      const end = calendarDate.getTime() + 1000 * 60 * 60 * 24 * 7;
+      const end = start + 1000 * 60 * 60 * 24 * 7;
 
       const data = await bookingGetAll({
         page: 1,
@@ -73,11 +70,6 @@ function TeacherSchedule({ teacherId }: Props) {
       return data;
     },
   });
-
-  const [schedules, setSchedules] = React.useState<Schedule[]>([]);
-  const [events, setEvents] = React.useState<any[]>([]);
-  const dispatch = useAppDispatch();
-  const global = useAppSelector((state) => state.global);
 
   async function handleSave() {
     const calendarEvents = calendar?.getEvents() ?? [];
@@ -137,17 +129,24 @@ function TeacherSchedule({ teacherId }: Props) {
     setLoading(true);
   }
 
+  // Set calendar ref
   React.useEffect(() => {
     if (calendarRef) {
       const calendar = calendarRef.current?.getApi();
-
       setCalendar(calendar);
     }
   }, [calendarRef]);
 
+  // Reset loading
   React.useEffect(() => {
     setLoading(true);
   }, [global.reset]);
+
+  // Set calendar date to the first day of the week
+  React.useEffect(() => {
+    calendarDate.setDate(calendarDate.getDate() - calendarDate.getDay());
+    calendarDate.setHours(0, 0, 0, 0);
+  }, []);
 
   React.useEffect(() => {
     if (loading) {
@@ -205,7 +204,7 @@ function TeacherSchedule({ teacherId }: Props) {
     }
 
     setEvents(newEvents);
-  }, [schedules, editing, calendarTitle, bookingsQuery.data?.content]);
+  }, [schedules, editing, calendarDate, bookingsQuery.data?.content]);
 
   return (
     <section>
@@ -225,9 +224,11 @@ function TeacherSchedule({ teacherId }: Props) {
           <>
             <button
               onClick={() => {
-                setCalendarTitle(calendar?.getDate().toISOString() ?? "next");
+                setCalendarDate((prev) => {
+                  prev.setDate(prev.getDate() - 7);
+                  return new Date(prev);
+                });
                 calendar?.prev();
-                calendarDate.setDate(calendarDate.getDate() - 7);
               }}
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
             >
@@ -236,9 +237,11 @@ function TeacherSchedule({ teacherId }: Props) {
 
             <button
               onClick={() => {
-                setCalendarTitle(calendar?.getDate().toISOString() ?? "prev");
+                setCalendarDate((prev) => {
+                  prev.setDate(prev.getDate() + 7);
+                  return new Date(prev);
+                });
                 calendar?.next();
-                calendarDate.setDate(calendarDate.getDate() + 7);
               }}
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
             >
