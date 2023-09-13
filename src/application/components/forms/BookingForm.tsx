@@ -18,7 +18,8 @@ type Props = {
     action: (params: any) => Promise<any>,
     values: any,
     success: string,
-    fail: string
+    fail: string,
+    queryKeys: any[]
   ) => Promise<any>;
   formRef: FormInstance;
 };
@@ -143,14 +144,16 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
             bookingUpdate,
             e,
             "Booking update successfully",
-            "Booking update failed"
+            "Booking update failed",
+            [["bookings"], ["users"], ["credits"]]
           );
         } else {
           handleSubmit(
             bookingCreate,
             e,
             "Booking created successfully",
-            "Booking created failed"
+            "Booking created failed",
+            [["bookings"], ["users"], ["credits"]]
           );
         }
       }}
