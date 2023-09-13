@@ -1,41 +1,62 @@
-import React from "react";
 import { teacherGetByUser } from "../../domain/services/teacherService";
 import { userGetByUsername } from "../../domain/services/userService";
 import { useParams } from "react-router-dom";
-import { User } from "../../../../esl-workers/src/domain/models/UserModel";
-import { Teacher } from "../../../../esl-workers/src/domain/models/TeacherModel";
 import NotFoundPage from "./NotFoundPage";
 import { utilFormatDateAndTime } from "../../domain/services/utilService";
 import TeacherSchedule from "../components/TeacherSchedule";
 import TeacherCourseTable from "../components/tables/TeacherCourseTable";
 import { useAppDispatch } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
+import { useQuery } from "@tanstack/react-query";
+import { courseGetAll } from "../../domain/services/courseService";
+import React from "react";
 
 function TeacherProfilePage() {
-  const { username = "" } = useParams();
-
-  const [loading, setLoading] = React.useState(true);
-  const [teacher, setTeacher] = React.useState<Teacher | null>(null);
-  const [user, setUser] = React.useState<User | null>(null);
-
   const dispatch = useAppDispatch();
+  const { username = "" } = useParams();
+  const [coursesFilters, setCoursesFilters] = React.useState({
+    page: 1,
+    size: 10,
+  });
 
-  React.useEffect(() => {
-    if (loading) {
-      (async () => {
-        const resUser = await userGetByUsername({ username });
-        setUser(resUser);
-        if (resUser) {
-          const resTeacher = await teacherGetByUser({ userId: resUser.id });
-          setTeacher(resTeacher);
-        }
+  const userQuery = useQuery({
+    queryKey: ["users", { username }],
+    queryFn: async () => {
+      const data = await userGetByUsername({ username });
+      return data;
+    },
+  });
+  const teacherQuery = useQuery({
+    queryKey: ["teachers", { userId: userQuery.data?.id }],
+    queryFn: async () => {
+      const userId = userQuery.data?.id;
+      if (!userId) {
+        return null;
+      }
+      const data = await teacherGetByUser({ userId });
+      return data;
+    },
+  });
+  const coursesQuery = useQuery({
+    queryKey: [
+      "courses",
+      { ...coursesFilters, teacherId: teacherQuery.data?.id },
+    ],
+    queryFn: async () => {
+      const teacherId = teacherQuery.data?.id;
+      if (!teacherId) {
+        return null;
+      }
 
-        setLoading(false);
-      })();
-    }
-  }, []);
+      const data = await courseGetAll({
+        ...coursesFilters,
+        teacherId,
+      });
+      return data;
+    },
+  });
 
-  if (loading) {
+  if (teacherQuery.isLoading || userQuery.isLoading) {
     return (
       <div className="flex-1 py-24">
         <div className="flex justify-center">
@@ -45,7 +66,7 @@ function TeacherProfilePage() {
     );
   }
 
-  if (!user || !teacher) {
+  if (!userQuery.data || !teacherQuery.data) {
     return (
       <div className="flex-1 py-24">
         <NotFoundPage />
@@ -73,7 +94,7 @@ function TeacherProfilePage() {
             </header>
 
             <section>
-              <p>{teacher.alias}</p>
+              <p>{teacherQuery.data.alias}</p>
             </section>
           </section>
 
@@ -84,18 +105,7 @@ function TeacherProfilePage() {
             </header>
 
             <section>
-              <p>{user.username}</p>
-            </section>
-          </section>
-
-          {/* Price */}
-          <section className="p-2 w-1/4">
-            <header>
-              <h3 className="text-xs font-bold">Price</h3>
-            </header>
-
-            <section>
-              <p>{teacher.price}</p>
+              <p>{userQuery.data.username}</p>
             </section>
           </section>
 
@@ -107,7 +117,10 @@ function TeacherProfilePage() {
 
             <section>
               <p>
-                {utilFormatDateAndTime("en-US", new Date(teacher.createdAt))}
+                {utilFormatDateAndTime(
+                  "en-US",
+                  new Date(teacherQuery.data.createdAt)
+                )}
               </p>
             </section>
           </section>
@@ -126,7 +139,7 @@ function TeacherProfilePage() {
                   show: true,
                   content: "course",
                   title: "Add Course",
-                  data: { teacherId: teacher.id },
+                  data: { teacherId: teacherQuery.data?.id },
                 })
               );
             }}
@@ -136,13 +149,20 @@ function TeacherProfilePage() {
           </button>
         </header>
         <section>
-          <TeacherCourseTable teacherId={teacher.id} />
+          <TeacherCourseTable
+            data={coursesQuery.data}
+            pagination={{
+              onChange: (page, size) => {
+                setCoursesFilters({ page, size });
+              },
+            }}
+          />
         </section>
       </section>
 
       {/* Teacher Schedule */}
       <section className="border shadow rounded-lg">
-        <TeacherSchedule teacherId={teacher.id} />
+        <TeacherSchedule teacherId={teacherQuery.data?.id} />
       </section>
     </section>
   );
