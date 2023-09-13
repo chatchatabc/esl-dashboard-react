@@ -10,7 +10,8 @@ type Props = {
     action: (params: any) => Promise<any>,
     values: any,
     success: string,
-    fail: string
+    fail: string,
+    queryKeys: any[][]
   ) => Promise<any>;
   formRef: FormInstance;
 };
@@ -26,14 +27,16 @@ function CourseForm({ loading, handleSubmit, formRef }: Props) {
             courseUpdate,
             e,
             "Successfully updated course",
-            "Failed to update course"
+            "Failed to update course",
+            [["courses"]]
           );
         } else {
           handleSubmit(
             courseCreate,
             e,
             "Successfully created course",
-            "Failed to create course"
+            "Failed to create course",
+            [["courses"]]
           );
         }
       }}
