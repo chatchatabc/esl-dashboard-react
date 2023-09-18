@@ -9,6 +9,7 @@ import UserProfilePage from "./pages/UserProfilePage";
 import TeacherPage from "./pages/TeacherPage";
 import TeacherProfilePage from "./pages/TeacherProfilePage";
 import HomePage from "./pages/HomePage";
+import BookingsPage from "./pages/BookingsPage";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: "home",
         element: <HomePage />,
+      },
+      {
+        path: "bookings",
+        element: <BookingsPage />,
       },
       {
         path: "users",
