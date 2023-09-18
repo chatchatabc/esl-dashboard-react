@@ -8,6 +8,7 @@ import UserPage from "./pages/UserPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import TeacherPage from "./pages/TeacherPage";
 import TeacherProfilePage from "./pages/TeacherProfilePage";
+import HomePage from "./pages/HomePage";
 
 const router = createBrowserRouter([
   {
@@ -16,7 +17,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "home",
-        element: <h1>Home</h1>,
+        element: <HomePage />,
       },
       {
         path: "users",
