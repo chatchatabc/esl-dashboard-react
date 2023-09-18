@@ -9,7 +9,7 @@ export async function authLogin(params: UserLogin) {
     // if logged in successful
     if (res) {
       // save userId to cookie for local reference
-      utilSaveCookie("userId", String(res.id));
+      utilSaveCookie("user", JSON.stringify(res));
     }
 
     return res;
@@ -19,15 +19,29 @@ export async function authLogin(params: UserLogin) {
   }
 }
 
-export function authGetUserId() {
-  return utilGetCookie("userId");
+export async function authGetProfile() {
+  try {
+    const res = await trpcClient.auth.getProfile.query();
+    return res;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
+export function authGetUser() {
+  const user = utilGetCookie("user");
+  if (!user) {
+    return null;
+  }
+  return JSON.parse(user);
 }
 
 export async function authLogout() {
   try {
     const res = await trpcClient.auth.logout.mutate();
     if (res) {
-      utilDeleteCookie("userId");
+      utilDeleteCookie("user");
     }
     return res;
   } catch (e) {
