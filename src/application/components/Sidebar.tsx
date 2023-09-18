@@ -42,6 +42,19 @@ function Sidebar() {
         href: "/message-templates",
       }
     );
+  } else if (user.roleId === 2) {
+    navLinks.push(
+      {
+        label: "Teachers",
+        icon: <TeacherIcon />,
+        href: "/teachers",
+      },
+      {
+        label: "Bookings",
+        icon: <MessageIcon />,
+        href: "/bookings",
+      }
+    );
   }
 
   return (
