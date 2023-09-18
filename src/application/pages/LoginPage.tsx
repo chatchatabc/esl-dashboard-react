@@ -1,7 +1,13 @@
 import React from "react";
-import { authGetUserId, authLogin } from "../../domain/services/authService";
+import {
+  authGetProfile,
+  authGetUser,
+  authLogin,
+} from "../../domain/services/authService";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Button, Form, Input, message } from "antd";
+import { useQuery } from "@tanstack/react-query";
+import { utilSaveCookie } from "../../domain/services/utilService";
 
 function LoginPage() {
   const [loading, setLoading] = React.useState(false);
@@ -21,9 +27,27 @@ function LoginPage() {
     }
   }
 
-  if (authGetUserId()) {
+  // Get user profile locally
+  const user = authGetUser();
+  if (user) {
+    message.success(`Logged in as ${user.username}.`);
     return <Navigate to="/" />;
   }
+
+  // Get user profile from server
+  useQuery({
+    queryKey: ["user", "profile"],
+    refetchInterval: false,
+    queryFn: async () => {
+      const res = await authGetProfile();
+      if (res) {
+        utilSaveCookie("user", JSON.stringify(res));
+        message.success(`Logged in as ${res.username}.`);
+        navigate("/");
+      }
+      return null;
+    },
+  });
 
   return (
     <div className="flex-1 flex items-center justify-center">
