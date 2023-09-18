@@ -14,7 +14,7 @@ import {
 } from "../../domain/services/scheduleService";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
-import { bookingGetAll } from "../../domain/services/bookingService";
+import { bookingGetAllAdmin } from "../../domain/services/bookingService";
 import { CalendarApi, EventSourceInput } from "@fullcalendar/core/index.js";
 import { useQuery } from "@tanstack/react-query";
 
@@ -58,7 +58,7 @@ function TeacherSchedule({ teacherId }: Props) {
       const start = calendarDate.getTime();
       const end = start + 1000 * 60 * 60 * 24 * 7;
 
-      const data = await bookingGetAll({
+      const data = await bookingGetAllAdmin({
         page: 1,
         size: 1000,
         status: [1, 2, 3, 5],

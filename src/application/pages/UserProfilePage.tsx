@@ -12,7 +12,7 @@ import BookingTable from "../components/tables/BookingTable";
 import EditIcon from "../assets/EditIcon";
 import { useQuery } from "@tanstack/react-query";
 import {
-  bookingGetAll,
+  bookingGetAllAdmin,
   bookingOptionStatus,
 } from "../../domain/services/bookingService";
 import { Select } from "antd";
@@ -80,7 +80,10 @@ function UserProfilePage() {
   const bookingsQuery = useQuery({
     queryKey: ["bookings", { ...bookingsFilter, userId: user?.id }],
     queryFn: async () => {
-      const data = await bookingGetAll({ ...bookingsFilter, userId: user?.id });
+      const data = await bookingGetAllAdmin({
+        ...bookingsFilter,
+        userId: user?.id,
+      });
       return data;
     },
   });
