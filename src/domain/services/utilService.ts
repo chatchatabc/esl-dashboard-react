@@ -2,7 +2,7 @@ export function utilGetCookie(name: string) {
   const cookies = document.cookie.split(";");
   const cookie = cookies.find((cookie) => cookie.includes(`${name}=`));
   if (!cookie) {
-    return undefined;
+    return null;
   }
 
   return cookie.split("=")[1];
