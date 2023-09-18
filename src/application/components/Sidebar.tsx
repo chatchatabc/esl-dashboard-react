@@ -4,6 +4,7 @@ import MessageIcon from "../assets/MessageIcon";
 import UserIcon from "../assets/UserIcon";
 import TemplateIcon from "../assets/TemplateIcon";
 import TeacherIcon from "../assets/TeacherIcon";
+import { authGetUser } from "../../domain/services/authService";
 
 function Sidebar() {
   const location = useLocation();
@@ -15,27 +16,33 @@ function Sidebar() {
       icon: <HomeIcon />,
       href: "/home",
     },
-    {
-      label: "Users",
-      icon: <UserIcon />,
-      href: "/users",
-    },
-    {
-      label: "Teachers",
-      icon: <TeacherIcon />,
-      href: "/teachers",
-    },
-    {
-      label: "Messages",
-      icon: <MessageIcon />,
-      href: "/messages",
-    },
-    {
-      label: "Msg Templates",
-      icon: <TemplateIcon />,
-      href: "/message-templates",
-    },
   ];
+
+  const user = authGetUser();
+  if (user.roleId === 1) {
+    navLinks.push(
+      {
+        label: "Users",
+        icon: <UserIcon />,
+        href: "/users",
+      },
+      {
+        label: "Teachers",
+        icon: <TeacherIcon />,
+        href: "/teachers",
+      },
+      {
+        label: "Messages",
+        icon: <MessageIcon />,
+        href: "/messages",
+      },
+      {
+        label: "Msg Templates",
+        icon: <TemplateIcon />,
+        href: "/message-templates",
+      }
+    );
+  }
 
   return (
     <nav>
