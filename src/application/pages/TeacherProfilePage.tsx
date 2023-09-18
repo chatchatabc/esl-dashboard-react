@@ -1,5 +1,4 @@
-import { teacherGetByUser } from "../../domain/services/teacherService";
-import { userGetByUsername } from "../../domain/services/userService";
+import { teacherGetByUserUsername } from "../../domain/services/teacherService";
 import { useParams } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage";
 import { utilFormatDateAndTime } from "../../domain/services/utilService";
@@ -10,6 +9,7 @@ import { modalUpdate } from "../redux/features/modalSlice";
 import { useQuery } from "@tanstack/react-query";
 import { courseGetAll } from "../../domain/services/courseService";
 import React from "react";
+import { authGetProfile } from "../../domain/services/authService";
 
 function TeacherProfilePage() {
   const dispatch = useAppDispatch();
@@ -20,20 +20,16 @@ function TeacherProfilePage() {
   });
 
   const userQuery = useQuery({
-    queryKey: ["users", { username }],
+    queryKey: ["users", "profile"],
     queryFn: async () => {
-      const data = await userGetByUsername({ username });
+      const data = await authGetProfile();
       return data;
     },
   });
   const teacherQuery = useQuery({
-    queryKey: ["teachers", { userId: userQuery.data?.id }],
+    queryKey: ["teachers", { username }],
     queryFn: async () => {
-      const userId = userQuery.data?.id;
-      if (!userId) {
-        return null;
-      }
-      const data = await teacherGetByUser({ userId });
+      const data = await teacherGetByUserUsername({ username });
       return data;
     },
   });
@@ -56,7 +52,7 @@ function TeacherProfilePage() {
     },
   });
 
-  if (teacherQuery.isLoading || userQuery.isLoading) {
+  if (teacherQuery.isLoading) {
     return (
       <div className="flex-1 py-24">
         <div className="flex justify-center">
@@ -66,7 +62,7 @@ function TeacherProfilePage() {
     );
   }
 
-  if (!userQuery.data || !teacherQuery.data) {
+  if (!teacherQuery.data) {
     return (
       <div className="flex-1 py-24">
         <NotFoundPage />
@@ -105,7 +101,7 @@ function TeacherProfilePage() {
             </header>
 
             <section>
-              <p>{userQuery.data.username}</p>
+              <p>{teacherQuery.data.user!.username}</p>
             </section>
           </section>
 
@@ -128,42 +124,46 @@ function TeacherProfilePage() {
       </section>
 
       {/* Teacher Courses */}
-      <section className="border shadow rounded-lg">
-        <header className="p-2 border-b-2 flex items-center">
-          <h2 className="text-xl font-medium mr-auto">Teacher's Courses</h2>
+      {userQuery.data?.roleId !== 2 && (
+        <>
+          <section className="border shadow rounded-lg">
+            <header className="p-2 border-b-2 flex items-center">
+              <h2 className="text-xl font-medium mr-auto">Teacher's Courses</h2>
 
-          <button
-            onClick={() => {
-              dispatch(
-                modalUpdate({
-                  show: true,
-                  content: "course",
-                  title: "Add Course",
-                  data: { teacherId: teacherQuery.data?.id },
-                })
-              );
-            }}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
-          >
-            Add +
-          </button>
-        </header>
-        <section>
-          <TeacherCourseTable
-            data={coursesQuery.data}
-            pagination={{
-              onChange: (page, size) => {
-                setCoursesFilters({ page, size });
-              },
-            }}
-          />
-        </section>
-      </section>
+              <button
+                onClick={() => {
+                  dispatch(
+                    modalUpdate({
+                      show: true,
+                      content: "course",
+                      title: "Add Course",
+                      data: { teacherId: teacherQuery.data?.id },
+                    })
+                  );
+                }}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+              >
+                Add +
+              </button>
+            </header>
+            <section>
+              <TeacherCourseTable
+                data={coursesQuery.data}
+                pagination={{
+                  onChange: (page, size) => {
+                    setCoursesFilters({ page, size });
+                  },
+                }}
+              />
+            </section>
+          </section>
 
-      {/* Teacher Schedule */}
-      <section className="border shadow rounded-lg">
-        <TeacherSchedule teacherId={teacherQuery.data?.id} />
-      </section>
+          {/* Teacher Schedule */}
+          <section className="border shadow rounded-lg">
+            <TeacherSchedule teacherId={teacherQuery.data?.id} />
+          </section>
+        </>
+      )}
     </section>
   );
 }
