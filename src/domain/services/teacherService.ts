@@ -67,6 +67,16 @@ export async function teacherGetByUser(params: { userId: number }) {
   }
 }
 
+export async function teacherGetByUserUsername(params: { username: string }) {
+  try {
+    const res = await trpcClient.teacher.getByUserUsername.query(params);
+    return res;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
 export function teacherOptionStatus() {
   return [
     {
