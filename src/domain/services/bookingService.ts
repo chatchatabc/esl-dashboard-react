@@ -1,5 +1,4 @@
 import {
-  BookingCancelInputAdmin,
   BookingCompleteInputAdmin,
   BookingCreateInputAdmin,
   BookingUpdateInput,
@@ -10,6 +9,37 @@ import { trpcClient } from "../infras/trpcActions";
 import { teacherGet } from "./teacherService";
 
 export async function bookingGetAll(params: CommonPaginationInput) {
+  try {
+    const res = await trpcClient.booking.getAll.query(params);
+
+    if (res) {
+      const contentPromise = res.content.map(async (booking) => {
+        const user = await trpcClient.user.get.query({
+          userId: booking.userId ?? 0,
+        });
+        if (user) {
+          booking.user = user;
+        }
+
+        const teacher = await teacherGet({ teacherId: booking.teacherId });
+        if (teacher) {
+          booking.teacher = teacher;
+        }
+
+        return booking;
+      });
+
+      res.content = await Promise.all(contentPromise);
+    }
+
+    return res;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
+export async function bookingGetAllAdmin(params: CommonPaginationInput) {
   try {
     const res = await trpcClient.booking.getAllAdmin.query(params);
 
@@ -47,16 +77,6 @@ export async function bookingCreate(params: BookingCreateInputAdmin) {
   } catch (e) {
     console.log(e);
     return null;
-  }
-}
-
-export async function bookingCancel(params: BookingCancelInputAdmin) {
-  try {
-    const res = await trpcClient.booking.cancelAdmin.mutate(params);
-    return res;
-  } catch (e) {
-    console.log(e);
-    return false;
   }
 }
 
