@@ -112,19 +112,6 @@ function MessageTemplateForm({ loading, handleSubmit, formRef }: Props) {
             message: "Need some input here",
           },
         ]}
-        name="variables"
-        label="Variables"
-      >
-        <Input placeholder="Separated by commas (ex. datetime, name)" />
-      </Form.Item>
-
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
         name="status"
         label="Status"
         initialValue={1}
