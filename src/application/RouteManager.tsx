@@ -1,6 +1,4 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import MainLayout from "./layouts/MainLayout";
-import AuthorizationRoute from "./routes/AuthorizationRoute";
 import React from "react";
 
 // Lazy load pages
@@ -18,6 +16,10 @@ const TeacherProfilePage = React.lazy(
 );
 const LoginPage = React.lazy(() => import("./pages/LoginPage"));
 const NotFoundPage = React.lazy(() => import("./pages/NotFoundPage"));
+const MainLayout = React.lazy(() => import("./layouts/MainLayout"));
+const AuthorizationRoute = React.lazy(
+  () => import("./routes/AuthorizationRoute")
+);
 
 const router = createBrowserRouter([
   {
