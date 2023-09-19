@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import DynamicModalForm from "../components/forms/DynamicModalForm";
 import React from "react";
-import LoadingComp from "../components/LoadingComp";
+import LoadingComp from "../components/loading/LoadingComp";
 
 export function MainLayout() {
   const { pathname } = useLocation();
