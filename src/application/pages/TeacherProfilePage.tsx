@@ -2,8 +2,6 @@ import { teacherGet } from "../../domain/services/teacherService";
 import { useParams } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage";
 import { utilFormatDateAndTime } from "../../domain/services/utilService";
-import TeacherSchedule from "../components/TeacherSchedule";
-import TeacherCourseTable from "../components/tables/TeacherCourseTable";
 import { useAppDispatch } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +13,13 @@ import { scheduleGetAll } from "../../domain/services/scheduleService";
 import { Schedule } from "../../../../esl-workers/src/domain/models/ScheduleModel";
 import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
 import { bookingGetAll } from "../../domain/services/bookingService";
+
+const TeacherSchedule = React.lazy(
+  () => import("../components/TeacherSchedule")
+);
+const TeacherCourseTable = React.lazy(
+  () => import("../components/tables/TeacherCourseTable")
+);
 
 export function TeacherProfilePage() {
   const dispatch = useAppDispatch();
