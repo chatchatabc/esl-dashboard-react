@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Select } from "antd";
 import { teacherGetAll } from "../../domain/services/teacherService";
 
-export default function UserPage() {
+export function UserPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
@@ -95,3 +95,5 @@ export default function UserPage() {
     </section>
   );
 }
+
+export default UserPage;

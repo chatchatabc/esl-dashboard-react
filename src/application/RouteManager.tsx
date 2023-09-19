@@ -4,7 +4,6 @@ import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import MessagePage from "./pages/MessagePage";
 import MessageTemplatePage from "./pages/MessageTemplatePage";
-import UserPage from "./pages/UserPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import TeacherPage from "./pages/TeacherPage";
 import TeacherProfilePage from "./pages/TeacherProfilePage";
@@ -31,7 +30,10 @@ const router = createBrowserRouter([
         children: [
           {
             path: "",
-            element: <UserPage />,
+            async lazy() {
+              let { UserPage } = await import("./pages/UserPage");
+              return { Component: UserPage };
+            },
           },
           {
             path: ":username",
