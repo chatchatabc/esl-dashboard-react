@@ -53,7 +53,7 @@ function BookingTable({ data, ...props }: Props) {
       key: "teacherId",
       title: "Teacher",
       render: (record: Booking) => {
-        return <p>Teacher {record.teacher?.alias}</p>;
+        return <p>{record.teacher?.alias}</p>;
       },
     },
     {
