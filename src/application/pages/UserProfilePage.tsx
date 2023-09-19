@@ -13,6 +13,7 @@ import EditIcon from "../assets/EditIcon";
 import { useQuery } from "@tanstack/react-query";
 import {
   bookingGetAllAdmin,
+  bookingOptionDays,
   bookingOptionStatus,
 } from "../../domain/services/bookingService";
 import { Select } from "antd";
@@ -20,36 +21,7 @@ import { logsCreditGetAllByUser } from "../../domain/services/logsService";
 
 const statusList = userOptionStatus();
 const bookingStatusList = bookingOptionStatus();
-const days = [
-  {
-    label: "Sunday",
-    value: 0,
-  },
-  {
-    label: "Monday",
-    value: 1,
-  },
-  {
-    label: "Tuesday",
-    value: 2,
-  },
-  {
-    label: "Wednesday",
-    value: 3,
-  },
-  {
-    label: "Thursday",
-    value: 4,
-  },
-  {
-    label: "Friday",
-    value: 5,
-  },
-  {
-    label: "Saturday",
-    value: 6,
-  },
-];
+const days = bookingOptionDays();
 
 function UserProfilePage() {
   const { username = "" } = useParams();
