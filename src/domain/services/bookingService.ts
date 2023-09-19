@@ -2,7 +2,7 @@ import {
   BookingCompleteInputAdmin,
   BookingCreateInputAdmin,
   BookingUpdateInput,
-  BookingUpdateStatusManyInputByAdmin,
+  BookingUpdateStatusManyInput,
 } from "../../../../esl-workers/src/domain/models/BookingModel";
 import { CommonPaginationInput } from "../../../../esl-workers/src/domain/models/CommonModel";
 import { trpcClient } from "../infras/trpcActions";
@@ -126,10 +126,10 @@ export function bookingOptionStatus() {
 }
 
 export async function bookingUpdateStatusMany(
-  params: BookingUpdateStatusManyInputByAdmin
+  params: BookingUpdateStatusManyInput
 ) {
   try {
-    const res = await trpcClient.booking.updateStatusManyByAdmin.mutate(params);
+    const res = await trpcClient.booking.updateStatusMany.mutate(params);
     return res;
   } catch (e) {
     console.log(e);
