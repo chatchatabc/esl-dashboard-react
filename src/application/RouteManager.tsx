@@ -1,15 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
-import LoginPage from "./pages/LoginPage";
-import NotFoundPage from "./pages/NotFoundPage";
-import MessagePage from "./pages/MessagePage";
-import MessageTemplatePage from "./pages/MessageTemplatePage";
-import UserProfilePage from "./pages/UserProfilePage";
-import TeacherPage from "./pages/TeacherPage";
-import TeacherProfilePage from "./pages/TeacherProfilePage";
-import HomePage from "./pages/HomePage";
-import BookingsPage from "./pages/BookingsPage";
 import AuthorizationRoute from "./routes/AuthorizationRoute";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const router = createBrowserRouter([
   {
@@ -18,64 +10,114 @@ const router = createBrowserRouter([
     children: [
       {
         path: "home",
-        element: <HomePage />,
+        async lazy() {
+          const { HomePage } = await import("./pages/HomePage");
+          return { Component: HomePage };
+        },
       },
       {
         path: "bookings",
-        element: <BookingsPage />,
+        async lazy() {
+          const { BookingsPage } = await import("./pages/BookingsPage");
+          return { Component: BookingsPage };
+        },
       },
       {
         path: "users",
-        element: <AuthorizationRoute allowedRoles={[1]} />,
+        async lazy() {
+          return {
+            Component: () => {
+              return AuthorizationRoute({ allowedRoles: [1] });
+            },
+          };
+        },
         children: [
           {
             path: "",
             async lazy() {
-              let { UserPage } = await import("./pages/UserPage");
+              const { UserPage } = await import("./pages/UserPage");
               return { Component: UserPage };
             },
           },
           {
             path: ":username",
-            element: <UserProfilePage />,
+            async lazy() {
+              const { UserProfilePage } = await import(
+                "./pages/UserProfilePage"
+              );
+              return { Component: UserProfilePage };
+            },
           },
         ],
       },
       {
         path: "teachers",
-        element: <AuthorizationRoute allowedRoles={[1, 2]} />,
+        async lazy() {
+          return {
+            Component: () => {
+              return AuthorizationRoute({ allowedRoles: [1, 2] });
+            },
+          };
+        },
         children: [
           {
             path: "",
-            element: <TeacherPage />,
+            async lazy() {
+              const { TeacherPage } = await import("./pages/TeacherPage");
+              return { Component: TeacherPage };
+            },
           },
           {
             path: ":username",
-            element: <TeacherProfilePage />,
+            async lazy() {
+              const { TeacherProfilePage } = await import(
+                "./pages/TeacherProfilePage"
+              );
+              return { Component: TeacherProfilePage };
+            },
           },
         ],
       },
       {
         path: "messages",
-        element: (
-          <AuthorizationRoute allowedRoles={[1]}>
-            <MessagePage />
-          </AuthorizationRoute>
-        ),
+        async lazy() {
+          const { MessagePage } = await import("./pages/MessagePage");
+
+          return {
+            Component: () => {
+              return AuthorizationRoute({
+                allowedRoles: [1],
+                children: MessagePage(),
+              });
+            },
+          };
+        },
       },
       {
         path: "message-templates",
-        element: (
-          <AuthorizationRoute allowedRoles={[1]}>
-            <MessageTemplatePage />
-          </AuthorizationRoute>
-        ),
+        async lazy() {
+          const { MessageTemplatePage } = await import(
+            "./pages/MessageTemplatePage"
+          );
+
+          return {
+            Component: () => {
+              return AuthorizationRoute({
+                allowedRoles: [1],
+                children: MessageTemplatePage(),
+              });
+            },
+          };
+        },
       },
     ],
   },
   {
     path: "/login",
-    element: <LoginPage />,
+    async lazy() {
+      const { LoginPage } = await import("./pages/LoginPage");
+      return { Component: LoginPage };
+    },
   },
   {
     path: "*",
