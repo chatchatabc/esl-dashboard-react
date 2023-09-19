@@ -6,7 +6,7 @@ import { Button } from "antd";
 import { useAppDispatch } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
 
-function MessageTemplatePage() {
+export function MessageTemplatePage() {
   const dispatch = useAppDispatch();
 
   const statusLabel = {

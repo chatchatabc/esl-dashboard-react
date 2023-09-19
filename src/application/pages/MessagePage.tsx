@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { messageGetAll } from "../../domain/services/messageService";
 import { useSearchParams } from "react-router-dom";
 
-function MessagePage() {
+export function MessagePage() {
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
 

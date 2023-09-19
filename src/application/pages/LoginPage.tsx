@@ -9,7 +9,7 @@ import { Button, Form, Input, message } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { utilSaveCookie } from "../../domain/services/utilService";
 
-function LoginPage() {
+export function LoginPage() {
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
 

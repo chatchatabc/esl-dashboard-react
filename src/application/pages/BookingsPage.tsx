@@ -16,7 +16,7 @@ import { Select } from "antd";
 const statusList = bookingOptionStatus();
 const daysList = bookingOptionDays();
 
-export default function BookingsPage() {
+export function BookingsPage() {
   const dispatch = useAppDispatch();
   const [bookingsFilter, setBookingsFilter] = React.useState({
     page: 1,
@@ -141,3 +141,5 @@ export default function BookingsPage() {
     </section>
   );
 }
+
+export default BookingsPage;

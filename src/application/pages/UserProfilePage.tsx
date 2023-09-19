@@ -23,7 +23,7 @@ const statusList = userOptionStatus();
 const bookingStatusList = bookingOptionStatus();
 const days = bookingOptionDays();
 
-function UserProfilePage() {
+export function UserProfilePage() {
   const { username = "" } = useParams();
   const dispatch = useAppDispatch();
   const [bookingIds, setBookingIds] = React.useState<number[]>([]);

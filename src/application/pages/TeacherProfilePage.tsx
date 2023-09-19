@@ -16,7 +16,7 @@ import { Schedule } from "../../../../esl-workers/src/domain/models/ScheduleMode
 import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
 import { bookingGetAll } from "../../domain/services/bookingService";
 
-function TeacherProfilePage() {
+export function TeacherProfilePage() {
   const dispatch = useAppDispatch();
   const { username = "" } = useParams();
   const [coursesFilters, setCoursesFilters] = React.useState({

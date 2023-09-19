@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { teacherGetAll } from "../../domain/services/teacherService";
 import { authGetProfile } from "../../domain/services/authService";
 
-function TeacherPage() {
+export function TeacherPage() {
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
 
