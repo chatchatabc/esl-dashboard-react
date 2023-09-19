@@ -10,6 +10,11 @@ import { useQuery } from "@tanstack/react-query";
 import { courseGetAll } from "../../domain/services/courseService";
 import React from "react";
 import { authGetProfile } from "../../domain/services/authService";
+import TeacherScheduleList from "../components/TeacherScheduleList";
+import { scheduleGetAll } from "../../domain/services/scheduleService";
+import { Schedule } from "../../../../esl-workers/src/domain/models/ScheduleModel";
+import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
+import { bookingGetAll } from "../../domain/services/bookingService";
 
 function TeacherProfilePage() {
   const dispatch = useAppDispatch();
@@ -18,6 +23,8 @@ function TeacherProfilePage() {
     page: 1,
     size: 10,
   });
+  const [calendarDate, setCalendarDate] = React.useState(new Date());
+  const [calendarListEvents, setCalendarListEvents] = React.useState<any[]>([]);
 
   const userQuery = useQuery({
     queryKey: ["users", "profile"],
@@ -51,6 +58,103 @@ function TeacherProfilePage() {
       return data;
     },
   });
+  const bookingsQuery = useQuery({
+    queryKey: [
+      "bookings",
+      {
+        teacherId: teacherQuery.data?.id,
+        page: 1,
+        size: 10000,
+        start: calendarDate.getTime(),
+        end: calendarDate.getTime() + 7 * 24 * 60 * 60 * 1000,
+      },
+    ],
+    queryFn: async () => {
+      const data = await bookingGetAll({
+        teacherId: teacherQuery.data?.id,
+        page: 1,
+        size: 10000,
+        start: calendarDate.getTime(),
+        end: calendarDate.getTime() + 7 * 24 * 60 * 60 * 1000,
+      });
+      return data?.content ?? ([] as Booking[]);
+    },
+  });
+  const schedulesQuery = useQuery({
+    queryKey: [
+      "schedules",
+      {
+        teacherId: teacherQuery.data?.id,
+        page: 1,
+        size: 10000,
+      },
+    ],
+    queryFn: async () => {
+      const data = await scheduleGetAll({
+        teacherId: teacherQuery.data?.id,
+        page: 1,
+        size: 10000,
+      });
+      return data?.content ?? ([] as Schedule[]);
+    },
+  });
+
+  // Update calendar date on first load
+  React.useEffect(() => {
+    setCalendarDate((prev) => {
+      prev.setDate(prev.getDate() - prev.getDay());
+      prev.setHours(0, 0, 0, 0);
+      return prev;
+    });
+  }, []);
+
+  // Update calendar list events
+  React.useEffect(() => {
+    if (schedulesQuery.data && bookingsQuery.data) {
+      const newEvents: any[] = [];
+
+      schedulesQuery.data.forEach((schedule) => {
+        const now = new Date();
+        const start = new Date(schedule.startTime);
+        const diff = schedule.endTime - schedule.startTime;
+
+        start.setUTCFullYear(calendarDate.getUTCFullYear());
+        start.setUTCMonth(calendarDate.getUTCMonth());
+        start.setUTCDate(calendarDate.getUTCDate() + schedule.day);
+
+        const nowTime = now.getTime();
+        let startTime = start.getTime();
+        const endTime = startTime + diff;
+
+        while (startTime < endTime) {
+          if (nowTime < startTime) {
+            newEvents.push({
+              start: startTime,
+              end: startTime + 30 * 60 * 1000,
+            });
+          }
+
+          startTime += 30 * 60 * 1000;
+        }
+      });
+
+      bookingsQuery.data.forEach((booking) => {
+        while (booking.start < booking.end) {
+          const index = newEvents.findIndex((schedule) => {
+            return schedule.start === booking.start;
+          });
+
+          if (index !== -1) {
+            newEvents.splice(index, 1);
+          }
+
+          booking.start += 30 * 60 * 1000;
+        }
+      });
+
+      setCalendarListEvents(newEvents);
+    }
+  }, [bookingsQuery.data, schedulesQuery.data]);
 
   if (teacherQuery.isLoading) {
     return (
@@ -164,6 +268,18 @@ function TeacherProfilePage() {
           </section>
         </>
       )}
+
+      <section className="border overflow-hidden shadow rounded-lg">
+        <header className="p-2 flex items-center">
+          <h2 className="text-xl my-1.5 font-medium mr-auto">
+            Teacher's Schedule List
+          </h2>
+        </header>
+
+        <section>
+          <TeacherScheduleList events={calendarListEvents} />
+        </section>
+      </section>
     </section>
   );
 }
