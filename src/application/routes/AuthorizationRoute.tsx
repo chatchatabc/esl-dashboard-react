@@ -9,7 +9,7 @@ type Props = {
   children?: React.ReactNode;
 };
 
-function AuthorizationRoute({ allowedRoles, children }: Props) {
+export function AuthorizationRoute({ allowedRoles, children }: Props) {
   const userQuery = useQuery({
     queryKey: ["users", "profile"],
     queryFn: async () => {

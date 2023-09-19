@@ -3,8 +3,10 @@ import { authGetUser } from "../../domain/services/authService";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import DynamicModalForm from "../components/forms/DynamicModalForm";
+import React from "react";
+import LoadingComp from "../components/LoadingComp";
 
-function MainLayout() {
+export function MainLayout() {
   const { pathname } = useLocation();
 
   if (!authGetUser()) {
@@ -30,8 +32,10 @@ function MainLayout() {
         </aside>
 
         {/* Main content */}
-        <main className="w-[85vw]">
-          <Outlet />
+        <main className="w-[85vw] flex flex-col">
+          <React.Suspense fallback={<LoadingComp />}>
+            <Outlet />
+          </React.Suspense>
         </main>
       </section>
 
