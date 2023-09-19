@@ -29,47 +29,14 @@ export async function teacherGetAll(params: CommonPaginationInput) {
   }
 }
 
-export async function teacherGet(params: { teacherId: number }) {
+export async function teacherGet(params: {
+  teacherId?: number;
+  userId?: number;
+  userUsername?: string;
+}) {
   try {
     const res = await trpcClient.teacher.get.query(params);
 
-    if (res) {
-      const user = await trpcClient.user.get.query({
-        userId: res.userId,
-      });
-      if (user) {
-        res.user = user;
-      }
-    }
-
-    return res;
-  } catch (e) {
-    console.log(e);
-    return null;
-  }
-}
-
-export async function teacherGetByUser(params: { userId: number }) {
-  try {
-    const res = await trpcClient.teacher.getByUser.query(params);
-
-    if (res) {
-      const user = await trpcClient.user.get.query(params);
-      if (user) {
-        res.user = user;
-      }
-    }
-
-    return res;
-  } catch (e) {
-    console.log(e);
-    return null;
-  }
-}
-
-export async function teacherGetByUserUsername(params: { username: string }) {
-  try {
-    const res = await trpcClient.teacher.getByUserUsername.query(params);
     return res;
   } catch (e) {
     console.log(e);

@@ -1,4 +1,4 @@
-import { teacherGetByUserUsername } from "../../domain/services/teacherService";
+import { teacherGet } from "../../domain/services/teacherService";
 import { useParams } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage";
 import { utilFormatDateAndTime } from "../../domain/services/utilService";
@@ -29,7 +29,7 @@ function TeacherProfilePage() {
   const teacherQuery = useQuery({
     queryKey: ["teachers", { username }],
     queryFn: async () => {
-      const data = await teacherGetByUserUsername({ username });
+      const data = await teacherGet({ userUsername: username });
       return data;
     },
   });
