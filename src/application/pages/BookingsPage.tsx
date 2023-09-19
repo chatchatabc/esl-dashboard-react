@@ -27,7 +27,7 @@ export function BookingsPage() {
   });
   const [bookingIds, setBookingIds] = React.useState<number[]>([]);
   const userQuery = useQuery({
-    queryKey: ["user", "profile"],
+    queryKey: ["users", "profile"],
     queryFn: async () => {
       const res = await authGetProfile();
       return res;

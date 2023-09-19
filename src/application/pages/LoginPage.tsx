@@ -36,7 +36,7 @@ export function LoginPage() {
 
   // Get user profile from server
   useQuery({
-    queryKey: ["user", "profile"],
+    queryKey: ["users", "profile"],
     refetchInterval: false,
     queryFn: async () => {
       const res = await authGetProfile();
