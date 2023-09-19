@@ -1,114 +1,25 @@
-import DynamicTable from "../components/DynamicTable";
-import { messageTemplateGetAll } from "../../domain/services/messageTemplateService";
-import { ColumnsType } from "antd/es/table";
-import { MessageTemplate } from "../../../../esl-workers/src/domain/models/MessageModel";
-import { Button } from "antd";
 import { useAppDispatch } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
+import MessageTemplateTable from "../components/tables/MessageTemplateTable";
+import { useQuery } from "@tanstack/react-query";
+import { messageTemplateGetAll } from "../../domain/services/messageTemplateService";
+import { useSearchParams } from "react-router-dom";
 
 export function MessageTemplatePage() {
   const dispatch = useAppDispatch();
+  const [searchParams] = useSearchParams();
 
-  const statusLabel = {
-    1: "Active",
-    2: "Approved",
-    3: "Rejected",
-  };
-  const statusColor = {
-    1: "text-green-500",
-    2: "text-green-500",
-    3: "text-red-500",
-  };
+  const page = Number(searchParams.get("page") ?? "1");
+  const size = Number(searchParams.get("size") ?? "10");
 
-  const columns: ColumnsType<MessageTemplate> = [
-    {
-      key: "title",
-      dataIndex: "title",
-      title: "Title",
+  const messageTemplatesQuery = useQuery({
+    queryKey: ["messageTemplates", { page, size }],
+    queryFn: async () => {
+      const res = await messageTemplateGetAll({});
+      return res;
     },
-    {
-      key: "message",
-      title: "Message",
-      render: (record: MessageTemplate) => {
-        return (
-          <p>
-            【{record.signature}】{record.message}
-          </p>
-        );
-      },
-    },
-    {
-      key: "status",
-      title: "Status",
-      render: (record: MessageTemplate) => {
-        return (
-          <p
-            className={`${
-              statusColor[record.status as keyof typeof statusColor]
-            }`}
-          >
-            {statusLabel[record.status as keyof typeof statusLabel]}
-          </p>
-        );
-      },
-    },
-    {
-      key: "actions",
-      title: "Actions",
-      render: (record: MessageTemplate) => {
-        return (
-          <div className="flex space-x-2">
-            {/* <Button
-              onClick={() => {
-                Modal.confirm({
-                  title: "Are you sure to verify?",
-                  content: "This would cost one API call in your SMS account.",
-                  onOk: async () => {
-                    const res = await messageTemplateVerify({
-                      templateId: record.id,
-                    });
-                    if (!res) {
-                      message.error("Fail to verify");
-                    } else {
-                      message.success("Success");
-                      dispatch(globalReset());
-                    }
-                  },
-                  maskClosable: true,
-                  okButtonProps: {
-                    className: "bg-blue-500",
-                  },
-                });
-              }}
-              disabled={record.status !== 1}
-              type="link"
-              size="small"
-            >
-              Verify
-            </Button> */}
+  });
 
-            <Button
-              onClick={() => {
-                dispatch(
-                  modalUpdate({
-                    show: true,
-                    content: "messageTemplate",
-                    title: "Edit Message Template",
-                    data: record,
-                  })
-                );
-              }}
-              disabled={record.status === 2}
-              type="link"
-              size="small"
-            >
-              Edit
-            </Button>
-          </div>
-        );
-      },
-    },
-  ];
   return (
     <section className="p-4">
       {/* First section */}
@@ -135,7 +46,7 @@ export function MessageTemplatePage() {
 
         {/* Table */}
         <section>
-          <DynamicTable getData={messageTemplateGetAll} columns={columns} />
+          <MessageTemplateTable data={messageTemplatesQuery.data} />
         </section>
       </section>
     </section>
