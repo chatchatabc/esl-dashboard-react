@@ -1,15 +1,31 @@
 import { useAppDispatch } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
-import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { authGetProfile } from "../../domain/services/authService";
 import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
-import { bookingGetAll } from "../../domain/services/bookingService";
+import {
+  bookingGetAll,
+  bookingOptionDays,
+  bookingOptionStatus,
+} from "../../domain/services/bookingService";
 import BookingTable from "../components/tables/BookingTable";
+import React from "react";
+import EditIcon from "../assets/EditIcon";
+import { Select } from "antd";
+
+const statusList = bookingOptionStatus();
+const daysList = bookingOptionDays();
 
 export default function BookingsPage() {
   const dispatch = useAppDispatch();
-  const [searchParams] = useSearchParams();
+  const [bookingsFilter, setBookingsFilter] = React.useState({
+    page: 1,
+    size: 10,
+    day: undefined,
+    status: [1, 2, 3, 4],
+    sort: "start,DESC",
+  });
+  const [bookingIds, setBookingIds] = React.useState<number[]>([]);
   const userQuery = useQuery({
     queryKey: ["user", "profile"],
     queryFn: async () => {
@@ -19,11 +35,8 @@ export default function BookingsPage() {
   });
   const userId = userQuery.data?.id;
 
-  const page = Number(searchParams.get("page") ?? "1");
-  const size = Number(searchParams.get("size") ?? "10");
-
   const bookingsQuery = useQuery({
-    queryKey: ["bookings", { page, size, userId }],
+    queryKey: ["bookings", { ...bookingsFilter, userId }],
     queryFn: async () => {
       if (!userId) {
         return {
@@ -33,13 +46,7 @@ export default function BookingsPage() {
           size: 10,
         };
       }
-
-      const data = await bookingGetAll({
-        page,
-        size,
-        sort: "start,DESC",
-      });
-
+      const data = await bookingGetAll(bookingsFilter);
       return data;
     },
   });
@@ -48,29 +55,84 @@ export default function BookingsPage() {
     <section className="p-4">
       {/* First section */}
       <section className="rounded-lg shadow border">
-        {/* Header */}
-        <header className="p-2 flex items-center">
+        <header className="p-2 flex items-center border-b">
           <h2 className="text-xl font-medium mr-auto">Bookings</h2>
 
+          <div className="flex space-x-2"></div>
           <button
+            disabled={bookingIds.length === 0}
             onClick={() => {
               dispatch(
                 modalUpdate({
                   show: true,
-                  content: "user",
-                  title: "Add Message",
+                  content: "bookingMany",
+                  data: { bookingIds },
+                  title: "Update multiple bookings",
                 })
               );
             }}
-            className="px-4 py-1 bg-blue-500 text-white rounded-md transition hover:bg-blue-400"
+            className={`p-2 ${
+              bookingIds.length === 0 ? "" : "bg-blue-500 hover:bg-blue-400"
+            } text-white rounded-md `}
           >
-            Add +
+            <div className="w-6 h-6">
+              <EditIcon />
+            </div>
           </button>
         </header>
+
+        <section className="border-t flex p-4 gap-2 flex-wrap">
+          <Select
+            className="min-w-[250px]"
+            placeholder="Status"
+            mode="multiple"
+            onChange={(e) => {
+              setBookingsFilter({
+                ...bookingsFilter,
+                page: 1,
+                status: e.length ? e : [1, 2, 3, 4],
+              });
+              setBookingIds([]);
+            }}
+            options={statusList}
+            allowClear
+          />
+
+          <Select
+            className="min-w-[250px]"
+            placeholder="Day"
+            onChange={(e) => {
+              console.log(e);
+              setBookingsFilter({
+                ...bookingsFilter,
+                page: 1,
+                day: e,
+              });
+              setBookingIds([]);
+            }}
+            options={daysList}
+            allowClear
+          />
+        </section>
 
         {/* Table */}
         <section>
           <BookingTable
+            rowSelection={{
+              selectedRowKeys: bookingIds,
+              onChange: (keys) => {
+                setBookingIds(keys as number[]);
+              },
+            }}
+            pagination={{
+              onChange: (page, size) => {
+                setBookingsFilter({
+                  ...bookingsFilter,
+                  page,
+                  size,
+                });
+              },
+            }}
             loading={bookingsQuery.isLoading}
             data={bookingsQuery.data}
           />
