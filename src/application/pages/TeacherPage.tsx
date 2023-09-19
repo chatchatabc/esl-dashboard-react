@@ -4,6 +4,7 @@ import { modalUpdate } from "../redux/features/modalSlice";
 import { useAppDispatch } from "../redux/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { teacherGetAll } from "../../domain/services/teacherService";
+import { authGetProfile } from "../../domain/services/authService";
 
 function TeacherPage() {
   const dispatch = useAppDispatch();
@@ -11,6 +12,14 @@ function TeacherPage() {
 
   const page = Number(searchParams.get("page") ?? "1");
   const size = Number(searchParams.get("size") ?? "10");
+
+  const userQuery = useQuery({
+    queryKey: ["users", "profile"],
+    queryFn: async () => {
+      const data = await authGetProfile();
+      return data;
+    },
+  });
 
   const teacherQuery = useQuery({
     queryKey: ["teachers", { page, size }],
@@ -29,21 +38,23 @@ function TeacherPage() {
       {/* First section */}
       <section className="border rounded-lg shadow">
         <header className="p-2 flex items-center">
-          <h2 className="text-xl font-medium mr-auto">Teachers</h2>
-          <button
-            onClick={() => {
-              dispatch(
-                modalUpdate({
-                  show: true,
-                  title: "Add Teacher",
-                  content: "teacher",
-                })
-              );
-            }}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
-          >
-            Add +
-          </button>
+          <h2 className="text-xl font-medium mr-auto my-2">Teachers</h2>
+          {userQuery.data?.roleId === 1 && (
+            <button
+              onClick={() => {
+                dispatch(
+                  modalUpdate({
+                    show: true,
+                    title: "Add Teacher",
+                    content: "teacher",
+                  })
+                );
+              }}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+            >
+              Add +
+            </button>
+          )}
         </header>
 
         <section>
