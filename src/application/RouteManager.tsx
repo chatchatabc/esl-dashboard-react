@@ -10,6 +10,7 @@ import TeacherPage from "./pages/TeacherPage";
 import TeacherProfilePage from "./pages/TeacherProfilePage";
 import HomePage from "./pages/HomePage";
 import BookingsPage from "./pages/BookingsPage";
+import AuthorizationRoute from "./routes/AuthorizationRoute";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
       },
       {
         path: "users",
+        element: <AuthorizationRoute allowedRoles={[1]} />,
         children: [
           {
             path: "",
@@ -39,6 +41,7 @@ const router = createBrowserRouter([
       },
       {
         path: "teachers",
+        element: <AuthorizationRoute allowedRoles={[1, 2]} />,
         children: [
           {
             path: "",
@@ -52,11 +55,19 @@ const router = createBrowserRouter([
       },
       {
         path: "messages",
-        element: <MessagePage />,
+        element: (
+          <AuthorizationRoute allowedRoles={[1]}>
+            <MessagePage />
+          </AuthorizationRoute>
+        ),
       },
       {
         path: "message-templates",
-        element: <MessageTemplatePage />,
+        element: (
+          <AuthorizationRoute allowedRoles={[1]}>
+            <MessageTemplatePage />
+          </AuthorizationRoute>
+        ),
       },
     ],
   },
