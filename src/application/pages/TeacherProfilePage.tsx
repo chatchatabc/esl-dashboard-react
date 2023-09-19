@@ -106,8 +106,8 @@ export function TeacherProfilePage() {
   // Update calendar date on first load
   React.useEffect(() => {
     setCalendarDate((prev) => {
-      prev.setDate(prev.getDate() - prev.getDay());
-      prev.setHours(0, 0, 0, 0);
+      prev.setUTCDate(prev.getUTCDate() - prev.getUTCDay());
+      prev.setUTCHours(0, 0, 0, 0);
       return prev;
     });
   }, []);
