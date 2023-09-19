@@ -24,7 +24,6 @@ export function TeacherProfilePage() {
     size: 10,
   });
   const [calendarDate, setCalendarDate] = React.useState(new Date());
-  const [calendarListEvents, setCalendarListEvents] = React.useState<any[]>([]);
 
   const userQuery = useQuery({
     queryKey: ["users", "profile"],
@@ -107,54 +106,6 @@ export function TeacherProfilePage() {
       return prev;
     });
   }, []);
-
-  // Update calendar list events
-  React.useEffect(() => {
-    if (schedulesQuery.data && bookingsQuery.data) {
-      const newEvents: any[] = [];
-
-      schedulesQuery.data.forEach((schedule) => {
-        const now = new Date();
-        const start = new Date(schedule.startTime);
-        const diff = schedule.endTime - schedule.startTime;
-
-        start.setUTCFullYear(calendarDate.getUTCFullYear());
-        start.setUTCMonth(calendarDate.getUTCMonth());
-        start.setUTCDate(calendarDate.getUTCDate() + schedule.day);
-
-        const nowTime = now.getTime();
-        let startTime = start.getTime();
-        const endTime = startTime + diff;
-
-        while (startTime < endTime) {
-          if (nowTime < startTime) {
-            newEvents.push({
-              start: startTime,
-              end: startTime + 30 * 60 * 1000,
-            });
-          }
-
-          startTime += 30 * 60 * 1000;
-        }
-      });
-
-      bookingsQuery.data.forEach((booking) => {
-        while (booking.start < booking.end) {
-          const index = newEvents.findIndex((schedule) => {
-            return schedule.start === booking.start;
-          });
-
-          if (index !== -1) {
-            newEvents.splice(index, 1);
-          }
-
-          booking.start += 30 * 60 * 1000;
-        }
-      });
-
-      setCalendarListEvents(newEvents);
-    }
-  }, [bookingsQuery.data, schedulesQuery.data]);
 
   if (teacherQuery.isLoading) {
     return (
@@ -277,7 +228,11 @@ export function TeacherProfilePage() {
         </header>
 
         <section>
-          <TeacherScheduleList events={calendarListEvents} />
+          <TeacherScheduleList
+            schedules={schedulesQuery.data}
+            bookings={bookingsQuery.data}
+            calendarDate={calendarDate}
+          />
         </section>
       </section>
     </section>
