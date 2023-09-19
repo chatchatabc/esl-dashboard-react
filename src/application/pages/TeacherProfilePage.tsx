@@ -69,6 +69,7 @@ export function TeacherProfilePage() {
         teacherId: teacherQuery.data?.id,
         page: 1,
         size: 10000,
+        status: [1, 2, 3, 5],
         start: calendarDate.getTime(),
         end: calendarDate.getTime() + 7 * 24 * 60 * 60 * 1000,
       },
@@ -78,6 +79,7 @@ export function TeacherProfilePage() {
         teacherId: teacherQuery.data?.id,
         page: 1,
         size: 10000,
+        status: [1, 2, 3, 5],
         start: calendarDate.getTime(),
         end: calendarDate.getTime() + 7 * 24 * 60 * 60 * 1000,
       });
