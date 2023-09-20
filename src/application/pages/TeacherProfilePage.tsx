@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { courseGetAll } from "../../domain/services/courseService";
 import React from "react";
 import { authGetProfile } from "../../domain/services/authService";
-import TeacherScheduleList from "../components/TeacherScheduleList";
+import TeacherScheduleList from "../components/teachers/TeacherScheduleList";
 import { scheduleGetAll } from "../../domain/services/scheduleService";
 import { Schedule } from "../../../../esl-workers/src/domain/models/ScheduleModel";
 import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
