@@ -56,6 +56,7 @@ function Navbar() {
                       navigate("/login");
                     }
                   },
+                  okType: "danger",
                 });
               }}
               className="px-4 py-2 text-red-500 w-full hover:bg-red-500 hover:text-white"
