@@ -44,16 +44,19 @@ function TeacherScheduleList({ schedules, bookings, calendarDate }: Props) {
       });
 
       bookings.forEach((booking) => {
-        while (booking.start < booking.end) {
+        let start = new Date(booking.start).getTime();
+        const end = new Date(booking.end).getTime();
+
+        while (start < end) {
           const index = newEvents.findIndex((schedule) => {
-            return schedule.start === booking.start;
+            return schedule.start === start;
           });
 
           if (index !== -1) {
             newEvents.splice(index, 1);
           }
 
-          booking.start += 30 * 60 * 1000;
+          start += 30 * 60 * 1000;
         }
       });
 
