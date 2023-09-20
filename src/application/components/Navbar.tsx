@@ -2,9 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { authGetProfile, authLogout } from "../../domain/services/authService";
 import UserIcon from "../assets/UserIcon";
 import MyDropdown from "./MyDropdown";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Modal, message } from "antd";
 
 function Navbar() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const userQuery = useQuery({
     queryKey: ["users", "profile"],
@@ -40,12 +42,21 @@ function Navbar() {
           <div>
             <button
               onClick={async () => {
-                const res = await authLogout();
-                if (!res) {
-                  alert("Logout failed");
-                } else {
-                  navigate("/login");
-                }
+                Modal.confirm({
+                  title: "Are you sure?",
+                  content: "Do you want to logout?",
+                  onOk: async () => {
+                    const res = await authLogout();
+
+                    if (!res) {
+                      message.error("Logout failed");
+                    } else {
+                      queryClient.invalidateQueries();
+                      message.success("Logout success");
+                      navigate("/login");
+                    }
+                  },
+                });
               }}
               className="px-4 py-2 text-red-500 w-full hover:bg-red-500 hover:text-white"
             >
