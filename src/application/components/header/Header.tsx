@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { authGetProfile, authLogout } from "../../domain/services/authService";
-import UserIcon from "../assets/UserIcon";
-import MyDropdown from "./MyDropdown";
+import {
+  authGetProfile,
+  authLogout,
+} from "../../../domain/services/authService";
+import UserIcon from "../../assets/UserIcon";
+import MyDropdown from "../MyDropdown";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Modal, message } from "antd";
 
