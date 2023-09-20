@@ -28,7 +28,7 @@ export function TeacherProfilePage() {
     page: 1,
     size: 10,
   });
-  const [calendarDate, setCalendarDate] = React.useState(new Date());
+  const [calendarDate, setCalendarDate] = React.useState(new Date(0));
 
   const userQuery = useQuery({
     queryKey: ["users", "profile"],
