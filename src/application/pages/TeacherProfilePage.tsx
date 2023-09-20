@@ -15,7 +15,7 @@ import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel"
 import { bookingGetAll } from "../../domain/services/bookingService";
 
 const TeacherSchedule = React.lazy(
-  () => import("../components/TeacherSchedule")
+  () => import("../components/teachers/TeacherSchedule")
 );
 const TeacherCourseTable = React.lazy(
   () => import("../components/tables/TeacherCourseTable")
