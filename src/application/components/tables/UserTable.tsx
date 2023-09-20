@@ -1,10 +1,10 @@
 import { useAppDispatch } from "../../stores/hooks";
 import Table, { ColumnsType, TableProps } from "antd/es/table";
-import { CommonContent } from "../../../../../esl-workers/src/domain/models/CommonModel";
+import { CommonContent } from "../../../../../esl-backend-workers/src/domain/models/CommonModel";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { modalUpdate } from "../../stores/app/modalSlice";
 import { Modal, message } from "antd";
-import { User } from "../../../../../esl-workers/src/domain/models/UserModel";
+import { User } from "../../../../../esl-backend-workers/src/domain/models/UserModel";
 import {
   userRevokePhoneVerification,
   userVerifyPhone,

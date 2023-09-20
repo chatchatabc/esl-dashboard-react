@@ -1,5 +1,5 @@
 import { trpcClient } from "../infras/trpcActions";
-import { CreditAddInput } from "../../../../esl-workers/src/domain/models/CreditModel";
+import { CreditAddInput } from "../../../../esl-backend-workers/src/domain/models/CreditModel";
 
 export async function creditAdd(params: CreditAddInput) {
   try {

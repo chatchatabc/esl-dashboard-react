@@ -1,6 +1,6 @@
 import { Table, TableProps } from "antd";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { CommonContent } from "../../../../../esl-workers/src/domain/models/CommonModel";
+import { CommonContent } from "../../../../../esl-backend-workers/src/domain/models/CommonModel";
 
 type Props = TableProps<any> & {
   data?: CommonContent | null;

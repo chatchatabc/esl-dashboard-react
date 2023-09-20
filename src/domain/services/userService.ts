@@ -1,8 +1,8 @@
-import { CommonPaginationInput } from "../../../../esl-workers/src/domain/models/CommonModel";
+import { CommonPaginationInput } from "../../../../esl-backend-workers/src/domain/models/CommonModel";
 import {
   UserCreateInput,
   UserUpdateInput,
-} from "../../../../esl-workers/src/domain/models/UserModel";
+} from "../../../../esl-backend-workers/src/domain/models/UserModel";
 import { trpcClient } from "../infras/trpcActions";
 import { roleGet } from "./roleService";
 

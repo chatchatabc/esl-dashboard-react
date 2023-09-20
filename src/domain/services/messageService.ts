@@ -2,7 +2,7 @@ import {
   MessageCreateInput,
   MessageSendInput,
   MessageUpdateInput,
-} from "../../../../esl-workers/src/domain/models/MessageModel";
+} from "../../../../esl-backend-workers/src/domain/models/MessageModel";
 import { trpcClient } from "../infras/trpcActions";
 
 export async function messageGetAll(params: { page?: number; size?: number }) {

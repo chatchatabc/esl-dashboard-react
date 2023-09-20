@@ -1,8 +1,8 @@
-import { CommonPaginationInput } from "../../../../esl-workers/src/domain/models/CommonModel";
+import { CommonPaginationInput } from "../../../../esl-backend-workers/src/domain/models/CommonModel";
 import {
   MessageTemplateCreateInput,
   MessageTemplateUpdateInput,
-} from "../../../../esl-workers/src/domain/models/MessageModel";
+} from "../../../../esl-backend-workers/src/domain/models/MessageModel";
 import { trpcClient } from "../infras/trpcActions";
 
 export async function messageTemplateGetAll(params: CommonPaginationInput) {

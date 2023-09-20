@@ -1,7 +1,7 @@
 import { useAppDispatch } from "../../stores/hooks";
 import { Button, Table, TableProps } from "antd";
-import { CommonContent } from "../../../../../esl-workers/src/domain/models/CommonModel";
-import { MessageTemplate } from "../../../../../esl-workers/src/domain/models/MessageModel";
+import { CommonContent } from "../../../../../esl-backend-workers/src/domain/models/CommonModel";
+import { MessageTemplate } from "../../../../../esl-backend-workers/src/domain/models/MessageModel";
 import { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 import { modalUpdate } from "../../stores/app/modalSlice";

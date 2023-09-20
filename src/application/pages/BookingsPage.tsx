@@ -2,7 +2,7 @@ import { useAppDispatch } from "../stores/hooks";
 import { modalUpdate } from "../stores/app/modalSlice";
 import { useQuery } from "@tanstack/react-query";
 import { authGetProfile } from "../../domain/services/authService";
-import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
+import { Booking } from "../../../../esl-backend-workers/src/domain/models/BookingModel";
 import {
   bookingGetAll,
   bookingOptionDays,

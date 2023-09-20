@@ -6,9 +6,9 @@ import {
 } from "../../../domain/services/messageService";
 import React from "react";
 import { userGetAll } from "../../../domain/services/userService";
-import { User } from "../../../../../esl-workers/src/domain/models/UserModel";
+import { User } from "../../../../../esl-backend-workers/src/domain/models/UserModel";
 import { messageTemplateGetAll } from "../../../domain/services/messageTemplateService";
-import { MessageTemplate } from "../../../../../esl-workers/src/domain/models/MessageModel";
+import { MessageTemplate } from "../../../../../esl-backend-workers/src/domain/models/MessageModel";
 import Cron, { HEADER } from "react-cron-generator";
 import dayjs from "dayjs";
 

@@ -1,7 +1,7 @@
 import FullCalendar from "@fullcalendar/react";
 import listPlugin from "@fullcalendar/list";
-import { Schedule } from "../../../../esl-workers/src/domain/models/ScheduleModel";
-import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
+import { Schedule } from "../../../../esl-backend-workers/src/domain/models/ScheduleModel";
+import { Booking } from "../../../../esl-backend-workers/src/domain/models/BookingModel";
 import React from "react";
 
 type Props = {

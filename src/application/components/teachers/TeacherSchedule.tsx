@@ -5,7 +5,7 @@ import React from "react";
 import {
   Schedule,
   ScheduleUpdateInput,
-} from "../../../../../esl-workers/src/domain/models/ScheduleModel";
+} from "../../../../../esl-backend-workers/src/domain/models/ScheduleModel";
 import {
   scheduleCreateMany,
   scheduleDeleteMany,
@@ -14,7 +14,7 @@ import {
 import { useAppDispatch } from "../../stores/hooks";
 import { modalUpdate } from "../../stores/app/modalSlice";
 import { CalendarApi, EventSourceInput } from "@fullcalendar/core/index.js";
-import { Booking } from "../../../../../esl-workers/src/domain/models/BookingModel";
+import { Booking } from "../../../../../esl-backend-workers/src/domain/models/BookingModel";
 import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {

@@ -1,8 +1,8 @@
-import { CommonPaginationInput } from "../../../../esl-workers/src/domain/models/CommonModel";
+import { CommonPaginationInput } from "../../../../esl-backend-workers/src/domain/models/CommonModel";
 import {
   ScheduleCreateInput,
   ScheduleUpdateInput,
-} from "../../../../esl-workers/src/domain/models/ScheduleModel";
+} from "../../../../esl-backend-workers/src/domain/models/ScheduleModel";
 import { trpcClient } from "../infras/trpcActions";
 
 export async function scheduleGetAll(params: CommonPaginationInput) {

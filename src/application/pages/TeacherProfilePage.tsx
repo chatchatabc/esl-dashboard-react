@@ -10,8 +10,8 @@ import React from "react";
 import { authGetProfile } from "../../domain/services/authService";
 import TeacherScheduleList from "../components/teachers/TeacherScheduleList";
 import { scheduleGetAll } from "../../domain/services/scheduleService";
-import { Schedule } from "../../../../esl-workers/src/domain/models/ScheduleModel";
-import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
+import { Schedule } from "../../../../esl-backend-workers/src/domain/models/ScheduleModel";
+import { Booking } from "../../../../esl-backend-workers/src/domain/models/BookingModel";
 import { bookingGetAll } from "../../domain/services/bookingService";
 
 const TeacherSchedule = React.lazy(

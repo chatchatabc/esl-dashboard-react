@@ -1,7 +1,7 @@
 import { Button, Form, FormInstance, Input, Select } from "antd";
 import React from "react";
 import { userGetAll } from "../../../domain/services/userService";
-import { User } from "../../../../../esl-workers/src/domain/models/UserModel";
+import { User } from "../../../../../esl-backend-workers/src/domain/models/UserModel";
 import {
   teacherCreate,
   teacherOptionStatus,

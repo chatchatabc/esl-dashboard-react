@@ -1,9 +1,9 @@
 import DynamicTable from "./DynamicTable";
 import { ColumnsType, TableProps } from "antd/es/table";
-import { Course } from "../../../../../esl-workers/src/domain/models/CourseModel";
+import { Course } from "../../../../../esl-backend-workers/src/domain/models/CourseModel";
 import { useAppDispatch } from "../../stores/hooks";
 import { modalUpdate } from "../../stores/app/modalSlice";
-import { CommonContent } from "../../../../../esl-workers/src/domain/models/CommonModel";
+import { CommonContent } from "../../../../../esl-backend-workers/src/domain/models/CommonModel";
 
 type Props = TableProps<any> & {
   data?: CommonContent | null;

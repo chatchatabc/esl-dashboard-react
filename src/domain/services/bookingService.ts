@@ -3,8 +3,8 @@ import {
   BookingCreateInputAdmin,
   BookingUpdateInput,
   BookingUpdateStatusManyInput,
-} from "../../../../esl-workers/src/domain/models/BookingModel";
-import { CommonPaginationInput } from "../../../../esl-workers/src/domain/models/CommonModel";
+} from "../../../../esl-backend-workers/src/domain/models/BookingModel";
+import { CommonPaginationInput } from "../../../../esl-backend-workers/src/domain/models/CommonModel";
 import { trpcClient } from "../infras/trpcActions";
 import { teacherGet } from "./teacherService";
 

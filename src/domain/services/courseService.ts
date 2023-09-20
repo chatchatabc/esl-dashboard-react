@@ -2,7 +2,7 @@ import {
   CourseCreateInput,
   CoursePagination,
   CourseUpdateInput,
-} from "../../../../esl-workers/src/domain/models/CourseModel";
+} from "../../../../esl-backend-workers/src/domain/models/CourseModel";
 import { trpcClient } from "../infras/trpcActions";
 
 export async function courseGetAll(params: CoursePagination) {

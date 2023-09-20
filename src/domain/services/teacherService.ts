@@ -1,8 +1,8 @@
-import { CommonPaginationInput } from "../../../../esl-workers/src/domain/models/CommonModel";
+import { CommonPaginationInput } from "../../../../esl-backend-workers/src/domain/models/CommonModel";
 import {
   TeacherCreateInput,
   TeacherUpdateInput,
-} from "../../../../esl-workers/src/domain/models/TeacherModel";
+} from "../../../../esl-backend-workers/src/domain/models/TeacherModel";
 import { trpcClient } from "../infras/trpcActions";
 
 export async function teacherGetAll(params: CommonPaginationInput) {

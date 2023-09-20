@@ -1,6 +1,6 @@
 import { Button, DatePicker, Form, FormInstance, Input, Select } from "antd";
 import { userGetAll } from "../../../domain/services/userService";
-import { User } from "../../../../../esl-workers/src/domain/models/UserModel";
+import { User } from "../../../../../esl-backend-workers/src/domain/models/UserModel";
 import React from "react";
 import {
   bookingCreate,
@@ -8,8 +8,8 @@ import {
   bookingUpdate,
 } from "../../../domain/services/bookingService";
 import { teacherGetAll } from "../../../domain/services/teacherService";
-import { Teacher } from "../../../../../esl-workers/src/domain/models/TeacherModel";
-import { Course } from "../../../../../esl-workers/src/domain/models/CourseModel";
+import { Teacher } from "../../../../../esl-backend-workers/src/domain/models/TeacherModel";
+import { Course } from "../../../../../esl-backend-workers/src/domain/models/CourseModel";
 import { courseGetAll } from "../../../domain/services/courseService";
 
 type Props = {
