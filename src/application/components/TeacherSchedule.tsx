@@ -9,17 +9,21 @@ import {
 import {
   scheduleCreateMany,
   scheduleDeleteMany,
-  scheduleGetAll,
   scheduleUpdateMany,
 } from "../../domain/services/scheduleService";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { useAppDispatch } from "../redux/hooks";
 import { modalUpdate } from "../redux/features/modalSlice";
-import { bookingGetAllAdmin } from "../../domain/services/bookingService";
 import { CalendarApi, EventSourceInput } from "@fullcalendar/core/index.js";
-import { useQuery } from "@tanstack/react-query";
+import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   teacherId: number;
+  calendarDate: Date;
+  setCalendarDate: React.Dispatch<React.SetStateAction<Date>>;
+  bookings: Booking[];
+  schedules: Schedule[];
+  loading: boolean;
 };
 
 const bookingColor = {
@@ -28,48 +32,24 @@ const bookingColor = {
   3: "green",
 };
 
-function TeacherSchedule({ teacherId }: Props) {
+function TeacherSchedule({
+  teacherId,
+  calendarDate,
+  setCalendarDate,
+  bookings,
+  schedules,
+  loading,
+}: Props) {
   const dispatch = useAppDispatch();
-  const global = useAppSelector((state) => state.global);
+  const queryClient = useQueryClient();
 
   const calendarRef = React.useRef<FullCalendar | null>(null);
   const [calendar, setCalendar] = React.useState<CalendarApi | undefined>(
     undefined
   );
-  const [calendarDate, setCalendarDate] = React.useState(new Date());
 
   const [editing, setEditing] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
-  const [schedules, setSchedules] = React.useState<Schedule[]>([]);
   const [events, setEvents] = React.useState<any[]>([]);
-
-  const bookingsQuery = useQuery({
-    queryKey: [
-      "bookings",
-      {
-        teacherId,
-        page: 1,
-        size: 1000,
-        status: [1, 2, 3, 5],
-        start: calendar?.getDate().getTime() ?? 0,
-      },
-    ],
-    queryFn: async () => {
-      const start = calendarDate.getTime();
-      const end = start + 1000 * 60 * 60 * 24 * 7;
-
-      const data = await bookingGetAllAdmin({
-        page: 1,
-        size: 1000,
-        status: [1, 2, 3, 5],
-        teacherId,
-        start,
-        end,
-      });
-
-      return data;
-    },
-  });
 
   async function handleSave() {
     const calendarEvents = calendar?.getEvents() ?? [];
@@ -122,11 +102,12 @@ function TeacherSchedule({ teacherId }: Props) {
 
     if (responseUpdate && response) {
       setEditing(false);
+      queryClient.invalidateQueries({
+        queryKey: ["schedules"],
+      });
     } else {
       alert("Error");
     }
-
-    setLoading(true);
   }
 
   // Set calendar ref
@@ -136,33 +117,6 @@ function TeacherSchedule({ teacherId }: Props) {
       setCalendar(calendar);
     }
   }, [calendarRef]);
-
-  // Reset loading
-  React.useEffect(() => {
-    setLoading(true);
-  }, [global.reset]);
-
-  // Set calendar date to the first day of the week
-  React.useEffect(() => {
-    calendarDate.setDate(calendarDate.getDate() - calendarDate.getDay());
-    calendarDate.setHours(0, 0, 0, 0);
-  }, []);
-
-  React.useEffect(() => {
-    if (loading) {
-      (async () => {
-        const resSchedule = await scheduleGetAll({
-          teacherId,
-          page: 1,
-          size: 1000,
-        });
-
-        setSchedules(resSchedule?.content ?? []);
-
-        setLoading(false);
-      })();
-    }
-  }, [loading]);
 
   React.useEffect(() => {
     const newEvents: EventSourceInput = schedules
@@ -187,7 +141,7 @@ function TeacherSchedule({ teacherId }: Props) {
       .flat();
 
     if (!editing) {
-      bookingsQuery.data?.content.forEach((booking) => {
+      bookings.forEach((booking) => {
         const start = new Date(booking.start);
         const end = new Date(booking.end);
         const color = bookingColor[booking.status as keyof typeof bookingColor];
@@ -204,7 +158,7 @@ function TeacherSchedule({ teacherId }: Props) {
     }
 
     setEvents(newEvents);
-  }, [schedules, editing, calendarDate, bookingsQuery.data?.content]);
+  }, [schedules, editing, calendarDate, bookings]);
 
   return (
     <section>
@@ -261,7 +215,7 @@ function TeacherSchedule({ teacherId }: Props) {
       </header>
 
       <section className={`override ${editing ? "" : "overlap"} relative`}>
-        {(loading || bookingsQuery.isLoading) && (
+        {loading && (
           <div className="absolute w-full h-full flex items-center justify-center z-10 bg-white bg-opacity-50">
             <div className="ease-linear animate-spin rounded-full border-y-2 border-black h-20 w-20"></div>
           </div>

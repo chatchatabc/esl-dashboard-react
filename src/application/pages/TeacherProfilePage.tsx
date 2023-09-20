@@ -222,7 +222,14 @@ export function TeacherProfilePage() {
 
           {/* Teacher Schedule */}
           <section className="border shadow rounded-lg">
-            <TeacherSchedule teacherId={teacherQuery.data?.id} />
+            <TeacherSchedule
+              bookings={bookingsQuery.data ?? []}
+              schedules={schedulesQuery.data ?? []}
+              loading={bookingsQuery.isLoading || schedulesQuery.isLoading}
+              calendarDate={calendarDate}
+              setCalendarDate={setCalendarDate}
+              teacherId={teacherQuery.data.id}
+            />
           </section>
         </>
       )}
