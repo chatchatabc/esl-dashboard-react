@@ -11,8 +11,8 @@ import {
   scheduleDeleteMany,
   scheduleUpdateMany,
 } from "../../domain/services/scheduleService";
-import { useAppDispatch } from "../redux/hooks";
-import { modalUpdate } from "../redux/features/modalSlice";
+import { useAppDispatch } from "../stores/hooks";
+import { modalUpdate } from "../stores/app/modalSlice";
 import { CalendarApi, EventSourceInput } from "@fullcalendar/core/index.js";
 import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";
 import { useQueryClient } from "@tanstack/react-query";

@@ -1,10 +1,10 @@
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch } from "../../stores/hooks";
 import { Button, Table, TableProps } from "antd";
 import { CommonContent } from "../../../../../esl-workers/src/domain/models/CommonModel";
 import { MessageTemplate } from "../../../../../esl-workers/src/domain/models/MessageModel";
 import { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
-import { modalUpdate } from "../../redux/features/modalSlice";
+import { modalUpdate } from "../../stores/app/modalSlice";
 
 type Props = TableProps<any> & {
   data?: CommonContent<MessageTemplate>;

@@ -1,6 +1,6 @@
 import { Table, TableProps, message } from "antd";
 import React from "react";
-import { useAppSelector } from "../redux/hooks";
+import { useAppSelector } from "../stores/hooks";
 
 type Props = TableProps<any> & {
   getData: (params: { page?: number; size?: number }) => Promise<any>;

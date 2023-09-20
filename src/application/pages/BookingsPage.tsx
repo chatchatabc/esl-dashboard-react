@@ -1,5 +1,5 @@
-import { useAppDispatch } from "../redux/hooks";
-import { modalUpdate } from "../redux/features/modalSlice";
+import { useAppDispatch } from "../stores/hooks";
+import { modalUpdate } from "../stores/app/modalSlice";
 import { useQuery } from "@tanstack/react-query";
 import { authGetProfile } from "../../domain/services/authService";
 import { Booking } from "../../../../esl-workers/src/domain/models/BookingModel";

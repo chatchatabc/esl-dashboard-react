@@ -1,11 +1,11 @@
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch } from "../../stores/hooks";
 import { Table, TableProps } from "antd";
 import { CommonContent } from "../../../../../esl-workers/src/domain/models/CommonModel";
 import { Message } from "../../../../../esl-workers/src/domain/models/MessageModel";
 import { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 import { utilFormatDateAndTime } from "../../../domain/services/utilService";
-import { modalUpdate } from "../../redux/features/modalSlice";
+import { modalUpdate } from "../../stores/app/modalSlice";
 
 type Props = TableProps<any> & {
   data?: CommonContent<Message>;

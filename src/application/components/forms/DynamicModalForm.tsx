@@ -1,9 +1,9 @@
 import { Modal, message } from "antd";
 import { useForm } from "antd/es/form/Form";
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../stores/hooks";
 import MessageForm from "./MessageForm";
-import { modalUpdate } from "../../redux/features/modalSlice";
+import { modalUpdate } from "../../stores/app/modalSlice";
 import MessageTemplateForm from "./MessageTemplateForm";
 import UserForm from "./UserForm";
 import CreditForm from "./CreditForm";

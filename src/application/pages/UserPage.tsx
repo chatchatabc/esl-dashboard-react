@@ -1,5 +1,5 @@
-import { useAppDispatch } from "../redux/hooks";
-import { modalUpdate } from "../redux/features/modalSlice";
+import { useAppDispatch } from "../stores/hooks";
+import { modalUpdate } from "../stores/app/modalSlice";
 import { userGetAll } from "../../domain/services/userService";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import UserTable from "../components/tables/UserTable";

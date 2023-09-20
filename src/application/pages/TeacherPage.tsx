@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import TeacherTable from "../components/tables/TeacherTable";
-import { modalUpdate } from "../redux/features/modalSlice";
-import { useAppDispatch } from "../redux/hooks";
+import { modalUpdate } from "../stores/app/modalSlice";
+import { useAppDispatch } from "../stores/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { teacherGetAll } from "../../domain/services/teacherService";
 import { authGetProfile } from "../../domain/services/authService";

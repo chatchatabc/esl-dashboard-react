@@ -5,8 +5,8 @@ import {
   userGetByUsername,
   userOptionStatus,
 } from "../../domain/services/userService";
-import { useAppDispatch } from "../redux/hooks";
-import { modalUpdate } from "../redux/features/modalSlice";
+import { useAppDispatch } from "../stores/hooks";
+import { modalUpdate } from "../stores/app/modalSlice";
 import LogsCreditTable from "../components/tables/LogsCreditTable";
 import BookingTable from "../components/tables/BookingTable";
 import EditIcon from "../assets/EditIcon";

@@ -1,5 +1,5 @@
-import { modalUpdate } from "../redux/features/modalSlice";
-import { useAppDispatch } from "../redux/hooks";
+import { modalUpdate } from "../stores/app/modalSlice";
+import { useAppDispatch } from "../stores/hooks";
 import MessageTable from "../components/tables/MessageTable";
 import { useQuery } from "@tanstack/react-query";
 import { messageGetAll } from "../../domain/services/messageService";

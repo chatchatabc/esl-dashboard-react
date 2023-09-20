@@ -2,8 +2,8 @@ import Table, { ColumnsType, TableProps } from "antd/es/table";
 import { Teacher } from "../../../../../esl-workers/src/domain/models/TeacherModel";
 import { utilFormatDateAndTime } from "../../../domain/services/utilService";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../redux/hooks";
-import { modalUpdate } from "../../redux/features/modalSlice";
+import { useAppDispatch } from "../../stores/hooks";
+import { modalUpdate } from "../../stores/app/modalSlice";
 import { CommonContent } from "../../../../../esl-workers/src/domain/models/CommonModel";
 
 type Props = TableProps<any> & {
