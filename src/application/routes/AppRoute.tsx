@@ -2,23 +2,23 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import React from "react";
 
 // Lazy load pages
-const UserPage = React.lazy(() => import("./pages/UserPage"));
-const TeacherPage = React.lazy(() => import("./pages/TeacherPage"));
-const MessagePage = React.lazy(() => import("./pages/MessagePage"));
+const UserPage = React.lazy(() => import("../pages/UserPage"));
+const TeacherPage = React.lazy(() => import("../pages/TeacherPage"));
+const MessagePage = React.lazy(() => import("../pages/MessagePage"));
 const MessageTemplatePage = React.lazy(
-  () => import("./pages/MessageTemplatePage")
+  () => import("../pages/MessageTemplatePage")
 );
-const BookingsPage = React.lazy(() => import("./pages/BookingsPage"));
-const HomePage = React.lazy(() => import("./pages/HomePage"));
-const UserProfilePage = React.lazy(() => import("./pages/UserProfilePage"));
+const BookingsPage = React.lazy(() => import("../pages/BookingsPage"));
+const HomePage = React.lazy(() => import("../pages/HomePage"));
+const UserProfilePage = React.lazy(() => import("../pages/UserProfilePage"));
 const TeacherProfilePage = React.lazy(
-  () => import("./pages/TeacherProfilePage")
+  () => import("../pages/TeacherProfilePage")
 );
-const LoginPage = React.lazy(() => import("./pages/LoginPage"));
-const NotFoundPage = React.lazy(() => import("./pages/NotFoundPage"));
-const MainLayout = React.lazy(() => import("./layouts/MainLayout"));
+const LoginPage = React.lazy(() => import("../pages/LoginPage"));
+const NotFoundPage = React.lazy(() => import("../pages/NotFoundPage"));
+const MainLayout = React.lazy(() => import("../layouts/MainLayout"));
 const AuthorizationRoute = React.lazy(
-  () => import("./routes/AuthorizationRoute")
+  () => import("../routes/AuthorizationRoute")
 );
 
 const router = createBrowserRouter([
