@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { authGetUser } from "../../domain/services/authService";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/sidebar/Sidebar";
 import Navbar from "../components/header/Header";
 import DynamicModalForm from "../components/forms/DynamicModalForm";
 import React from "react";
