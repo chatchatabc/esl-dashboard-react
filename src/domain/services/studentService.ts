@@ -10,3 +10,16 @@ export async function studentGetAll(params: CommonPaginationInput) {
     return null;
   }
 }
+
+export async function studentGetByUser(params: {
+  username?: string;
+  userId?: number;
+}) {
+  try {
+    const response = await trpcClient.student.getByUser.query(params);
+    return response;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
