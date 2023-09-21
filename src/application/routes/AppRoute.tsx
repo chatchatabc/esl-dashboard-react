@@ -20,6 +20,7 @@ const MainLayout = React.lazy(() => import("../layouts/MainLayout"));
 const AuthorizationRoute = React.lazy(
   () => import("../routes/AuthorizationRoute")
 );
+const StudentsPage = React.lazy(() => import("../pages/StudentsPage"));
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "bookings",
         element: <BookingsPage />,
+      },
+      {
+        path: "students",
+        element: <StudentsPage />,
       },
       {
         path: "users",
