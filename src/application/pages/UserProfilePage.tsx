@@ -1,10 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage";
-import {
-  userGetByUsername,
-  userOptionStatus,
-} from "../../domain/services/userService";
+import { userGet, userOptionStatus } from "../../domain/services/userService";
 import { useAppDispatch } from "../stores/hooks";
 import { modalUpdate } from "../stores/app/modalSlice";
 import LogsCreditTable from "../components/tables/LogsCreditTable";
@@ -42,7 +39,7 @@ export function UserProfilePage() {
   const userQuery = useQuery({
     queryKey: ["users", { username }],
     queryFn: async () => {
-      const data = await userGetByUsername({ username });
+      const data = await userGet({ username });
       return data;
     },
   });
