@@ -6,7 +6,7 @@ import { authGetProfile } from "../../domain/services/authService";
 import { studentGetAll } from "../../domain/services/studentService";
 import StudentTable from "../components/tables/StudentTable";
 
-export function StudentsPage() {
+export function StudentPage() {
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
 
@@ -68,4 +68,4 @@ export function StudentsPage() {
   );
 }
 
-export default StudentsPage;
+export default StudentPage;
