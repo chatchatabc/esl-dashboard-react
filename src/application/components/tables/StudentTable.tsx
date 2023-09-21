@@ -22,7 +22,7 @@ function StudentTable({ data, ...props }: Props) {
         return (
           <button
             onClick={() => {
-              navigate("/teachers/" + record.user?.username);
+              navigate("/students/" + record.user?.username);
             }}
             className="text-blue-500 underline hover:no-underline"
           >

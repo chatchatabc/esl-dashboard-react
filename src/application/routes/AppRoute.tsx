@@ -20,7 +20,10 @@ const MainLayout = React.lazy(() => import("../layouts/MainLayout"));
 const AuthorizationRoute = React.lazy(
   () => import("../routes/AuthorizationRoute")
 );
-const StudentsPage = React.lazy(() => import("../pages/StudentsPage"));
+const StudentPage = React.lazy(() => import("../pages/StudentPage"));
+const StudentProfilePage = React.lazy(
+  () => import("../pages/StudentProfilePage")
+);
 
 const router = createBrowserRouter([
   {
@@ -37,7 +40,17 @@ const router = createBrowserRouter([
       },
       {
         path: "students",
-        element: <StudentsPage />,
+        element: <AuthorizationRoute allowedRoles={[1]} />,
+        children: [
+          {
+            path: "",
+            element: <StudentPage />,
+          },
+          {
+            path: ":username",
+            element: <StudentProfilePage />,
+          },
+        ],
       },
       {
         path: "users",
