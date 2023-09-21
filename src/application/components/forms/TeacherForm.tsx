@@ -1,12 +1,5 @@
-import { Button, Form, FormInstance, Input, Select } from "antd";
-import React from "react";
-import { userGetAll } from "../../../domain/services/userService";
-import { User } from "../../../../../esl-backend-workers/src/domain/models/UserModel";
-import {
-  teacherCreate,
-  teacherOptionStatus,
-  teacherUpdate,
-} from "../../../domain/services/teacherService";
+import { Button, Form, FormInstance, Input } from "antd";
+import { teacherCreate } from "../../../domain/services/teacherService";
 
 type Props = {
   loading: boolean;
@@ -15,132 +8,148 @@ type Props = {
     values: any,
     success: string,
     fail: string,
-    queryKeys: any[][]
+    queryKeys: any[]
   ) => Promise<any>;
   formRef: FormInstance;
 };
 
 function TeacherForm({ loading, handleSubmit, formRef }: Props) {
-  const [localLoading, setLocalLoading] = React.useState(true);
-  const [users, setUsers] = React.useState<User[]>([]);
-  const formValues = formRef.getFieldsValue();
-
-  React.useEffect(() => {
-    if (localLoading) {
-      (async () => {
-        const resUsers = await userGetAll({
-          page: 1,
-          size: 10000,
-          roleId: 3,
-        });
-
-        if (resUsers) {
-          setUsers(resUsers.content);
-        }
-
-        setLocalLoading(false);
-      })();
-    }
-  }, [localLoading]);
   return (
     <Form
       layout="vertical"
       form={formRef}
       onFinish={(e) => {
-        if (e.id) {
-          handleSubmit(
-            teacherUpdate,
-            e,
-            "Successfully updated teacher",
-            "Failed to update teacher",
-            [["teachers"]]
-          );
-        } else {
-          handleSubmit(
-            teacherCreate,
-            e,
-            "Successfully created teacher",
-            "Failed to create teacher",
-            [["teachers"]]
-          );
-        }
+        e.credits = Number(e.credits);
+        handleSubmit(
+          teacherCreate,
+          e,
+          "Successfully created teacher!",
+          "Failed to create teacher!",
+          [["teachers"]]
+        );
       }}
     >
-      <Form.Item name="id" hidden></Form.Item>
+      <div className="flex -mx-1 flex-wrap">
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="username"
+          label="Username"
+        >
+          <Input placeholder="Username" />
+        </Form.Item>
 
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="userId"
-        label="User"
-      >
-        <Select
-          disabled={formValues.id ? true : false}
-          placeholder="Select a student"
-          showSearch={true}
-          filterOption={(input, option) => {
-            if (option?.label) {
-              return (
-                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              );
-            }
-            return false;
-          }}
-          options={users.map((user) => {
-            return {
-              value: user.id,
-              label: `${user.alias} | ${user.phone}`,
-            };
-          })}
-        />
-      </Form.Item>
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="alias"
+          label="Nickname"
+        >
+          <Input placeholder="Nickname" />
+        </Form.Item>
 
-      {/* Alias */}
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="alias"
-        label="Alias"
-      >
-        <Input placeholder="Alias" />
-      </Form.Item>
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="password"
+          label="Password"
+        >
+          <Input.Password placeholder="Password" />
+        </Form.Item>
 
-      {/* Bio */}
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="bio"
-        label="Bio"
-      >
-        <Input.TextArea placeholder="Bio" />
-      </Form.Item>
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="confirmPassword"
+          label="Confirm Password"
+        >
+          <Input.Password placeholder="Confirm Password" />
+        </Form.Item>
 
-      {/* Status */}
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="status"
-        label="Status"
-        initialValue={1}
-      >
-        <Select disabled options={teacherOptionStatus()} placeholder="Status" />
-      </Form.Item>
+        {/* First Name */}
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="firstName"
+          label="First Name"
+        >
+          <Input placeholder="First Name" />
+        </Form.Item>
+
+        {/* Last Name */}
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="lastName"
+          label="Last Name"
+        >
+          <Input placeholder="Last Name" />
+        </Form.Item>
+
+        {/* Phone */}
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="phone"
+          label="Phone"
+        >
+          <Input placeholder="Phone" />
+        </Form.Item>
+
+        {/* Credits */}
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+            {
+              pattern: new RegExp(/^[0-9]*$/),
+              message: "Please input number only",
+            },
+          ]}
+          name="credits"
+          label="User Credits"
+        >
+          <Input placeholder="User Credits" />
+        </Form.Item>
+      </div>
 
       <Form.Item hidden>
         <Button htmlType="submit" loading={loading}></Button>
