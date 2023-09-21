@@ -10,6 +10,7 @@ import {
   userVerifyPhone,
 } from "../../../domain/services/userService";
 import { utilFormatDateAndTime } from "../../../domain/services/utilService";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = TableProps<any> & {
   data?: CommonContent<User>;
@@ -18,6 +19,7 @@ type Props = TableProps<any> & {
 function UserTable({ data, ...props }: Props) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
 
   const columns: ColumnsType<User> = [
@@ -70,7 +72,8 @@ function UserTable({ data, ...props }: Props) {
     {
       key: "phone",
       title: "Phone Number",
-      render: (record: User) => {
+      render: (_, record) => {
+        console.log(record);
         return (
           <button
             onClick={() => {
@@ -85,16 +88,17 @@ function UserTable({ data, ...props }: Props) {
                   let res: any;
                   if (record.phoneVerifiedAt) {
                     res = await userRevokePhoneVerification({
-                      userId: record.id,
+                      id: record.id,
                     });
                   } else {
-                    res = await userVerifyPhone({ userId: record.id });
+                    res = await userVerifyPhone({ id: record.id });
                   }
 
                   if (!res) {
                     message.error("Something went wrong");
                   } else {
                     message.success("Success");
+                    queryClient.invalidateQueries(["users"]);
                   }
                 },
                 okButtonProps: {

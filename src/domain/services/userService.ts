@@ -64,7 +64,7 @@ export function userOptionStatus() {
   ];
 }
 
-export async function userVerifyPhone(params: { userId: number }) {
+export async function userVerifyPhone(params: { id: number }) {
   try {
     const res = await trpcClient.user.verifyPhone.mutate(params);
     return res;
@@ -74,7 +74,7 @@ export async function userVerifyPhone(params: { userId: number }) {
   }
 }
 
-export async function userRevokePhoneVerification(params: { userId: number }) {
+export async function userRevokePhoneVerification(params: { id: number }) {
   try {
     const res = await trpcClient.user.revokePhoneVerification.mutate(params);
     return res;
