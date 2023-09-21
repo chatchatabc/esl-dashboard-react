@@ -20,30 +20,16 @@ function StudentForm({ loading, handleSubmit, formRef }: Props) {
       form={formRef}
       onFinish={(e) => {
         e.credits = Number(e.credits);
-        if (e.id) {
-          handleSubmit(
-            studentCreate,
-            e,
-            "Successfully updated student!",
-            "Failed to update student!",
-            [["students"]]
-          );
-        } else {
-          handleSubmit(
-            studentCreate,
-            e,
-            "Successfully created student!",
-            "Failed to create student!",
-            [["students"]]
-          );
-        }
+        handleSubmit(
+          studentCreate,
+          e,
+          "Successfully created student!",
+          "Failed to create student!",
+          [["students"]]
+        );
       }}
     >
-      <Form.Item name="id" hidden>
-        <Input />
-      </Form.Item>
-
-      <div className="flex -mx-1">
+      <div className="flex -mx-1 flex-wrap">
         <Form.Item
           className="w-1/2 px-1"
           rules={[
@@ -71,41 +57,35 @@ function StudentForm({ loading, handleSubmit, formRef }: Props) {
         >
           <Input placeholder="Nickname" />
         </Form.Item>
-      </div>
 
-      {formRef.getFieldValue("id") === undefined && (
-        <div className="flex -mx-1">
-          <Form.Item
-            className="w-1/2 px-1"
-            rules={[
-              {
-                required: true,
-                message: "Need some input here",
-              },
-            ]}
-            name="password"
-            label="Password"
-          >
-            <Input.Password placeholder="Password" />
-          </Form.Item>
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="password"
+          label="Password"
+        >
+          <Input.Password placeholder="Password" />
+        </Form.Item>
 
-          <Form.Item
-            className="w-1/2 px-1"
-            rules={[
-              {
-                required: true,
-                message: "Need some input here",
-              },
-            ]}
-            name="confirmPassword"
-            label="Confirm Password"
-          >
-            <Input.Password placeholder="Confirm Password" />
-          </Form.Item>
-        </div>
-      )}
+        <Form.Item
+          className="w-1/2 px-1"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="confirmPassword"
+          label="Confirm Password"
+        >
+          <Input.Password placeholder="Confirm Password" />
+        </Form.Item>
 
-      <div className="flex -mx-1">
         {/* First Name */}
         <Form.Item
           className="w-1/2 px-1"
@@ -135,9 +115,7 @@ function StudentForm({ loading, handleSubmit, formRef }: Props) {
         >
           <Input placeholder="Last Name" />
         </Form.Item>
-      </div>
 
-      <div className="flex -mx-1">
         {/* Phone */}
         <Form.Item
           className="w-1/2 px-1"
