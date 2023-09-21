@@ -232,21 +232,23 @@ export function TeacherProfilePage() {
         </>
       )}
 
-      <section className="border overflow-hidden shadow rounded-lg">
-        <header className="p-2 flex items-center">
-          <h2 className="text-xl my-1.5 font-medium mr-auto">
-            Teacher's Schedule List
-          </h2>
-        </header>
+      {userQuery.data?.roleId === 2 && (
+        <section className="border overflow-hidden shadow rounded-lg">
+          <header className="p-2 flex items-center">
+            <h2 className="text-xl my-1.5 font-medium mr-auto">
+              Teacher's Schedule List
+            </h2>
+          </header>
 
-        <section>
-          <TeacherScheduleList
-            schedules={schedulesQuery.data}
-            bookings={bookingsQuery.data}
-            calendarDate={calendarDate}
-          />
+          <section>
+            <TeacherScheduleList
+              schedules={schedulesQuery.data}
+              bookings={bookingsQuery.data}
+              calendarDate={calendarDate}
+            />
+          </section>
         </section>
-      </section>
+      )}
     </section>
   );
 }
