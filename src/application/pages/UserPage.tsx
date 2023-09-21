@@ -53,11 +53,11 @@ export function UserPage() {
                 modalUpdate({
                   show: true,
                   content: "user",
-                  title: "Add Message",
+                  title: "Add user",
                 })
               );
             }}
-            className="px-4 py-1 bg-blue-500 text-white rounded-md transition hover:bg-blue-400"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
           >
             Add +
           </button>

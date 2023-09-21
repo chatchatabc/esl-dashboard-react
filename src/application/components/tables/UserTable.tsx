@@ -40,14 +40,9 @@ function UserTable({ data, ...props }: Props) {
       },
     },
     {
-      key: "firstName",
-      dataIndex: "firstName",
-      title: "First Name",
-    },
-    {
-      key: "lastName",
-      dataIndex: "lastName",
-      title: "Last Name",
+      title: "Nickname",
+      key: "alias",
+      dataIndex: "alias",
     },
     {
       key: "credit",
