@@ -44,6 +44,7 @@ export function TeacherProfilePage() {
       return data;
     },
   });
+  const teacher = teacherQuery.data;
   const coursesQuery = useQuery({
     queryKey: [
       "courses",
@@ -132,52 +133,81 @@ export function TeacherProfilePage() {
 
   return (
     <section className="p-4 space-y-4">
-      {/* Teacher Information */}
-      <section className="border shadow rounded-lg">
-        <header className="p-2 border-b-2 flex items-center">
+      {/* Teacher's Profile Information */}
+      <section className="border rounded-lg shadow">
+        <header className="p-2 flex items-center border-b">
           <h2 className="text-xl font-medium mr-auto">Teacher's Profile</h2>
 
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400">
+          <button
+            onClick={() => {
+              dispatch(
+                modalUpdate({
+                  show: true,
+                  content: "user",
+                  data: teacher?.user,
+                  title: "Edit profile",
+                })
+              );
+            }}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+          >
             Edit
           </button>
         </header>
 
-        <section className="flex flex-wrap">
-          {/* Alias */}
-          <section className="p-2 w-1/4">
+        <section className="p-2 flex flex-wrap gap-y-2">
+          {/* Nickname */}
+          <section className="w-1/4">
             <header>
-              <h3 className="text-xs font-bold">Alias</h3>
+              <h3 className="text-xs font-bold">Nickname</h3>
             </header>
 
             <section>
-              <p>{teacherQuery.data.alias}</p>
+              <p>{teacher?.user.alias}</p>
             </section>
           </section>
 
-          {/* Username */}
-          <section className="p-2 w-1/4">
+          {/* First name */}
+          <section className="w-1/4">
             <header>
-              <h3 className="text-xs font-bold">Username</h3>
+              <h3 className="text-xs font-bold">First name</h3>
             </header>
 
             <section>
-              <p>{teacherQuery.data.user!.username}</p>
+              <p>{teacher?.user.firstName ?? "NULL"}</p>
             </section>
           </section>
 
-          {/* Created At */}
-          <section className="p-2 w-1/4">
+          {/* Last Name */}
+          <section className="w-1/4">
             <header>
-              <h3 className="text-xs font-bold">Teacher since</h3>
+              <h3 className="text-xs font-bold">Last name</h3>
             </header>
 
             <section>
-              <p>
-                {utilFormatDateAndTime(
-                  "en-US",
-                  new Date(teacherQuery.data.createdAt)
-                )}
-              </p>
+              <p>{teacher?.user.lastName ?? "NULL"}</p>
+            </section>
+          </section>
+
+          {/* Phone */}
+          <section className="w-1/4">
+            <header>
+              <h3 className="text-xs font-bold">Phone</h3>
+            </header>
+
+            <section>
+              <p>{teacher?.user.phone ?? "NULL"}</p>
+            </section>
+          </section>
+
+          {/* Role */}
+          <section className="w-1/4">
+            <header>
+              <h3 className="text-xs font-bold">Roles</h3>
+            </header>
+
+            <section>
+              <p>{teacher?.user.role?.name}</p>
             </section>
           </section>
         </section>
