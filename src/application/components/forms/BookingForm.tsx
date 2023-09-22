@@ -1,6 +1,4 @@
 import { Button, DatePicker, Form, FormInstance, Input, Select } from "antd";
-import { userGetAll } from "../../../domain/services/userService";
-import { User } from "../../../../../esl-backend-workers/src/domain/models/UserModel";
 import React from "react";
 import {
   bookingCreate,
@@ -11,6 +9,9 @@ import { teacherGetAll } from "../../../domain/services/teacherService";
 import { Teacher } from "../../../../../esl-backend-workers/src/domain/models/TeacherModel";
 import { Course } from "../../../../../esl-backend-workers/src/domain/models/CourseModel";
 import { courseGetAll } from "../../../domain/services/courseService";
+import { Student } from "../../../../../esl-backend-workers/src/domain/models/StudentModel";
+import { useQuery } from "@tanstack/react-query";
+import { studentGetAll } from "../../../domain/services/studentService";
 
 type Props = {
   loading: boolean;
@@ -26,7 +27,7 @@ type Props = {
 
 function BookingForm({ loading, handleSubmit, formRef }: Props) {
   const [localLoading, setLocalLoading] = React.useState(true);
-  const [selectedStudent, setSelectedStudent] = React.useState<User | null>(
+  const [selectedStudent, setSelectedStudent] = React.useState<Student | null>(
     null
   );
   const [selectedCourse, setSelectedCourse] = React.useState<Course | null>(
@@ -37,25 +38,26 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
   );
   const [sessions, setSessions] = React.useState<number>(0);
   const [advanceBooking, setAdvanceBooking] = React.useState("");
-  const [students, setStudents] = React.useState<User[]>([]);
   const [teachers, setTeachers] = React.useState<Teacher[]>([]);
   const [courses, setCourses] = React.useState<Course[]>([]);
+  const studentsQuery = useQuery({
+    queryKey: ["students"],
+    queryFn: async () => {
+      const data = await studentGetAll({
+        page: 1,
+        size: 1000,
+      });
+      return data?.content ?? [];
+    },
+  });
+  const students = studentsQuery.data ?? [];
+
   const formValues = formRef.getFieldsValue();
 
   // Get students and teachers
   React.useEffect(() => {
     if (localLoading) {
       (async () => {
-        const resStudents = await userGetAll({
-          page: 1,
-          size: 10000,
-          roleId: 2,
-        });
-
-        if (resStudents) {
-          setStudents(resStudents.content);
-        }
-
         const resTeachers = await teacherGetAll({
           page: 1,
           size: 10000,
@@ -203,7 +205,7 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
         {/* Student */}
         <Form.Item
           className="w-1/2 px-1"
-          name="userId"
+          name="studentId"
           rules={[
             {
               required: true,
@@ -234,7 +236,7 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
             options={students.map((student) => {
               return {
                 value: student.id,
-                label: `${student.alias} | ${student.phone}`,
+                label: `${student.user.alias} | ${student.user.phone}`,
               };
             })}
           />
@@ -345,7 +347,7 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
             </header>
 
             <section>
-              <p>{selectedStudent?.credits ?? "N/A"}</p>
+              <p>{selectedStudent?.user.credits ?? "N/A"}</p>
             </section>
           </section>
 
