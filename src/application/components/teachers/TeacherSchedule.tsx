@@ -127,7 +127,7 @@ function TeacherSchedule({
         const start = new Date(schedule.startTime);
         start.setFullYear(date.getFullYear());
         start.setMonth(date.getMonth());
-        start.setUTCDate(date.getDate() + schedule.day);
+        start.setUTCDate(date.getDate() + schedule.weekDay);
         const diff = schedule.endTime - schedule.startTime;
         const end = new Date(start.getTime() + diff);
 
@@ -149,7 +149,7 @@ function TeacherSchedule({
         newEvents.push({
           start,
           end,
-          title: `${booking.user?.alias}`,
+          title: `${booking.student.user.alias}`,
           display: "auto",
           color,
           booking,
