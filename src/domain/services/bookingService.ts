@@ -6,32 +6,10 @@ import {
 } from "../../../../esl-backend-workers/src/domain/models/BookingModel";
 import { CommonPaginationInput } from "../../../../esl-backend-workers/src/domain/models/CommonModel";
 import { trpcClient } from "../infras/trpcActions";
-import { teacherGet } from "./teacherService";
 
 export async function bookingGetAll(params: CommonPaginationInput) {
   try {
     const res = await trpcClient.booking.getAll.query(params);
-
-    if (res) {
-      const contentPromise = res.content.map(async (booking) => {
-        const user = await trpcClient.user.get.query({
-          userId: booking.userId ?? 0,
-        });
-        if (user) {
-          booking.user = user;
-        }
-
-        const teacher = await teacherGet({ teacherId: booking.teacherId });
-        if (teacher) {
-          booking.teacher = teacher;
-        }
-
-        return booking;
-      });
-
-      res.content = await Promise.all(contentPromise);
-    }
-
     return res;
   } catch (e) {
     console.log(e);
@@ -42,26 +20,6 @@ export async function bookingGetAll(params: CommonPaginationInput) {
 export async function bookingGetAllAdmin(params: CommonPaginationInput) {
   try {
     const res = await trpcClient.booking.getAllAdmin.query(params);
-
-    if (res) {
-      const contentPromise = res.content.map(async (booking) => {
-        const user = await trpcClient.user.get.query({
-          userId: booking.userId ?? 0,
-        });
-        if (user) {
-          booking.user = user;
-        }
-
-        const teacher = await teacherGet({ teacherId: booking.teacherId });
-        if (teacher) {
-          booking.teacher = teacher;
-        }
-
-        return booking;
-      });
-
-      res.content = await Promise.all(contentPromise);
-    }
 
     return res;
   } catch (e) {
