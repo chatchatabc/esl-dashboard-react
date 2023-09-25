@@ -1,11 +1,11 @@
 import { Button, Form, FormInstance, Input, Select } from "antd";
 import {
   userCreate,
-  userGetAllRole,
   userOptionStatus,
   userUpdate,
 } from "../../../domain/services/userService";
 import { useQuery } from "@tanstack/react-query";
+import { roleGetAll } from "../../../domain/services/roleService";
 
 type Props = {
   loading: boolean;
@@ -23,7 +23,7 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
   const rolesQuery = useQuery({
     queryKey: ["roles"],
     queryFn: async () => {
-      const data = await userGetAllRole({ page: 1, size: 10000 });
+      const data = await roleGetAll({ page: 1, size: 10000 });
       return data;
     },
   });
