@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage";
 import { userGet, userOptionStatus } from "../../domain/services/userService";
 import { useAppDispatch } from "../stores/hooks";
@@ -13,8 +13,9 @@ import {
   bookingOptionDays,
   bookingOptionStatus,
 } from "../../domain/services/bookingService";
-import { Select } from "antd";
+import { Modal, Select } from "antd";
 import { logsCreditGetAllByUser } from "../../domain/services/logsService";
+import { teacherGetAll } from "../../domain/services/teacherService";
 
 const statusList = userOptionStatus();
 const bookingStatusList = bookingOptionStatus();
@@ -22,7 +23,12 @@ const days = bookingOptionDays();
 
 export function UserProfilePage() {
   const { username = "" } = useParams();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [open, setOpen] = React.useState(false);
+  const [teacherUsername, setTeacherUsername] = React.useState<null | string>(
+    null
+  );
   const [bookingIds, setBookingIds] = React.useState<number[]>([]);
   const [bookingsFilter, setBookingsFilter] = React.useState({
     status: [1, 2, 3, 4],
@@ -54,6 +60,14 @@ export function UserProfilePage() {
         userId: user?.id,
       });
       return data;
+    },
+  });
+
+  const { data: teachers, isLoading: teachersLoading } = useQuery({
+    queryKey: ["teachers", "content"],
+    queryFn: async () => {
+      const data = await teacherGetAll({ page: 1, size: 10000 });
+      return data?.content ?? [];
     },
   });
 
@@ -206,27 +220,37 @@ export function UserProfilePage() {
         <header className="p-2 flex items-center border-b">
           <h2 className="text-xl font-medium mr-auto">Bookings</h2>
 
-          <div className="flex space-x-2"></div>
-          <button
-            disabled={bookingIds.length === 0}
-            onClick={() => {
-              dispatch(
-                modalUpdate({
-                  show: true,
-                  content: "bookingMany",
-                  data: { bookingIds },
-                  title: "Update multiple bookings",
-                })
-              );
-            }}
-            className={`p-2 ${
-              bookingIds.length === 0 ? "" : "bg-blue-500 hover:bg-blue-400"
-            } text-white rounded-md `}
-          >
-            <div className="w-6 h-6">
-              <EditIcon />
-            </div>
-          </button>
+          <div className="flex space-x-2">
+            <button
+              disabled={bookingIds.length === 0}
+              onClick={() => {
+                dispatch(
+                  modalUpdate({
+                    show: true,
+                    content: "bookingMany",
+                    data: { bookingIds },
+                    title: "Update multiple bookings",
+                  })
+                );
+              }}
+              className={`p-2 ${
+                bookingIds.length === 0 ? "" : "bg-blue-500 hover:bg-blue-400"
+              } text-white rounded-md `}
+            >
+              <div className="w-6 h-6">
+                <EditIcon />
+              </div>
+            </button>
+
+            <button
+              onClick={() => {
+                setOpen(true);
+              }}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+            >
+              Add
+            </button>
+          </div>
         </header>
 
         <section className="border-t flex p-4 gap-2 flex-wrap">
@@ -323,6 +347,41 @@ export function UserProfilePage() {
           />
         </section>
       </section>
+
+      <Modal
+        onCancel={() => {
+          setOpen(false);
+        }}
+        okText="Assign"
+        open={open}
+        title="Assign Teacher"
+        onOk={() => {
+          navigate(`/teachers/${teacherUsername}`);
+        }}
+        okButtonProps={{
+          disabled: !teacherUsername,
+          className: "bg-blue-500 hover:bg-blue-400",
+        }}
+      >
+        <div>
+          <p>Which teacher do you want to assign?</p>
+          <Select
+            className="w-full"
+            placeholder="Teacher"
+            onChange={(e) => {
+              setTeacherUsername(e);
+            }}
+            value={teacherUsername ?? ""}
+            options={teachers?.map((teacher) => {
+              return {
+                label: teacher.alias,
+                value: teacher.user.username,
+              };
+            })}
+            loading={teachersLoading}
+          />
+        </div>
+      </Modal>
     </section>
   );
 }
