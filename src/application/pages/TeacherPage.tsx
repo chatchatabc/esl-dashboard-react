@@ -4,7 +4,7 @@ import { modalUpdate } from "../stores/app/modalSlice";
 import { useAppDispatch } from "../stores/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { teacherGetAll } from "../../domain/services/teacherService";
-import { authGetProfile } from "../../domain/services/authService";
+import { userGetProfile } from "../../domain/services/userService";
 
 export function TeacherPage() {
   const dispatch = useAppDispatch();
@@ -16,7 +16,7 @@ export function TeacherPage() {
   const userQuery = useQuery({
     queryKey: ["users", "profile"],
     queryFn: async () => {
-      const data = await authGetProfile();
+      const data = await userGetProfile();
       return data;
     },
   });

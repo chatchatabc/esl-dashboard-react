@@ -19,16 +19,6 @@ export async function authLogin(params: UserLogin) {
   }
 }
 
-export async function authGetProfile() {
-  try {
-    const res = await trpcClient.auth.getProfile.query();
-    return res;
-  } catch (e) {
-    console.log(e);
-    return null;
-  }
-}
-
 export function authGetUser() {
   const user = utilGetCookie("user");
   if (!user) {

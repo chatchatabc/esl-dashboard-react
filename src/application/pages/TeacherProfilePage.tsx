@@ -1,18 +1,17 @@
 import { teacherGet } from "../../domain/services/teacherService";
 import { useParams } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage";
-import { utilFormatDateAndTime } from "../../domain/services/utilService";
 import { useAppDispatch } from "../stores/hooks";
 import { modalUpdate } from "../stores/app/modalSlice";
 import { useQuery } from "@tanstack/react-query";
 import { courseGetAll } from "../../domain/services/courseService";
 import React from "react";
-import { authGetProfile } from "../../domain/services/authService";
 import TeacherScheduleList from "../components/teachers/TeacherScheduleList";
 import { scheduleGetAll } from "../../domain/services/scheduleService";
 import { Schedule } from "../../../../esl-backend-workers/src/domain/models/ScheduleModel";
 import { Booking } from "../../../../esl-backend-workers/src/domain/models/BookingModel";
 import { bookingGetAll } from "../../domain/services/bookingService";
+import { userGetProfile } from "../../domain/services/userService";
 
 const TeacherSchedule = React.lazy(
   () => import("../components/teachers/TeacherSchedule")
@@ -33,7 +32,7 @@ export function TeacherProfilePage() {
   const userQuery = useQuery({
     queryKey: ["users", "profile"],
     queryFn: async () => {
-      const data = await authGetProfile();
+      const data = await userGetProfile();
       return data;
     },
   });

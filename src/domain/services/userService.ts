@@ -46,16 +46,6 @@ export async function userUpdate(params: UserUpdateInput) {
   }
 }
 
-export async function userGetAllRole(params: CommonPaginationInput) {
-  try {
-    const res = await trpcClient.user.getAllRole.query(params);
-    return res;
-  } catch (e) {
-    console.log(e);
-    return undefined;
-  }
-}
-
 export function userOptionStatus() {
   return [
     { label: "Active", value: 1 },
@@ -81,5 +71,15 @@ export async function userRevokePhoneVerification(params: { id: number }) {
   } catch (e) {
     console.log(e);
     return false;
+  }
+}
+
+export async function userGetProfile() {
+  try {
+    const res = await trpcClient.user.getProfile.query();
+    return res;
+  } catch (e) {
+    console.log(e);
+    return null;
   }
 }

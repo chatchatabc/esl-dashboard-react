@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { authGetProfile } from "../../domain/services/authService";
 import NotFoundPage from "../pages/NotFoundPage";
 import { Outlet } from "react-router-dom";
+import { userGetProfile } from "../../domain/services/userService";
 
 type Props = {
   allowedRoles: number[];
@@ -13,7 +13,7 @@ export function AuthorizationRoute({ allowedRoles, children }: Props) {
   const userQuery = useQuery({
     queryKey: ["users", "profile"],
     queryFn: async () => {
-      const data = await authGetProfile();
+      const data = await userGetProfile();
       return data;
     },
   });

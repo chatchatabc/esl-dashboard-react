@@ -2,9 +2,9 @@ import { useSearchParams } from "react-router-dom";
 import { modalUpdate } from "../stores/app/modalSlice";
 import { useAppDispatch } from "../stores/hooks";
 import { useQuery } from "@tanstack/react-query";
-import { authGetProfile } from "../../domain/services/authService";
 import { studentGetAll } from "../../domain/services/studentService";
 import StudentTable from "../components/tables/StudentTable";
+import { userGetProfile } from "../../domain/services/userService";
 
 export function StudentPage() {
   const dispatch = useAppDispatch();
@@ -16,7 +16,7 @@ export function StudentPage() {
   const userQuery = useQuery({
     queryKey: ["users", "profile"],
     queryFn: async () => {
-      const data = await authGetProfile();
+      const data = await userGetProfile();
       return data;
     },
   });

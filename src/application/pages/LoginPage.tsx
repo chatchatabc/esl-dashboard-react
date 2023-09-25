@@ -1,13 +1,10 @@
 import React from "react";
-import {
-  authGetProfile,
-  authGetUser,
-  authLogin,
-} from "../../domain/services/authService";
+import { authGetUser, authLogin } from "../../domain/services/authService";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Button, Form, Input, message } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { utilSaveCookie } from "../../domain/services/utilService";
+import { userGetProfile } from "../../domain/services/userService";
 
 export function LoginPage() {
   const [loading, setLoading] = React.useState(false);
@@ -39,7 +36,7 @@ export function LoginPage() {
     queryKey: ["users", "profile"],
     refetchInterval: false,
     queryFn: async () => {
-      const res = await authGetProfile();
+      const res = await userGetProfile();
       if (res) {
         utilSaveCookie("user", JSON.stringify(res));
         message.success(`Logged in as ${res.username}.`);
