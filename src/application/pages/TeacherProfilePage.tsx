@@ -12,6 +12,7 @@ import { Schedule } from "../../../../esl-backend-workers/src/domain/models/Sche
 import { Booking } from "../../../../esl-backend-workers/src/domain/models/BookingModel";
 import { bookingGetAll } from "../../domain/services/bookingService";
 import { userGetProfile } from "../../domain/services/userService";
+import TeacherCalendar from "../components/teachers/TeacherCalendar";
 
 const TeacherSchedule = React.lazy(
   () => import("../components/teachers/TeacherSchedule")
@@ -28,29 +29,26 @@ export function TeacherProfilePage() {
     size: 10,
   });
   const [calendarDate, setCalendarDate] = React.useState(new Date(0));
+  const [selectedWeek, setSelectedWeek] = React.useState<Date | null>(null);
 
-  const userQuery = useQuery({
+  const { data: user } = useQuery({
     queryKey: ["users", "profile"],
     queryFn: async () => {
       const data = await userGetProfile();
       return data;
     },
   });
-  const teacherQuery = useQuery({
+  const { data: teacher, isLoading: teacherLoading } = useQuery({
     queryKey: ["teachers", { username }],
     queryFn: async () => {
       const data = await teacherGet({ userUsername: username });
       return data;
     },
   });
-  const teacher = teacherQuery.data;
-  const coursesQuery = useQuery({
-    queryKey: [
-      "courses",
-      { ...coursesFilters, teacherId: teacherQuery.data?.id },
-    ],
+  const { data: courses } = useQuery({
+    queryKey: ["courses", { ...coursesFilters, teacherId: teacher?.id }],
     queryFn: async () => {
-      const teacherId = teacherQuery.data?.id;
+      const teacherId = teacher?.id;
       if (!teacherId) {
         return null;
       }
@@ -62,42 +60,33 @@ export function TeacherProfilePage() {
       return data;
     },
   });
-  const bookingsQuery = useQuery({
+  const { data: bookings, isLoading: bookingsLoading } = useQuery({
     queryKey: [
       "bookings",
+      "calendar",
       {
-        teacherId: teacherQuery.data?.id,
-        page: 1,
-        size: 10000,
-        status: [1, 2, 3, 5],
-        start: calendarDate.getTime(),
-        end: calendarDate.getTime() + 7 * 24 * 60 * 60 * 1000,
+        teacherId: teacher?.id,
+        start: calendarDate.getTime() - 6 * 1000 * 60 * 60 * 24,
+        end: calendarDate.getTime() + 37 * 1000 * 60 * 60 * 24,
       },
     ],
     queryFn: async () => {
       const data = await bookingGetAll({
-        teacherId: teacherQuery.data?.id,
+        teacherId: teacher?.id,
         page: 1,
         size: 10000,
         status: [1, 2, 3, 5],
-        start: calendarDate.getTime(),
-        end: calendarDate.getTime() + 7 * 24 * 60 * 60 * 1000,
+        start: calendarDate.getTime() - 6 * 1000 * 60 * 60 * 24,
+        end: calendarDate.getTime() + 37 * 1000 * 60 * 60 * 24,
       });
       return data?.content ?? ([] as Booking[]);
     },
   });
-  const schedulesQuery = useQuery({
-    queryKey: [
-      "schedules",
-      {
-        teacherId: teacherQuery.data?.id,
-        page: 1,
-        size: 10000,
-      },
-    ],
+  const { data: schedules, isLoading: schedulesLoading } = useQuery({
+    queryKey: ["schedules", "content"],
     queryFn: async () => {
       const data = await scheduleGetAll({
-        teacherId: teacherQuery.data?.id,
+        teacherId: teacher?.id,
         page: 1,
         size: 10000,
       });
@@ -108,11 +97,11 @@ export function TeacherProfilePage() {
   // Update calendar date on first load
   React.useEffect(() => {
     const now = new Date();
-    now.setUTCDate(now.getUTCDate() - now.getUTCDay());
+    now.setUTCFullYear(now.getUTCFullYear(), now.getUTCMonth(), 1);
     setCalendarDate(now);
   }, []);
 
-  if (teacherQuery.isLoading) {
+  if (teacherLoading) {
     return (
       <div className="flex-1 py-24">
         <div className="flex justify-center">
@@ -122,7 +111,7 @@ export function TeacherProfilePage() {
     );
   }
 
-  if (!teacherQuery.data) {
+  if (!teacher) {
     return (
       <div className="flex-1 py-24">
         <NotFoundPage />
@@ -213,7 +202,7 @@ export function TeacherProfilePage() {
       </section>
 
       {/* Teacher Courses */}
-      {userQuery.data?.roleId !== 2 && (
+      {user?.roleId !== 2 && (
         <>
           <section className="border shadow rounded-lg">
             <header className="p-2 border-b-2 flex items-center">
@@ -226,7 +215,7 @@ export function TeacherProfilePage() {
                       show: true,
                       content: "course",
                       title: "Add Course",
-                      data: { teacherId: teacherQuery.data?.id },
+                      data: { teacherId: teacher.id },
                     })
                   );
                 }}
@@ -237,7 +226,7 @@ export function TeacherProfilePage() {
             </header>
             <section>
               <TeacherCourseTable
-                data={coursesQuery.data}
+                data={courses}
                 pagination={{
                   onChange: (page, size) => {
                     setCoursesFilters({ page, size });
@@ -247,21 +236,76 @@ export function TeacherProfilePage() {
             </section>
           </section>
 
+          {/* Teacher Calendar */}
+          {!selectedWeek && (
+            <section className="border overflow-hidden shadow rounded-lg">
+              <header className="p-2 flex items-center">
+                <h2 className="text-xl my-1.5 font-medium flex-1">
+                  Teacher's Calendar
+                </h2>
+
+                <h3 className="text-xl font-bold">
+                  {new Intl.DateTimeFormat("en-US", {
+                    month: "long",
+                  }).format(calendarDate)}
+                </h3>
+
+                <div className="flex-1 flex gap-1 justify-end">
+                  <button
+                    onClick={() => {
+                      setCalendarDate((prev) => {
+                        prev.setUTCMonth(prev.getUTCMonth() - 1);
+                        return new Date(prev);
+                      });
+                    }}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+                  >
+                    &lt;
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setCalendarDate((prev) => {
+                        prev.setUTCMonth(prev.getUTCMonth() + 1);
+                        return new Date(prev);
+                      });
+                    }}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+                  >
+                    &gt;
+                  </button>
+                </div>
+              </header>
+
+              <section>
+                <TeacherCalendar
+                  schedules={schedules ?? []}
+                  bookings={bookings ?? []}
+                  calendarDate={calendarDate}
+                  setSelectedWeek={setSelectedWeek}
+                />
+              </section>
+            </section>
+          )}
+
           {/* Teacher Schedule */}
-          <section className="border shadow rounded-lg">
-            <TeacherSchedule
-              bookings={bookingsQuery.data ?? []}
-              schedules={schedulesQuery.data ?? []}
-              loading={bookingsQuery.isLoading || schedulesQuery.isLoading}
-              calendarDate={calendarDate}
-              setCalendarDate={setCalendarDate}
-              teacherId={teacherQuery.data.id}
-            />
-          </section>
+          {selectedWeek && (
+            <section className="border shadow rounded-lg">
+              <TeacherSchedule
+                bookings={bookings ?? []}
+                schedules={schedules ?? []}
+                loading={bookingsLoading || schedulesLoading}
+                calendarDate={selectedWeek}
+                setSelectedWeek={setSelectedWeek}
+                setCalendarDate={setCalendarDate}
+                teacherId={teacher.id}
+              />
+            </section>
+          )}
         </>
       )}
 
-      {userQuery.data?.roleId === 2 && (
+      {user?.roleId === 2 && (
         <section className="border overflow-hidden shadow rounded-lg">
           <header className="p-2 flex items-center">
             <h2 className="text-xl my-1.5 font-medium mr-auto">
@@ -271,8 +315,8 @@ export function TeacherProfilePage() {
 
           <section>
             <TeacherScheduleList
-              schedules={schedulesQuery.data}
-              bookings={bookingsQuery.data}
+              schedules={schedules ?? []}
+              bookings={bookings ?? []}
               calendarDate={calendarDate}
             />
           </section>
