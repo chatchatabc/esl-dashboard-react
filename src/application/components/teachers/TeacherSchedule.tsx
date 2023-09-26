@@ -72,10 +72,11 @@ function TeacherSchedule({
       };
     });
 
-    let response: any = true;
+    let response: any = false;
     if (schedules.length > eventSchedules.length) {
-      const deleteSchedules = schedules.filter(
-        (schedule) => !eventSchedules.find((event) => event.id === schedule.id)
+      const deleteSchedules = [...schedules].splice(
+        eventSchedules.length,
+        schedules.length - eventSchedules.length
       );
       response = await scheduleDeleteMany({
         scheduleIds: deleteSchedules.map((schedule) => {
@@ -83,25 +84,26 @@ function TeacherSchedule({
         }),
         teacherId,
       });
+    } else if (schedules.length < eventSchedules.length) {
+      const newSchedules = eventSchedules.filter((schedule) => !schedule.id);
+      response = await scheduleCreateMany({
+        schedules: newSchedules,
+        teacherId,
+      });
+    } else {
+      response = true;
     }
 
     const updateSchedules: ScheduleUpdateInput[] = eventSchedules.filter(
       (schedule) => schedule.id
     );
+
     const responseUpdate = updateSchedules.length
       ? await scheduleUpdateMany({
           schedules: updateSchedules,
           teacherId,
         })
       : true;
-
-    const newSchedules = eventSchedules.filter((schedule) => !schedule.id);
-    if (newSchedules.length) {
-      response = await scheduleCreateMany({
-        schedules: newSchedules,
-        teacherId,
-      });
-    }
 
     if (responseUpdate && response) {
       setEditing(false);
@@ -132,12 +134,15 @@ function TeacherSchedule({
     const newEvents: EventSourceInput = schedules
       .map((schedule) => {
         const date = calendar?.getDate() ?? new Date();
-        date.setDate(date.getDate() - date.getDay());
+        date.setUTCDate(date.getUTCDate() - date.getUTCDay());
 
         const start = new Date(schedule.startTime);
-        start.setFullYear(date.getFullYear());
-        start.setMonth(date.getMonth());
-        start.setUTCDate(date.getDate() + schedule.weekDay);
+        start.setUTCFullYear(
+          date.getUTCFullYear(),
+          date.getUTCMonth(),
+          date.getUTCDate() - date.getUTCDay() + schedule.weekDay
+        );
+
         const diff = schedule.endTime - schedule.startTime;
         const end = new Date(start.getTime() + diff);
 
