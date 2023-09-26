@@ -1,7 +1,7 @@
 import FullCalendar from "@fullcalendar/react";
 import listPlugin from "@fullcalendar/list";
-import { Schedule } from "../../../../esl-backend-workers/src/domain/models/ScheduleModel";
-import { Booking } from "../../../../esl-backend-workers/src/domain/models/BookingModel";
+import { Schedule } from "../../../../../esl-backend-workers/src/domain/models/ScheduleModel";
+import { Booking } from "../../../../../esl-backend-workers/src/domain/models/BookingModel";
 import React from "react";
 
 type Props = {
@@ -25,7 +25,7 @@ function TeacherScheduleList({ schedules, bookings, calendarDate }: Props) {
 
         start.setUTCFullYear(calendarDate.getUTCFullYear());
         start.setUTCMonth(calendarDate.getUTCMonth());
-        start.setUTCDate(calendarDate.getUTCDate() + schedule.day);
+        start.setUTCDate(calendarDate.getUTCDate() + schedule.weekDay);
 
         const nowTime = now.getTime();
         let startTime = start.getTime();
