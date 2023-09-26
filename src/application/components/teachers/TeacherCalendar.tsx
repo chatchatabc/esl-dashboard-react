@@ -4,6 +4,8 @@ import { Booking } from "../../../../../esl-backend-workers/src/domain/models/Bo
 import FullCalendar from "@fullcalendar/react";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayPlugin from "@fullcalendar/daygrid";
+import { useAppDispatch } from "../../stores/hooks";
+import { modalUpdate } from "../../stores/app/modalSlice";
 
 type Props = {
   schedules?: Schedule[];
@@ -18,6 +20,7 @@ function TeacherCalendar({
   calendarDate,
   setSelectedWeek,
 }: Props) {
+  const dispatch = useAppDispatch();
   const calendarRef = React.useRef<FullCalendar | null>(null);
   const calendar = calendarRef.current?.getApi();
   const [events, setEvents] = React.useState<any[]>([]);
@@ -46,6 +49,7 @@ function TeacherCalendar({
         title: booking.student.alias,
         start: new Date(booking.start),
         end: new Date(booking.end),
+        booking,
       });
     });
 
@@ -75,6 +79,7 @@ function TeacherCalendar({
           title: booking.student.alias,
           start: new Date(booking.start),
           end: new Date(booking.end),
+          booking,
         });
       });
 
@@ -109,6 +114,19 @@ function TeacherCalendar({
         const date = new Date(info.start);
         date.setUTCDate(date.getUTCDate() - date.getUTCDay());
         setSelectedWeek(date);
+      }}
+      eventClick={(e) => {
+        const { booking } = e.event.extendedProps;
+        const start = new Date(booking.start).toISOString();
+        const end = new Date(booking.end).toISOString();
+        dispatch(
+          modalUpdate({
+            show: true,
+            title: "Booking Information",
+            content: "booking",
+            data: { ...booking, start, end },
+          })
+        );
       }}
       selectable={true}
       events={events}
