@@ -31,7 +31,7 @@ export function UserProfilePage() {
   );
   const [bookingIds, setBookingIds] = React.useState<number[]>([]);
   const [bookingsFilter, setBookingsFilter] = React.useState({
-    status: [1, 2, 3, 4],
+    status: [1, 2],
     day: undefined,
     page: 1,
     size: 10,
