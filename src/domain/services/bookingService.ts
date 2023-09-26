@@ -1,6 +1,6 @@
 import {
   BookingCompleteInputAdmin,
-  BookingCreateInputAdmin,
+  BookingCreateByAdminInput,
   BookingUpdateInput,
   BookingUpdateStatusManyInput,
 } from "../../../../esl-backend-workers/src/domain/models/BookingModel";
@@ -28,9 +28,9 @@ export async function bookingGetAllAdmin(params: CommonPaginationInput) {
   }
 }
 
-export async function bookingCreate(params: BookingCreateInputAdmin) {
+export async function bookingCreate(params: BookingCreateByAdminInput) {
   try {
-    const res = await trpcClient.booking.createAdmin.mutate(params);
+    const res = await trpcClient.booking.createByAdmin.mutate(params);
     return res;
   } catch (e) {
     console.log(e);
