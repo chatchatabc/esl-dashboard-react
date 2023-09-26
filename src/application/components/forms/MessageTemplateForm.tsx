@@ -10,7 +10,8 @@ type Props = {
     action: (params: any) => Promise<any>,
     values: any,
     success: string,
-    fail: string
+    fail: string,
+    queryKeys: any[]
   ) => Promise<any>;
   formRef: FormInstance;
 };
@@ -26,14 +27,16 @@ function MessageTemplateForm({ loading, handleSubmit, formRef }: Props) {
             messageTemplateUpdate,
             e,
             "Successfully updated message template.",
-            "Failed to update message template."
+            "Failed to update message template.",
+            [["messageTemplates"]]
           );
         } else {
           handleSubmit(
             messageTemplateCreate,
             e,
             "Successfully created message template.",
-            "Failed to create message template."
+            "Failed to create message template.",
+            [["messageTemplates"]]
           );
         }
       }}
