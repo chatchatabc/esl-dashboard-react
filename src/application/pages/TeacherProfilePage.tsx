@@ -83,7 +83,7 @@ export function TeacherProfilePage() {
     },
   });
   const { data: schedules, isLoading: schedulesLoading } = useQuery({
-    queryKey: ["schedules", "content"],
+    queryKey: ["schedules", "content", { teacherId: teacher?.id }],
     queryFn: async () => {
       const data = await scheduleGetAll({
         teacherId: teacher?.id,
@@ -92,6 +92,7 @@ export function TeacherProfilePage() {
       });
       return data?.content ?? ([] as Schedule[]);
     },
+    enabled: !!teacher?.id,
   });
 
   // Update calendar date on first load
