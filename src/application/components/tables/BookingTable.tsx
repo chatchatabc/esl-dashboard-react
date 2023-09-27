@@ -42,11 +42,7 @@ function BookingTable({ data, ...props }: Props) {
       key: "studentId",
       title: "Student",
       render: (record: Booking) => {
-        return (
-          <p>
-            {record.user?.firstName} {record.user?.lastName}
-          </p>
-        );
+        return <p>{record.student?.alias}</p>;
       },
     },
     {
