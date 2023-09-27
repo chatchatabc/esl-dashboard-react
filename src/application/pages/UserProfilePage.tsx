@@ -244,99 +244,101 @@ export function UserProfilePage() {
       </section>
 
       {/* Booking Table */}
-      <section className="border rounded-lg shadow">
-        <header className="p-2 flex items-center border-b">
-          <h2 className="text-xl font-medium mr-auto">Bookings</h2>
+      {(student || teacher) && (
+        <section className="border rounded-lg shadow">
+          <header className="p-2 flex items-center border-b">
+            <h2 className="text-xl font-medium mr-auto">Bookings</h2>
 
-          <div className="flex space-x-2">
-            <button
-              disabled={bookingIds.length === 0}
-              onClick={() => {
-                dispatch(
-                  modalUpdate({
-                    show: true,
-                    content: "bookingMany",
-                    data: { bookingIds },
-                    title: "Update multiple bookings",
-                  })
-                );
-              }}
-              className={`p-2 ${
-                bookingIds.length === 0 ? "" : "bg-blue-500 hover:bg-blue-400"
-              } text-white rounded-md `}
-            >
-              <div className="w-6 h-6">
-                <EditIcon />
-              </div>
-            </button>
+            <div className="flex space-x-2">
+              <button
+                disabled={bookingIds.length === 0}
+                onClick={() => {
+                  dispatch(
+                    modalUpdate({
+                      show: true,
+                      content: "bookingMany",
+                      data: { bookingIds },
+                      title: "Update multiple bookings",
+                    })
+                  );
+                }}
+                className={`p-2 ${
+                  bookingIds.length === 0 ? "" : "bg-blue-500 hover:bg-blue-400"
+                } text-white rounded-md `}
+              >
+                <div className="w-6 h-6">
+                  <EditIcon />
+                </div>
+              </button>
 
-            <button
-              onClick={() => {
-                setOpen(true);
-              }}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
-            >
-              Add
-            </button>
-          </div>
-        </header>
+              <button
+                onClick={() => {
+                  setOpen(true);
+                }}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+              >
+                Add
+              </button>
+            </div>
+          </header>
 
-        <section className="border-t flex p-4 gap-2 flex-wrap">
-          <Select
-            className="min-w-[250px]"
-            placeholder="Status"
-            mode="multiple"
-            onChange={(e) => {
-              setBookingsFilter({
-                ...bookingsFilter,
-                page: 1,
-                status: e.length ? e : [1, 2, 3, 4],
-              });
-              setBookingIds([]);
-            }}
-            options={bookingStatusList}
-            allowClear
-          />
-
-          <Select
-            className="min-w-[250px]"
-            placeholder="Day"
-            onChange={(e) => {
-              console.log(e);
-              setBookingsFilter({
-                ...bookingsFilter,
-                page: 1,
-                day: e,
-              });
-              setBookingIds([]);
-            }}
-            options={days}
-            allowClear
-          />
-        </section>
-
-        <section>
-          <BookingTable
-            loading={bookingsQuery.isLoading}
-            rowSelection={{
-              selectedRowKeys: bookingIds,
-              onChange: (selectedRowKeys: any[]) => {
-                setBookingIds(selectedRowKeys);
-              },
-            }}
-            pagination={{
-              onChange: (page, size) => {
+          <section className="border-t flex p-4 gap-2 flex-wrap">
+            <Select
+              className="min-w-[250px]"
+              placeholder="Status"
+              mode="multiple"
+              onChange={(e) => {
                 setBookingsFilter({
                   ...bookingsFilter,
-                  page,
-                  size,
+                  page: 1,
+                  status: e.length ? e : [1, 2, 3, 4],
                 });
-              },
-            }}
-            data={bookingsQuery.data}
-          />
+                setBookingIds([]);
+              }}
+              options={bookingStatusList}
+              allowClear
+            />
+
+            <Select
+              className="min-w-[250px]"
+              placeholder="Day"
+              onChange={(e) => {
+                console.log(e);
+                setBookingsFilter({
+                  ...bookingsFilter,
+                  page: 1,
+                  day: e,
+                });
+                setBookingIds([]);
+              }}
+              options={days}
+              allowClear
+            />
+          </section>
+
+          <section>
+            <BookingTable
+              loading={bookingsQuery.isLoading}
+              rowSelection={{
+                selectedRowKeys: bookingIds,
+                onChange: (selectedRowKeys: any[]) => {
+                  setBookingIds(selectedRowKeys);
+                },
+              }}
+              pagination={{
+                onChange: (page, size) => {
+                  setBookingsFilter({
+                    ...bookingsFilter,
+                    page,
+                    size,
+                  });
+                },
+              }}
+              data={bookingsQuery.data}
+            />
+          </section>
         </section>
-      </section>
+      )}
 
       {/* Credit History */}
       <section className="border rounded-lg shadow">
