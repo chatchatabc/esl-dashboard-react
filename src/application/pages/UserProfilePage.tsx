@@ -15,7 +15,11 @@ import {
 } from "../../domain/services/bookingService";
 import { Modal, Select } from "antd";
 import { logsCreditGetAllByUser } from "../../domain/services/logsService";
-import { teacherGetAll } from "../../domain/services/teacherService";
+import {
+  teacherGet,
+  teacherGetAll,
+} from "../../domain/services/teacherService";
+import { studentGetByUser } from "../../domain/services/studentService";
 
 const statusList = userOptionStatus();
 const bookingStatusList = bookingOptionStatus();
@@ -52,12 +56,36 @@ export function UserProfilePage() {
   const user = userQuery.data;
   const userStatus = statusList.find((item) => item.value === user?.status);
 
+  const { data: student } = useQuery({
+    queryKey: ["students", { username }],
+    queryFn: async () => {
+      const data = await studentGetByUser({
+        username,
+      });
+      return data;
+    },
+  });
+
+  const { data: teacher } = useQuery({
+    queryKey: ["teachers", { username }],
+    queryFn: async () => {
+      const data = await teacherGet({
+        userUsername: username,
+      });
+      return data;
+    },
+  });
+
   const bookingsQuery = useQuery({
-    queryKey: ["bookings", { ...bookingsFilter, userId: user?.id }],
+    queryKey: [
+      "bookings",
+      { ...bookingsFilter, studentId: student?.id, teacherId: teacher?.id },
+    ],
     queryFn: async () => {
       const data = await bookingGetAllAdmin({
         ...bookingsFilter,
-        userId: user?.id,
+        studentId: student?.id,
+        teacherId: teacher?.id,
       });
       return data;
     },
