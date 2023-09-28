@@ -9,16 +9,15 @@ function StudentProfilePage() {
   const { username = "" } = useParams();
   const dispatch = useAppDispatch();
 
-  const studentQuery = useQuery({
+  const { data: student, isLoading: studentLoading } = useQuery({
     queryKey: ["students", { username }],
     queryFn: async () => {
       const data = await studentGetByUser({ username });
       return data;
     },
   });
-  const student = studentQuery.data;
 
-  if (studentQuery.isLoading) {
+  if (studentLoading) {
     return (
       <div className="flex-1 py-24">
         <div className="flex justify-center">
