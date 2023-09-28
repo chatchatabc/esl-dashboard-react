@@ -6,13 +6,11 @@ import { modalUpdate } from "../stores/app/modalSlice";
 import { useQuery } from "@tanstack/react-query";
 import { courseGetAll } from "../../domain/services/courseService";
 import React from "react";
-import TeacherScheduleList from "../components/teachers/TeacherScheduleList";
 import { scheduleGetAll } from "../../domain/services/scheduleService";
 import { Schedule } from "../../../../esl-backend-workers/src/domain/models/ScheduleModel";
 import { Booking } from "../../../../esl-backend-workers/src/domain/models/BookingModel";
 import { bookingGetAll } from "../../domain/services/bookingService";
 import { userGetProfile } from "../../domain/services/userService";
-import TeacherCalendar from "../components/teachers/TeacherCalendar";
 
 const TeacherSchedule = React.lazy(
   () => import("../components/teachers/TeacherSchedule")
@@ -28,8 +26,7 @@ export function TeacherProfilePage() {
     page: 1,
     size: 10,
   });
-  const [calendarDate, setCalendarDate] = React.useState(new Date(0));
-  const [selectedWeek, setSelectedWeek] = React.useState<Date | null>(null);
+  const [calendarDate, setCalendarDate] = React.useState<Date | null>(null);
 
   const { data: user } = useQuery({
     queryKey: ["users", "profile"],
@@ -59,6 +56,7 @@ export function TeacherProfilePage() {
       });
       return data;
     },
+    enabled: !!teacher?.id,
   });
   const { data: bookings, isLoading: bookingsLoading } = useQuery({
     queryKey: [
@@ -66,8 +64,12 @@ export function TeacherProfilePage() {
       "calendar",
       {
         teacherId: teacher?.id,
-        start: calendarDate.getTime() - 6 * 1000 * 60 * 60 * 24,
-        end: calendarDate.getTime() + 37 * 1000 * 60 * 60 * 24,
+        start: calendarDate
+          ? calendarDate.getTime() - 6 * 1000 * 60 * 60 * 24
+          : undefined,
+        end: calendarDate
+          ? calendarDate.getTime() + 37 * 1000 * 60 * 60 * 24
+          : undefined,
       },
     ],
     queryFn: async () => {
@@ -76,11 +78,14 @@ export function TeacherProfilePage() {
         page: 1,
         size: 10000,
         status: [1, 2, 3, 5],
-        start: calendarDate.getTime() - 6 * 1000 * 60 * 60 * 24,
-        end: calendarDate.getTime() + 37 * 1000 * 60 * 60 * 24,
+        start: calendarDate ? calendarDate.getTime() : undefined,
+        end: calendarDate
+          ? calendarDate.getTime() + 7 * 1000 * 60 * 60 * 24
+          : undefined,
       });
       return data?.content ?? ([] as Booking[]);
     },
+    enabled: !!teacher?.id && !!calendarDate,
   });
   const { data: schedules, isLoading: schedulesLoading } = useQuery({
     queryKey: ["schedules", "content", { teacherId: teacher?.id }],
@@ -98,7 +103,11 @@ export function TeacherProfilePage() {
   // Update calendar date on first load
   React.useEffect(() => {
     const now = new Date();
-    now.setUTCFullYear(now.getUTCFullYear(), now.getUTCMonth(), 1);
+    now.setUTCFullYear(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate() - now.getUTCDay()
+    );
     setCalendarDate(now);
   }, []);
 
@@ -238,7 +247,7 @@ export function TeacherProfilePage() {
           </section>
 
           {/* Teacher Calendar */}
-          {!selectedWeek && (
+          {/* {!selectedWeek && (
             <section className="border overflow-hidden shadow rounded-lg">
               <header className="p-2 flex items-center">
                 <h2 className="text-xl my-1.5 font-medium flex-1">
@@ -287,26 +296,23 @@ export function TeacherProfilePage() {
                 />
               </section>
             </section>
-          )}
+          )} */}
 
           {/* Teacher Schedule */}
-          {selectedWeek && (
-            <section className="border shadow rounded-lg">
-              <TeacherSchedule
-                bookings={bookings ?? []}
-                schedules={schedules ?? []}
-                loading={bookingsLoading || schedulesLoading}
-                calendarDate={selectedWeek}
-                setSelectedWeek={setSelectedWeek}
-                setCalendarDate={setCalendarDate}
-                teacherId={teacher.id}
-              />
-            </section>
-          )}
+          <section className="border shadow rounded-lg">
+            <TeacherSchedule
+              bookings={bookings ?? []}
+              schedules={schedules ?? []}
+              loading={bookingsLoading || schedulesLoading}
+              calendarDate={calendarDate}
+              setCalendarDate={setCalendarDate}
+              teacherId={teacher.id}
+            />
+          </section>
         </>
       )}
 
-      {user?.roleId === 2 && (
+      {/* {user?.roleId === 2 && (
         <section className="border overflow-hidden shadow rounded-lg">
           <header className="p-2 flex items-center">
             <h2 className="text-xl my-1.5 font-medium mr-auto">
@@ -322,7 +328,7 @@ export function TeacherProfilePage() {
             />
           </section>
         </section>
-      )}
+      )} */}
     </section>
   );
 }

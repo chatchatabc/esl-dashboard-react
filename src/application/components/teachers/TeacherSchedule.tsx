@@ -19,9 +19,8 @@ import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   teacherId: number;
-  calendarDate: Date;
-  setCalendarDate: React.Dispatch<React.SetStateAction<Date>>;
-  setSelectedWeek: React.Dispatch<React.SetStateAction<Date | null>>;
+  calendarDate: Date | null;
+  setCalendarDate: React.Dispatch<React.SetStateAction<Date | null>>;
   bookings: Booking[];
   schedules: Schedule[];
   loading: boolean;
@@ -37,7 +36,6 @@ function TeacherSchedule({
   teacherId,
   calendarDate,
   setCalendarDate,
-  setSelectedWeek,
   bookings,
   schedules,
   loading,
@@ -49,7 +47,6 @@ function TeacherSchedule({
   const [calendar, setCalendar] = React.useState<CalendarApi | undefined>(
     undefined
   );
-  const [localDate, setLocalDate] = React.useState<Date>(new Date(0));
 
   const [editing, setEditing] = React.useState(false);
   const [events, setEvents] = React.useState<any[]>([]);
@@ -120,15 +117,8 @@ function TeacherSchedule({
     if (calendarRef) {
       const calendar = calendarRef.current?.getApi();
       setCalendar(calendar);
-      setLocalDate(calendarDate);
     }
   }, [calendarRef]);
-
-  React.useEffect(() => {
-    if (calendar) {
-      calendar.gotoDate(localDate);
-    }
-  }, [localDate]);
 
   React.useEffect(() => {
     const newEvents: EventSourceInput = schedules
@@ -156,13 +146,7 @@ function TeacherSchedule({
       .flat();
 
     if (!editing) {
-      const newBookings = bookings.filter((booking) => {
-        return (
-          booking.start >= localDate.getTime() &&
-          booking.end <= localDate.getTime() + 1000 * 60 * 60 * 24 * 7
-        );
-      });
-      newBookings.forEach((booking) => {
+      bookings.forEach((booking) => {
         const start = new Date(booking.start);
         const end = new Date(booking.end);
         const color = bookingColor[booking.status as keyof typeof bookingColor];
@@ -176,30 +160,18 @@ function TeacherSchedule({
           booking,
         });
       });
-      if (newBookings.length) {
-        calendar?.scrollToTime(newBookings[0].start);
+      if (bookings.length) {
+        calendar?.scrollToTime(bookings[0].start);
       }
     }
 
     setEvents(newEvents);
-  }, [schedules, editing, bookings, localDate]);
+  }, [schedules, editing, bookings]);
 
   return (
     <section>
       <header className="flex items-center p-2 gap-x-2">
         <h2 className="text-xl font-medium mr-auto">Teacher's Schedule</h2>
-
-        <button
-          onClick={() => {
-            const now = new Date();
-            now.setUTCFullYear(now.getUTCFullYear(), now.getUTCMonth(), 1);
-            setCalendarDate(now);
-            setSelectedWeek(null);
-          }}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
-        >
-          Back
-        </button>
 
         {editing && (
           <button
@@ -214,18 +186,11 @@ function TeacherSchedule({
           <>
             <button
               onClick={() => {
-                const prevWeek = new Date(localDate);
-                prevWeek.setDate(prevWeek.getDate() - 7);
-                const prevWeekMonth = prevWeek.getMonth();
-
-                if (prevWeekMonth !== calendarDate.getMonth()) {
-                  setCalendarDate((prev) => {
-                    prev.setUTCMonth(prev.getUTCMonth() - 1);
-                    return new Date(prev);
-                  });
-                }
-
-                setLocalDate(prevWeek);
+                setCalendarDate((prev) => {
+                  prev?.setUTCDate(prev.getUTCDate() - 7);
+                  return prev ? new Date(prev) : null;
+                });
+                calendar?.prev();
               }}
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
             >
@@ -234,18 +199,11 @@ function TeacherSchedule({
 
             <button
               onClick={() => {
-                const nextWeek = new Date(localDate);
-                nextWeek.setDate(nextWeek.getDate() + 7);
-                const nextWeekMonth = nextWeek.getMonth();
-
-                if (nextWeekMonth !== calendarDate.getMonth()) {
-                  setCalendarDate((prev) => {
-                    prev.setUTCMonth(prev.getUTCMonth() + 1);
-                    return new Date(prev);
-                  });
-                }
-
-                setLocalDate(nextWeek);
+                setCalendarDate((prev) => {
+                  prev?.setUTCDate(prev.getUTCDate() + 7);
+                  return prev ? new Date(prev) : null;
+                });
+                calendar?.next();
               }}
               className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
             >
