@@ -6,7 +6,7 @@ let page: Page | null = null;
 
 describe("App.js", () => {
   beforeAll(async () => {
-    browser = await puppeteer.launch({ headless: false, slowMo: 10 });
+    browser = await puppeteer.launch({ headless: false, slowMo: 25 });
     page = await browser.newPage();
   });
 
@@ -59,21 +59,6 @@ describe("Users Page", () => {
     expect(mask).toBeNull();
   });
 
-  it("should be able to open the edit user modal", async () => {
-    await page?.waitForSelector("[data-user-edit-button]");
-    await page?.click("[data-user-edit-button]");
-    await page?.waitForSelector("[data-user-form]");
-    const modal = await page?.$("[data-user-form]");
-    expect(modal).not.toBeNull();
-  });
-
-  it("should be able to close the edit user modal", async () => {
-    await page?.click(".ant-modal-close");
-    await page?.waitForSelector(".ant-modal-mask", { hidden: true });
-    const mask = await page?.$(".ant-modal-mask");
-    expect(mask).toBeNull();
-  });
-
   it("should verify phone number", async () => {
     await page?.waitForSelector("[data-user-phone-button=verify]");
     await page?.click("[data-user-phone-button=verify]");
@@ -105,6 +90,24 @@ describe("Users Page", () => {
   it("should able to add user credit", async () => {
     await page?.type("[data-credit-form] #credits", "1");
     await page?.type("[data-credit-form] #amount", "1");
+    await page?.click(".ant-modal-footer button:last-child");
+    await page?.waitForSelector(".ant-message-success");
+    const message = await page?.$(".ant-message-success");
+    expect(message).not.toBeNull();
+  });
+
+  it("should be able to open the edit user modal", async () => {
+    await page?.waitForSelector("[data-user-edit-button]");
+    await page?.click("[data-user-edit-button]");
+    await page?.waitForSelector("[data-user-form]");
+    const modal = await page?.$("[data-user-form]");
+    expect(modal).not.toBeNull();
+  });
+
+  it("should be able to edit user", async () => {
+    await page?.click("[data-user-form] #credits");
+    await page?.keyboard.press("Backspace");
+    await page?.type("[data-user-form] #credits", "0");
     await page?.click(".ant-modal-footer button:last-child");
     await page?.waitForSelector(".ant-message-success");
     const message = await page?.$(".ant-message-success");
