@@ -16,6 +16,7 @@ type Props = {
 function CreditForm({ loading, handleSubmit, formRef }: Props) {
   return (
     <Form
+      data-credit-form
       layout="vertical"
       form={formRef}
       onFinish={(e) => {
@@ -80,7 +81,11 @@ function CreditForm({ loading, handleSubmit, formRef }: Props) {
       </Form.Item>
 
       <Form.Item hidden>
-        <Button htmlType="submit" loading={loading}></Button>
+        <Button
+          data-credit-form-submit
+          htmlType="submit"
+          loading={loading}
+        ></Button>
       </Form.Item>
     </Form>
   );

@@ -52,6 +52,7 @@ function UserTable({ data, ...props }: Props) {
       render: (record: User) => {
         return (
           <button
+            data-user-credit-button
             onClick={() => {
               dispatch(
                 modalUpdate({

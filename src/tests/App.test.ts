@@ -6,7 +6,7 @@ let page: Page | null = null;
 
 describe("App.js", () => {
   beforeAll(async () => {
-    browser = await puppeteer.launch({ headless: false, slowMo: 25 });
+    browser = await puppeteer.launch({ headless: false, slowMo: 10 });
     page = await browser.newPage();
   });
 
@@ -89,6 +89,23 @@ describe("Users Page", () => {
     await page?.click("[data-user-phone-button=revoke]");
     await page?.waitForSelector(".ant-modal-confirm-btns");
     await page?.click(".ant-modal-confirm-btns button:last-child");
+    await page?.waitForSelector(".ant-message-success");
+    const message = await page?.$(".ant-message-success");
+    expect(message).not.toBeNull();
+  });
+
+  it("should able to open user credit form", async () => {
+    await page?.waitForSelector("[data-user-credit-button]");
+    await page?.click("[data-user-credit-button]");
+    await page?.waitForSelector("[data-credit-form]");
+    const modal = await page?.$("[data-credit-form]");
+    expect(modal).not.toBeNull();
+  });
+
+  it("should able to add user credit", async () => {
+    await page?.type("[data-credit-form] #credits", "1");
+    await page?.type("[data-credit-form] #amount", "1");
+    await page?.click(".ant-modal-footer button:last-child");
     await page?.waitForSelector(".ant-message-success");
     const message = await page?.$(".ant-message-success");
     expect(message).not.toBeNull();
