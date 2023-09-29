@@ -38,7 +38,7 @@ describe("Login Page", () => {
 });
 
 describe("Users Page", () => {
-  it("should have a add button", async () => {
+  it("should have an add button", async () => {
     await page?.goto("http://localhost:3000/users");
     await page?.waitForSelector("[data-user-add-button]");
     const button = await page?.$("[data-user-add-button]");
@@ -46,13 +46,41 @@ describe("Users Page", () => {
   });
 
   it("should be able to open the add user modal", async () => {
-    await page?.goto("http://localhost:3000/users");
-    await page?.waitForSelector("[data-user-add-button]");
     await page?.click("[data-user-add-button]");
     await page?.waitForSelector("[data-user-form]");
     const modal = await page?.$("[data-user-form]");
     expect(modal).not.toBeNull();
   });
+
+  it("should be able to close the add user modal", async () => {
+    await page?.click(".ant-modal-close");
+    await page?.waitForSelector(".ant-modal-mask", { hidden: true });
+    const mask = await page?.$(".ant-modal-mask");
+    expect(mask).toBeNull();
+  });
+
+  it("should verify phone number", async () => {
+    await page?.waitForSelector("[data-user-phone-button=verify]");
+    await page?.click("[data-user-phone-button=verify]");
+    await page?.waitForSelector(".ant-modal-confirm-btns");
+    await page?.click(".ant-modal-confirm-btns button:last-child");
+    await page?.waitForSelector(".ant-message-success");
+    const message = await page?.$(".ant-message-success");
+    expect(message).not.toBeNull();
+  });
+
+  it("should revoke phone verification", async () => {
+    await page?.waitForSelector("[data-user-phone-button=revoke]");
+    await page?.click("[data-user-phone-button=revoke]");
+    await page?.waitForSelector(".ant-modal-confirm-btns");
+    await page?.click(".ant-modal-confirm-btns button:last-child");
+    await page?.waitForSelector(".ant-message-success");
+    const message = await page?.$(".ant-message-success");
+    expect(message).not.toBeNull();
+  });
 });
 
-afterAll(() => browser?.close());
+afterAll(() => {
+  browser?.close();
+  console.log("Browser closed");
+});

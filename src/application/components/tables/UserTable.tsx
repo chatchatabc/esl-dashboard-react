@@ -76,6 +76,9 @@ function UserTable({ data, ...props }: Props) {
         console.log(record);
         return (
           <button
+            data-user-phone-button={
+              !!record.phoneVerifiedAt ? "revoke" : "verify"
+            }
             onClick={() => {
               Modal.confirm({
                 title: `${
