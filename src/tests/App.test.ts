@@ -6,7 +6,7 @@ let page: Page | null = null;
 
 describe("App.js", () => {
   beforeAll(async () => {
-    browser = await puppeteer.launch({ headless: false });
+    browser = await puppeteer.launch({ headless: false, slowMo: 25 });
     page = await browser.newPage();
   });
 
@@ -35,6 +35,24 @@ describe("Login Page", () => {
     const text = await page?.$eval(".home-page-message", (e) => e.textContent);
     expect(text).toContain("Welcome to ESL!");
   });
-
-  afterAll(() => browser?.close());
 });
+
+describe("Users Page", () => {
+  it("should have a add button", async () => {
+    await page?.goto("http://localhost:3000/users");
+    await page?.waitForSelector("[data-user-add-button]");
+    const button = await page?.$("[data-user-add-button]");
+    expect(button).not.toBeNull();
+  });
+
+  it("should be able to open the add user modal", async () => {
+    await page?.goto("http://localhost:3000/users");
+    await page?.waitForSelector("[data-user-add-button]");
+    await page?.click("[data-user-add-button]");
+    await page?.waitForSelector("[data-user-form]");
+    const modal = await page?.$("[data-user-form]");
+    expect(modal).not.toBeNull();
+  });
+});
+
+afterAll(() => browser?.close());

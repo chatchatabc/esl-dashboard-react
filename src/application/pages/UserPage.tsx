@@ -33,6 +33,7 @@ export function UserPage() {
           <h2 className="text-xl font-medium mr-auto">Users</h2>
 
           <button
+            data-user-add-button
             onClick={() => {
               dispatch(
                 modalUpdate({

@@ -30,6 +30,7 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
 
   return (
     <Form
+      data-user-form
       layout="vertical"
       form={formRef}
       onFinish={(e) => {

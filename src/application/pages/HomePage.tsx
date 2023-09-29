@@ -1,7 +1,7 @@
 import React from "react";
 
 export function HomePage() {
-  return <div>HomePage</div>;
+  return <h2 className="home-page-message">Welcome to ESL!</h2>;
 }
 
 export default HomePage;
