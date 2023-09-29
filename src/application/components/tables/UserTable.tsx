@@ -149,6 +149,7 @@ function UserTable({ data, ...props }: Props) {
         return (
           <div>
             <button
+              data-user-edit-button
               onClick={() => {
                 dispatch(
                   modalUpdate({

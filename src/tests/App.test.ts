@@ -59,6 +59,21 @@ describe("Users Page", () => {
     expect(mask).toBeNull();
   });
 
+  it("should be able to open the edit user modal", async () => {
+    await page?.waitForSelector("[data-user-edit-button]");
+    await page?.click("[data-user-edit-button]");
+    await page?.waitForSelector("[data-user-form]");
+    const modal = await page?.$("[data-user-form]");
+    expect(modal).not.toBeNull();
+  });
+
+  it("should be able to close the edit user modal", async () => {
+    await page?.click(".ant-modal-close");
+    await page?.waitForSelector(".ant-modal-mask", { hidden: true });
+    const mask = await page?.$(".ant-modal-mask");
+    expect(mask).toBeNull();
+  });
+
   it("should verify phone number", async () => {
     await page?.waitForSelector("[data-user-phone-button=verify]");
     await page?.click("[data-user-phone-button=verify]");
