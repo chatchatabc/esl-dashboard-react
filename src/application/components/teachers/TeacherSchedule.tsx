@@ -221,7 +221,7 @@ function TeacherSchedule({
                 if (prevWeekMonth !== calendarDate.getMonth()) {
                   setCalendarDate((prev) => {
                     prev.setUTCMonth(prev.getUTCMonth() - 1);
-                    return new Date(prev);
+                    return prev;
                   });
                 }
 
@@ -241,7 +241,7 @@ function TeacherSchedule({
                 if (nextWeekMonth !== calendarDate.getMonth()) {
                   setCalendarDate((prev) => {
                     prev.setUTCMonth(prev.getUTCMonth() + 1);
-                    return new Date(prev);
+                    return prev;
                   });
                 }
 
