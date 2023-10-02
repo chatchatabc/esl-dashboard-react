@@ -1,7 +1,6 @@
 import { useAppDispatch } from "../stores/hooks";
 import { modalUpdate } from "../stores/app/modalSlice";
 import { useQuery } from "@tanstack/react-query";
-import { Booking } from "../../../../esl-backend-workers/src/domain/models/BookingModel";
 import {
   bookingGetAll,
   bookingOptionDays,
@@ -26,29 +25,24 @@ export function BookingsPage() {
     sort: "start,DESC",
   });
   const [bookingIds, setBookingIds] = React.useState<number[]>([]);
-  const userQuery = useQuery({
+  const { data: user } = useQuery({
     queryKey: ["users", "profile"],
     queryFn: async () => {
       const res = await userGetProfile();
       return res;
     },
   });
-  const userId = userQuery.data?.id;
 
   const bookingsQuery = useQuery({
-    queryKey: ["bookings", { ...bookingsFilter, userId }],
+    queryKey: ["bookings", bookingsFilter],
     queryFn: async () => {
-      if (!userId) {
-        return {
-          content: [] as Booking[],
-          totalElements: 0,
-          page: 1,
-          size: 10,
-        };
+      if (!user?.id) {
+        return null;
       }
       const data = await bookingGetAll(bookingsFilter);
       return data;
     },
+    enabled: !!user?.id,
   });
 
   return (
