@@ -13,7 +13,7 @@ export async function studentGetAll(params: CommonPaginationInput) {
 }
 
 export async function studentGetByUser(params: {
-  username?: string;
+  userUsername?: string;
   userId?: number;
 }) {
   try {

@@ -57,14 +57,15 @@ export function UserProfilePage() {
   const userStatus = statusList.find((item) => item.value === user?.status);
 
   const { data: student } = useQuery({
-    queryKey: ["students", { username }],
+    queryKey: ["students", { userUsername: username }],
     queryFn: async () => {
       const data = await studentGetByUser({
-        username,
+        userUsername: username,
       });
       return data;
     },
   });
+  console.log(student);
 
   const { data: teacher } = useQuery({
     queryKey: ["teachers", { username }],
@@ -74,6 +75,7 @@ export function UserProfilePage() {
       });
       return data;
     },
+    enabled: !!user && user.roleId === 3,
   });
 
   const bookingsQuery = useQuery({
@@ -89,6 +91,7 @@ export function UserProfilePage() {
       });
       return data;
     },
+    enabled: !!student || !!teacher,
   });
 
   const { data: teachers, isLoading: teachersLoading } = useQuery({

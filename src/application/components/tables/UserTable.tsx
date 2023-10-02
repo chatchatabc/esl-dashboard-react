@@ -74,7 +74,6 @@ function UserTable({ data, ...props }: Props) {
       key: "phone",
       title: "Phone Number",
       render: (_, record) => {
-        console.log(record);
         return (
           <button
             data-user-phone-button={
