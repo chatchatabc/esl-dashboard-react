@@ -20,11 +20,15 @@ export function utilDeleteCookie(name: string) {
   document.cookie = `${name}=; path=/; max-age=0`;
 }
 
-export function utilFormatDateAndTime(locale: string, date: Date) {
-  return new Intl.DateTimeFormat(locale, {
+export function utilFormatDateAndTime(
+  locale: string,
+  date: Date,
+  options: Intl.DateTimeFormatOptions = {
     dateStyle: "medium",
     timeStyle: "short",
-  }).format(date);
+  }
+) {
+  return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
 export function utilFormatCurrency(amount: number) {
