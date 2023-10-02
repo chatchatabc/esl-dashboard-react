@@ -4,10 +4,18 @@ import MessageIcon from "../../assets/MessageIcon";
 import UserIcon from "../../assets/UserIcon";
 import TemplateIcon from "../../assets/TemplateIcon";
 import TeacherIcon from "../../assets/TeacherIcon";
-import { authGetUser } from "../../../domain/services/authService";
+import { useQuery } from "@tanstack/react-query";
+import { userGetProfile } from "../../../domain/services/userService";
 
 function Sidebar() {
   const location = useLocation();
+  const { data: user } = useQuery({
+    queryKey: ["users", "profile"],
+    queryFn: async () => {
+      const res = await userGetProfile();
+      return res;
+    },
+  });
   const { pathname } = location;
 
   const navLinks = [
@@ -18,8 +26,7 @@ function Sidebar() {
     },
   ];
 
-  const user = authGetUser();
-  if (user.roleId === 1) {
+  if (user?.roleId === 1) {
     navLinks.push(
       {
         label: "Users",
@@ -47,7 +54,7 @@ function Sidebar() {
         href: "/message-templates",
       }
     );
-  } else if (user.roleId === 2) {
+  } else if (user?.roleId === 2) {
     navLinks.push(
       {
         label: "Teachers",
@@ -58,8 +65,19 @@ function Sidebar() {
         label: "Bookings",
         icon: <MessageIcon />,
         href: "/bookings",
+      },
+      {
+        label: "Evaluations",
+        icon: <MessageIcon />,
+        href: "/evaluations",
       }
     );
+  } else if (user?.roleId === 3) {
+    navLinks.push({
+      label: "Evaluations",
+      icon: <MessageIcon />,
+      href: "/evaluations",
+    });
   }
 
   return (
