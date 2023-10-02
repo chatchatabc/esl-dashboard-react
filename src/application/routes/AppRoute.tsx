@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import React from "react";
 import TeacherActivityPage from "../pages/TeacherActivityPage";
+import path from "path";
 
 // Lazy load pages
 const UserPage = React.lazy(() => import("../pages/UserPage"));
@@ -25,6 +26,7 @@ const StudentPage = React.lazy(() => import("../pages/StudentPage"));
 const StudentProfilePage = React.lazy(
   () => import("../pages/StudentProfilePage")
 );
+const EvaluationsPage = React.lazy(() => import("../pages/EvaluationsPage"));
 
 const router = createBrowserRouter([
   {
@@ -66,6 +68,10 @@ const router = createBrowserRouter([
             element: <UserProfilePage />,
           },
         ],
+      },
+      {
+        path: "evaluations",
+        element: <EvaluationsPage />,
       },
       {
         path: "teachers",
