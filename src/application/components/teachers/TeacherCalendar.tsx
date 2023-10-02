@@ -14,6 +14,12 @@ type Props = {
   setSelectedWeek: React.Dispatch<React.SetStateAction<Date | null>>;
 };
 
+const bookingColor = {
+  1: "gray",
+  2: "blue",
+  3: "green",
+};
+
 function TeacherCalendar({
   schedules,
   bookings,
@@ -79,6 +85,7 @@ function TeacherCalendar({
           title: booking.student.alias,
           start: new Date(booking.start),
           end: new Date(booking.end),
+          color: bookingColor[booking.status as 1 | 2 | 3],
           booking,
         });
       });
