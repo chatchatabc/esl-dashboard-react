@@ -1,6 +1,7 @@
 import {
   BookingCompleteInputAdmin,
   BookingCreateByAdminInput,
+  BookingStatisticsTeacher,
   BookingUpdateInput,
   BookingUpdateStatusManyInput,
 } from "../../../../esl-backend-workers/src/domain/models/BookingModel";
@@ -126,4 +127,16 @@ export function bookingOptionDays() {
       value: 6,
     },
   ];
+}
+
+export async function bookingStatisticsTeacher(
+  params: BookingStatisticsTeacher
+) {
+  try {
+    const res = await trpcClient.booking.statisticsTeacher.query(params);
+    return res;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
 }
