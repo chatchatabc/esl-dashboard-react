@@ -1,5 +1,5 @@
 import {
-  BookingCompleteInputAdmin,
+  BookingCompleteInput,
   BookingCreateByAdminInput,
   BookingStatisticsTeacher,
   BookingUpdateInput,
@@ -36,16 +36,6 @@ export async function bookingCreate(params: BookingCreateByAdminInput) {
   } catch (e) {
     console.log(e);
     return null;
-  }
-}
-
-export async function bookingComplete(params: BookingCompleteInputAdmin) {
-  try {
-    const res = await trpcClient.booking.completeAdmin.mutate(params);
-    return res;
-  } catch (e) {
-    console.log(e);
-    return false;
   }
 }
 
@@ -138,5 +128,15 @@ export async function bookingStatisticsTeacher(
   } catch (e) {
     console.log(e);
     return null;
+  }
+}
+
+export async function bookingComplete(params: BookingCompleteInput) {
+  try {
+    const res = await trpcClient.booking.complete.mutate(params);
+    return res;
+  } catch (e) {
+    console.log(e);
+    return false;
   }
 }
