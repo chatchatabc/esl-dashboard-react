@@ -57,14 +57,9 @@ function Sidebar() {
   } else if (user?.roleId === 2) {
     navLinks.push(
       {
-        label: "Teachers",
-        icon: <TeacherIcon />,
-        href: "/teachers",
-      },
-      {
-        label: "Bookings",
+        label: "Upcoming Classes",
         icon: <MessageIcon />,
-        href: "/bookings",
+        href: "/upcoming-classes",
       },
       {
         label: "Evaluations",
@@ -73,11 +68,18 @@ function Sidebar() {
       }
     );
   } else if (user?.roleId === 3) {
-    navLinks.push({
-      label: "Evaluations",
-      icon: <MessageIcon />,
-      href: "/evaluations",
-    });
+    navLinks.push(
+      {
+        label: "Evaluations",
+        icon: <MessageIcon />,
+        href: "/evaluations",
+      },
+      {
+        label: "Upcoming Classes",
+        icon: <MessageIcon />,
+        href: "/upcoming-classes",
+      }
+    );
   }
 
   return (

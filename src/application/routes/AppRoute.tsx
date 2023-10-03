@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import React from "react";
 import TeacherActivityPage from "../pages/TeacherActivityPage";
 import path from "path";
+import UpcomingClassPage from "../pages/UpcomingClassPage";
 
 // Lazy load pages
 const UserPage = React.lazy(() => import("../pages/UserPage"));
@@ -72,6 +73,10 @@ const router = createBrowserRouter([
       {
         path: "evaluations",
         element: <EvaluationsPage />,
+      },
+      {
+        path: "upcoming-classes",
+        element: <UpcomingClassPage />,
       },
       {
         path: "teachers",
