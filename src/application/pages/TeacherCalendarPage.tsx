@@ -22,7 +22,7 @@ function TeacherCalendarPage() {
   });
 
   return (
-    <div>
+    <div className="p-4">
       <TeacherCalendar teacherId={teacher?.id ?? 0} />
     </div>
   );
