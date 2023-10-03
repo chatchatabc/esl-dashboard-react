@@ -9,7 +9,7 @@ function CompletedBookingsPage() {
     page: 1,
     size: 10,
     dateTo: Date.now(),
-    status: [2],
+    status: [2, 3, 5],
     sort: "start,DESC",
   });
 
