@@ -1,146 +1,132 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { Schedule } from "../../../../../esl-backend-workers/src/domain/models/ScheduleModel";
+import { bookingGetAll } from "../../../domain/services/bookingService";
+import { scheduleGetAll } from "../../../domain/services/scheduleService";
 import { Booking } from "../../../../../esl-backend-workers/src/domain/models/BookingModel";
-import FullCalendar from "@fullcalendar/react";
-import interactionPlugin from "@fullcalendar/interaction";
-import dayPlugin from "@fullcalendar/daygrid";
-import { useAppDispatch } from "../../stores/hooks";
-import { modalUpdate } from "../../stores/app/modalSlice";
+import { Schedule } from "../../../../../esl-backend-workers/src/domain/models/ScheduleModel";
+import TeacherWeekSchedule from "./TeacherWeekSchedule";
+import TeacherMonthSchedule from "./TeacherMonthSchedule";
 
 type Props = {
-  schedules?: Schedule[];
-  bookings?: Booking[];
-  calendarDate: Date;
-  setSelectedWeek: React.Dispatch<React.SetStateAction<Date | null>>;
+  teacherId?: number;
 };
 
-const bookingColor = {
-  1: "gray",
-  2: "blue",
-  3: "green",
-};
+function TeacherCalendar({ teacherId }: Props) {
+  const [calendarDate, setCalendarDate] = React.useState(new Date(0));
+  const [selectedWeek, setSelectedWeek] = React.useState<Date | null>(null);
 
-function TeacherCalendar({
-  schedules,
-  bookings,
-  calendarDate,
-  setSelectedWeek,
-}: Props) {
-  const dispatch = useAppDispatch();
-  const calendarRef = React.useRef<FullCalendar | null>(null);
-  const calendar = calendarRef.current?.getApi();
-  const [events, setEvents] = React.useState<any[]>([]);
+  const { data: bookings, isLoading: bookingsLoading } = useQuery({
+    queryKey: [
+      "bookings",
+      "calendar",
+      {
+        teacherId,
+        start: calendarDate.getTime() - 6 * 1000 * 60 * 60 * 24,
+        end: calendarDate.getTime() + 37 * 1000 * 60 * 60 * 24,
+      },
+    ],
+    queryFn: async () => {
+      const data = await bookingGetAll({
+        teacherId,
+        page: 1,
+        size: 10000,
+        status: [1, 2, 3, 5],
+        start: calendarDate.getTime() - 6 * 1000 * 60 * 60 * 24,
+        end: calendarDate.getTime() + 37 * 1000 * 60 * 60 * 24,
+      });
+      return data?.content ?? ([] as Booking[]);
+    },
+    enabled: !!teacherId,
+  });
+  const { data: schedules, isLoading: schedulesLoading } = useQuery({
+    queryKey: ["schedules", "content", { teacherId }],
+    queryFn: async () => {
+      const data = await scheduleGetAll({
+        teacherId,
+        page: 1,
+        size: 10000,
+      });
+      return data?.content ?? ([] as Schedule[]);
+    },
+    enabled: !!teacherId,
+  });
 
+  // Update calendar date on first load
   React.useEffect(() => {
-    if (calendar) {
-      calendar.gotoDate(calendarDate);
-    }
-  }, [calendarDate]);
-
-  React.useEffect(() => {
-    const newEvents: any[] = [];
-    const dateNow = new Date();
-    let timeNow = dateNow.getTime();
-    const timeEnd = new Date(
-      dateNow.getFullYear(),
-      dateNow.getMonth() + 2,
-      7
-    ).getTime();
-
-    const newBookings = bookings?.filter((booking) => {
-      return booking.start < timeNow;
-    });
-    newBookings?.forEach((booking) => {
-      newEvents.push({
-        title: booking.student.alias,
-        start: new Date(booking.start),
-        end: new Date(booking.end),
-        booking,
-      });
-    });
-
-    while (timeNow <= timeEnd) {
-      const scheduleDate = new Date(timeNow);
-
-      const weekSchedules = schedules?.filter((schedule) => {
-        return schedule.weekDay === scheduleDate.getDay();
-      });
-
-      let hours = 0;
-      weekSchedules?.forEach((schedule) => {
-        hours += (schedule.endTime - schedule.startTime) / (1000 * 60 * 60);
-      });
-
-      const newBookings = bookings?.filter((booking) => {
-        return (
-          booking.start >= scheduleDate.getTime() &&
-          booking.end <= scheduleDate.getTime() + 1000 * 60 * 60 * 24
-        );
-      });
-
-      // Create events for bookings
-      newBookings?.forEach((booking) => {
-        hours -= (booking.end - booking.start) / (1000 * 60 * 60);
-        newEvents.push({
-          title: booking.student.alias,
-          start: new Date(booking.start),
-          end: new Date(booking.end),
-          color: bookingColor[booking.status as 1 | 2 | 3],
-          booking,
-        });
-      });
-
-      if (hours) {
-        newEvents.push({
-          title: `Free Hours: ${hours}`,
-          start: scheduleDate,
-          allDay: true,
-          display: "background",
-          backgroundColor: "white",
-        });
-      }
-
-      timeNow += 1000 * 60 * 60 * 24;
-    }
-
-    setEvents(newEvents);
-  }, [schedules, bookings, calendarDate]);
+    const now = new Date();
+    now.setUTCFullYear(now.getUTCFullYear(), now.getUTCMonth(), 1);
+    setCalendarDate(now);
+  }, []);
 
   return (
-    <FullCalendar
-      height={"80vh"}
-      ref={calendarRef}
-      displayEventTime={true}
-      eventTimeFormat={{
-        hour: "numeric",
-        minute: "2-digit",
-        omitZeroMinute: false,
-        meridiem: "short",
-      }}
-      select={(info) => {
-        const date = new Date(info.start);
-        date.setUTCDate(date.getUTCDate() - date.getUTCDay());
-        setSelectedWeek(date);
-      }}
-      eventClick={(e) => {
-        const { booking } = e.event.extendedProps;
-        const start = new Date(booking.start).toISOString();
-        const end = new Date(booking.end).toISOString();
-        dispatch(
-          modalUpdate({
-            show: true,
-            title: "Booking Information",
-            content: "booking",
-            data: { ...booking, start, end },
-          })
-        );
-      }}
-      selectable={true}
-      events={events}
-      headerToolbar={false}
-      plugins={[dayPlugin, interactionPlugin]}
-      initialView="dayGridMonth"
-    />
+    <div>
+      {/* Teacher Calendar */}
+      {!selectedWeek && (
+        <section className="border overflow-hidden shadow rounded-lg">
+          <header className="p-2 flex items-center">
+            <h2 className="text-xl my-1.5 font-medium flex-1">
+              Teacher's Calendar
+            </h2>
+
+            <h3 className="text-xl font-bold">
+              {new Intl.DateTimeFormat("en-US", {
+                month: "long",
+              }).format(calendarDate)}
+            </h3>
+
+            <div className="flex-1 flex gap-1 justify-end">
+              <button
+                onClick={() => {
+                  setCalendarDate((prev) => {
+                    prev.setUTCMonth(prev.getUTCMonth() - 1);
+                    return new Date(prev);
+                  });
+                }}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+              >
+                &lt;
+              </button>
+
+              <button
+                onClick={() => {
+                  setCalendarDate((prev) => {
+                    prev.setUTCMonth(prev.getUTCMonth() + 1);
+                    return new Date(prev);
+                  });
+                }}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+              >
+                &gt;
+              </button>
+            </div>
+          </header>
+
+          <section>
+            <TeacherMonthSchedule
+              schedules={schedules ?? []}
+              bookings={bookings ?? []}
+              calendarDate={calendarDate}
+              setSelectedWeek={setSelectedWeek}
+            />
+          </section>
+        </section>
+      )}
+
+      {/* Teacher Schedule */}
+      {selectedWeek && (
+        <section className="border shadow rounded-lg">
+          <TeacherWeekSchedule
+            bookings={bookings ?? []}
+            schedules={schedules ?? []}
+            loading={bookingsLoading || schedulesLoading}
+            calendarDate={selectedWeek}
+            setSelectedWeek={setSelectedWeek}
+            setCalendarDate={setCalendarDate}
+            teacherId={teacherId ?? 0}
+          />
+        </section>
+      )}
+    </div>
   );
 }
 

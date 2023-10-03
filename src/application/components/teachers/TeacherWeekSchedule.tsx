@@ -33,7 +33,7 @@ const bookingColor = {
   3: "green",
 };
 
-function TeacherSchedule({
+function TeacherWeekSchedule({
   teacherId,
   calendarDate,
   setCalendarDate,
@@ -338,4 +338,4 @@ function TeacherSchedule({
   );
 }
 
-export default TeacherSchedule;
+export default TeacherWeekSchedule;

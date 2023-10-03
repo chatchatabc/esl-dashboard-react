@@ -14,9 +14,6 @@ import { bookingGetAll } from "../../domain/services/bookingService";
 import { userGetProfile } from "../../domain/services/userService";
 import TeacherCalendar from "../components/teachers/TeacherCalendar";
 
-const TeacherSchedule = React.lazy(
-  () => import("../components/teachers/TeacherSchedule")
-);
 const TeacherCourseTable = React.lazy(
   () => import("../components/tables/TeacherCourseTable")
 );
@@ -29,7 +26,6 @@ export function TeacherProfilePage() {
     size: 10,
   });
   const [calendarDate, setCalendarDate] = React.useState(new Date(0));
-  const [selectedWeek, setSelectedWeek] = React.useState<Date | null>(null);
 
   const { data: user } = useQuery({
     queryKey: ["users", "profile"],
@@ -60,7 +56,7 @@ export function TeacherProfilePage() {
       return data;
     },
   });
-  const { data: bookings, isLoading: bookingsLoading } = useQuery({
+  const { data: bookings } = useQuery({
     queryKey: [
       "bookings",
       "calendar",
@@ -82,7 +78,7 @@ export function TeacherProfilePage() {
       return data?.content ?? ([] as Booking[]);
     },
   });
-  const { data: schedules, isLoading: schedulesLoading } = useQuery({
+  const { data: schedules } = useQuery({
     queryKey: ["schedules", "content", { teacherId: teacher?.id }],
     queryFn: async () => {
       const data = await scheduleGetAll({
@@ -237,72 +233,7 @@ export function TeacherProfilePage() {
             </section>
           </section>
 
-          {/* Teacher Calendar */}
-          {!selectedWeek && (
-            <section className="border overflow-hidden shadow rounded-lg">
-              <header className="p-2 flex items-center">
-                <h2 className="text-xl my-1.5 font-medium flex-1">
-                  Teacher's Calendar
-                </h2>
-
-                <h3 className="text-xl font-bold">
-                  {new Intl.DateTimeFormat("en-US", {
-                    month: "long",
-                  }).format(calendarDate)}
-                </h3>
-
-                <div className="flex-1 flex gap-1 justify-end">
-                  <button
-                    onClick={() => {
-                      setCalendarDate((prev) => {
-                        prev.setUTCMonth(prev.getUTCMonth() - 1);
-                        return new Date(prev);
-                      });
-                    }}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
-                  >
-                    &lt;
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setCalendarDate((prev) => {
-                        prev.setUTCMonth(prev.getUTCMonth() + 1);
-                        return new Date(prev);
-                      });
-                    }}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
-                  >
-                    &gt;
-                  </button>
-                </div>
-              </header>
-
-              <section>
-                <TeacherCalendar
-                  schedules={schedules ?? []}
-                  bookings={bookings ?? []}
-                  calendarDate={calendarDate}
-                  setSelectedWeek={setSelectedWeek}
-                />
-              </section>
-            </section>
-          )}
-
-          {/* Teacher Schedule */}
-          {selectedWeek && (
-            <section className="border shadow rounded-lg">
-              <TeacherSchedule
-                bookings={bookings ?? []}
-                schedules={schedules ?? []}
-                loading={bookingsLoading || schedulesLoading}
-                calendarDate={selectedWeek}
-                setSelectedWeek={setSelectedWeek}
-                setCalendarDate={setCalendarDate}
-                teacherId={teacher.id}
-              />
-            </section>
-          )}
+          <TeacherCalendar teacherId={teacher.id} />
         </>
       )}
 
