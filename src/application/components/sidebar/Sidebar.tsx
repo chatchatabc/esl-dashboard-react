@@ -70,6 +70,11 @@ function Sidebar() {
   } else if (user?.roleId === 3) {
     navLinks.push(
       {
+        label: "Calendar",
+        icon: <MessageIcon />,
+        href: "/calendar",
+      },
+      {
         label: "Evaluations",
         icon: <MessageIcon />,
         href: "/evaluations",
