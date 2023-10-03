@@ -14,6 +14,7 @@ import TeacherForm from "./TeacherForm";
 import BookingManyForm from "./BookingManyForm";
 import { useQueryClient } from "@tanstack/react-query";
 import StudentForm from "./StudentForm";
+import EvaluationForm from "./EvaluationForm";
 
 function DynamicModalForm() {
   const [loading, setLoading] = React.useState(false);
@@ -149,6 +150,14 @@ function DynamicModalForm() {
 
         {modal.content === "student" && (
           <StudentForm
+            loading={loading}
+            formRef={form}
+            handleSubmit={handleSubmit}
+          />
+        )}
+
+        {modal.content === "evaluation" && (
+          <EvaluationForm
             loading={loading}
             formRef={form}
             handleSubmit={handleSubmit}
