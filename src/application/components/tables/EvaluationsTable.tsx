@@ -1,9 +1,12 @@
-import { TableProps } from "antd";
+import { Button, TableProps } from "antd";
 import { CommonContent } from "../../../../../esl-backend-workers/src/domain/models/CommonModel";
 import { Booking } from "../../../../../esl-backend-workers/src/domain/models/BookingModel";
 import { ColumnsType } from "antd/es/table";
 import { utilFormatDateAndTime } from "../../../domain/services/utilService";
 import DynamicTable from "./DynamicTable";
+import EditIcon from "../../assets/EditIcon";
+import { useAppDispatch } from "../../stores/hooks";
+import { modalUpdate } from "../../stores/app/modalSlice";
 
 type Props = {
   roleId: number;
@@ -11,6 +14,7 @@ type Props = {
 } & TableProps<any>;
 
 function EvaluationsTable({ data, roleId, ...props }: Props) {
+  const dispatch = useAppDispatch();
   const columns: ColumnsType<Booking> = [];
 
   if (roleId === 3) {
@@ -53,21 +57,62 @@ function EvaluationsTable({ data, roleId, ...props }: Props) {
       key: "message",
       title: "Feedback",
       render: (_, record) => {
+        console.log(record.message);
         if (record.message) {
-          return <p>{record.message}</p>;
+          return <p className="whitespace-pre-wrap">{record.message}</p>;
         } else {
           return <p>No feedback</p>;
         }
       },
     },
     {
-      key: "actions",
-      title: "Actions",
+      key: "status",
+      title: "Status",
       render: (_, record) => {
-        return <div></div>;
+        if (record.status === 3) {
+          return <p className="text-green-500">Complete</p>;
+        } else if (record.status === 5) {
+          return <p className="text-red-500">Absent</p>;
+        } else if (record.status === 2) {
+          return <p className="text-blue-500">Ongoing</p>;
+        }
       },
     }
   );
+
+  if (roleId === 3) {
+    columns.push({
+      key: "actions",
+      title: "Actions",
+      render: (_, record) => {
+        return (
+          <div className="flex space-x-2">
+            <Button
+              onClick={() => {
+                if (record.status !== 3 && record.status !== 5) {
+                  record.status = 3;
+                }
+
+                dispatch(
+                  modalUpdate({
+                    show: true,
+                    title: "Edit Evaluation",
+                    content: "evaluation",
+                    data: record,
+                  })
+                );
+              }}
+              className="bg-blue-500 text-white"
+            >
+              <div className="w-4 h-4">
+                <EditIcon />
+              </div>
+            </Button>
+          </div>
+        );
+      },
+    });
+  }
 
   return (
     <DynamicTable
