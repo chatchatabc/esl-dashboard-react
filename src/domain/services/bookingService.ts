@@ -1,4 +1,6 @@
 import {
+  BookingCancelInput,
+  BookingCancelInputAdmin,
   BookingCompleteInput,
   BookingCreateByAdminInput,
   BookingStatisticsTeacher,
@@ -134,6 +136,16 @@ export async function bookingStatisticsTeacher(
 export async function bookingComplete(params: BookingCompleteInput) {
   try {
     const res = await trpcClient.booking.complete.mutate(params);
+    return res;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+
+export async function bookingCancel(params: BookingCancelInput) {
+  try {
+    const res = await trpcClient.booking.cancel.mutate(params);
     return res;
   } catch (e) {
     console.log(e);
