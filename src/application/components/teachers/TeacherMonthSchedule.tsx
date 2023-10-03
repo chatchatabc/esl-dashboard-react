@@ -6,6 +6,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayPlugin from "@fullcalendar/daygrid";
 import { useAppDispatch } from "../../stores/hooks";
 import { modalUpdate } from "../../stores/app/modalSlice";
+import { useQuery } from "@tanstack/react-query";
+import { userGetProfile } from "../../../domain/services/userService";
 
 type Props = {
   schedules?: Schedule[];
@@ -30,6 +32,13 @@ function TeacherMonthSchedule({
   const calendarRef = React.useRef<FullCalendar | null>(null);
   const calendar = calendarRef.current?.getApi();
   const [events, setEvents] = React.useState<any[]>([]);
+  const { data: user } = useQuery({
+    queryKey: ["users", "profile"],
+    queryFn: async () => {
+      const res = await userGetProfile();
+      return res;
+    },
+  });
 
   React.useEffect(() => {
     if (calendar) {
@@ -123,6 +132,7 @@ function TeacherMonthSchedule({
         setSelectedWeek(date);
       }}
       eventClick={(e) => {
+        if (user?.roleId !== 1) return;
         const { booking } = e.event.extendedProps;
         const start = new Date(booking.start).toISOString();
         const end = new Date(booking.end).toISOString();

@@ -15,7 +15,8 @@ import { useAppDispatch } from "../../stores/hooks";
 import { modalUpdate } from "../../stores/app/modalSlice";
 import { CalendarApi, EventSourceInput } from "@fullcalendar/core/index.js";
 import { Booking } from "../../../../../esl-backend-workers/src/domain/models/BookingModel";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { userGetProfile } from "../../../domain/services/userService";
 
 type Props = {
   teacherId: number;
@@ -53,6 +54,13 @@ function TeacherWeekSchedule({
 
   const [editing, setEditing] = React.useState(false);
   const [events, setEvents] = React.useState<any[]>([]);
+  const { data: user } = useQuery({
+    queryKey: ["users", "profile"],
+    queryFn: async () => {
+      const res = await userGetProfile();
+      return res;
+    },
+  });
 
   async function handleSave() {
     const calendarEvents = calendar?.getEvents() ?? [];
@@ -82,7 +90,6 @@ function TeacherWeekSchedule({
         scheduleIds: deleteSchedules.map((schedule) => {
           return schedule.id;
         }),
-        teacherId,
       });
     } else if (schedules.length < eventSchedules.length) {
       const newSchedules = eventSchedules.filter((schedule) => !schedule.id);
@@ -101,7 +108,6 @@ function TeacherWeekSchedule({
     const responseUpdate = updateSchedules.length
       ? await scheduleUpdateMany({
           schedules: updateSchedules,
-          teacherId,
         })
       : true;
 
@@ -300,7 +306,7 @@ function TeacherWeekSchedule({
                 start: e.start,
                 end: e.end,
               });
-            } else {
+            } else if (user?.roleId === 1) {
               dispatch(
                 modalUpdate({
                   show: true,
@@ -318,7 +324,7 @@ function TeacherWeekSchedule({
           eventClick={(e) => {
             if (editing) {
               e.event.remove();
-            } else {
+            } else if (user?.roleId === 1) {
               const { booking } = e.event.extendedProps;
               const start = new Date(booking.start).toISOString();
               const end = new Date(booking.end).toISOString();

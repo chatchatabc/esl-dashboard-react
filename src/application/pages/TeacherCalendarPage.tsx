@@ -5,7 +5,7 @@ import { teacherGet } from "../../domain/services/teacherService";
 
 function TeacherCalendarPage() {
   const { data: user } = useQuery({
-    queryKey: ["user", "profile"],
+    queryKey: ["users", "profile"],
     queryFn: async () => {
       const res = await userGetProfile();
       return res;
