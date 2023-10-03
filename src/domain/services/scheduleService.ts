@@ -44,10 +44,7 @@ export async function scheduleCreateMany(params: {
   }
 }
 
-export async function scheduleDeleteMany(params: {
-  scheduleIds: number[];
-  teacherId: number;
-}) {
+export async function scheduleDeleteMany(params: { scheduleIds: number[] }) {
   try {
     const response = await trpcClient.schedule.deleteMany.mutate(params);
     return response;
