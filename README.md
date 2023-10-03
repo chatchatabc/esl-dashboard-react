@@ -6,7 +6,7 @@ This project is a dashboard for the ESL website. It will be used by admins, teac
 
 ### Prerequisites
 
-Just make sure you have [Node.js](https://nodejs.org/en/) installed. Everything else will be installed by the following steps.
+Just make sure you have [Node.js](https://nodejs.org/en/) (>= 18.0.0) installed. Everything else will be installed by the following steps.
 
 ### Installing
 
@@ -50,7 +50,7 @@ Just make sure you have [Node.js](https://nodejs.org/en/) installed. Everything 
    ```sh
    npm run deploy
    ```
-   > This will run the build command and deploy the build files to the gh-pages branch
+   > This will run the build command and deploy the build files to your cloudflare pages.
 
 ## Tech Stack
 
