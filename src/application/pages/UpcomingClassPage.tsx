@@ -8,7 +8,7 @@ function UpcomingClassPage() {
   const [bookingsFilter, setBookingsFilter] = React.useState({
     page: 1,
     size: 10,
-    dateFrom: Date.now(),
+    start: Date.now(),
     status: [1, 2],
     sort: "start,ASC",
   });
@@ -33,7 +33,7 @@ function UpcomingClassPage() {
       {/* First section */}
       <section className="rounded-lg shadow border">
         <header className="p-2 py-3 flex items-center border-b">
-          <h2 className="text-xl font-medium mr-auto">Evaluations</h2>
+          <h2 className="text-xl font-medium mr-auto">Upcoming Classes</h2>
         </header>
 
         {/* Table */}
@@ -41,6 +41,7 @@ function UpcomingClassPage() {
           <UpcomingClassTable
             roleId={user?.roleId ?? 0}
             pagination={{
+              className: "px-4",
               onChange: (page, size) => {
                 setBookingsFilter({
                   ...bookingsFilter,
