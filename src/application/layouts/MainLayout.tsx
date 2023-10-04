@@ -18,14 +18,14 @@ export function MainLayout() {
   }
 
   return (
-    <div className="flex-1 flex flex-col divide-y-2 divide-black">
+    <div className="flex-1 flex bg-background-50 flex-col divide-y-2 divide-primary text-text">
       {/* Header */}
       <header>
         <Navbar />
       </header>
 
       {/* Section */}
-      <section className="divide-x-2 divide-black flex flex-1">
+      <section className="divide-x-2 divide-primary flex flex-1">
         {/* Sidebar */}
         <aside className="min-w-[15vw]">
           <Sidebar />
