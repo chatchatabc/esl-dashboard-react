@@ -26,7 +26,7 @@ function Navbar() {
       <div className="ml-auto">
         <MyDropdown
           button={
-            <div className="space-x-2 flex items-center pl-2 rounded-md transition bg-primary-100 text-primary">
+            <div className="space-x-2 flex items-center pl-2 rounded-md">
               {userQuery.isLoading ? (
                 <div className="w-10 h-10 border-r-2 rounded-full border-black animate-spin border-t-2"></div>
               ) : (

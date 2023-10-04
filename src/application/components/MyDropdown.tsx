@@ -17,7 +17,9 @@ function MyDropdown({ button, children }: Props) {
             setOpen(false);
           }
         }}
-        className={`${open ? "bg-blue-100" : ""} rounded-md hover:bg-blue-100`}
+        className={`${
+          open ? "bg-secondary" : ""
+        } rounded-md transition hover:bg-secondary`}
         onClick={() => {
           setOpen((prev) => !prev);
         }}
