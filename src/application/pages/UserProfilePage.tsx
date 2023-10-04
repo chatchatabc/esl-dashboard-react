@@ -139,7 +139,7 @@ export function UserProfilePage() {
   return (
     <section className="p-4 space-y-4">
       {/* Profile Information */}
-      <section className="border rounded-lg shadow">
+      <section className="rounded-lg shadow border border-primary shadow-accent bg-white overflow-hidden">
         <header className="p-2 flex items-center border-b">
           <h2 className="text-xl font-medium mr-auto">Profile Information</h2>
 
@@ -154,7 +154,7 @@ export function UserProfilePage() {
                 })
               );
             }}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+            className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
           >
             Edit
           </button>
@@ -248,7 +248,7 @@ export function UserProfilePage() {
 
       {/* Booking Table */}
       {(student || teacher) && (
-        <section className="border rounded-lg shadow">
+        <section className="rounded-lg shadow border border-primary shadow-accent bg-white overflow-hidden">
           <header className="p-2 flex items-center border-b">
             <h2 className="text-xl font-medium mr-auto">Bookings</h2>
 
@@ -265,9 +265,9 @@ export function UserProfilePage() {
                     })
                   );
                 }}
-                className={`p-2 ${
-                  bookingIds.length === 0 ? "" : "bg-blue-500 hover:bg-blue-400"
-                } text-white rounded-md `}
+                className={`px-4 py-2 bg-primary text-white rounded-md transition ${
+                  bookingIds.length === 0 ? "opacity-0" : "hover:opacity-80"
+                }`}
               >
                 <div className="w-6 h-6">
                   <EditIcon />
@@ -278,9 +278,9 @@ export function UserProfilePage() {
                 onClick={() => {
                   setOpen(true);
                 }}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+                className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
               >
-                Add
+                Add +
               </button>
             </div>
           </header>
@@ -344,7 +344,7 @@ export function UserProfilePage() {
       )}
 
       {/* Credit History */}
-      <section className="border rounded-lg shadow">
+      <section className="rounded-lg shadow border border-primary shadow-accent bg-white overflow-hidden">
         <header className="p-2 flex items-center border-b">
           <h2 className="text-xl font-medium mr-auto">Credit History</h2>
 
@@ -359,9 +359,9 @@ export function UserProfilePage() {
                 })
               );
             }}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+            className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
           >
-            Add
+            Add +
           </button>
         </header>
 
