@@ -62,7 +62,7 @@ function TeacherCalendar({ teacherId }: Props) {
     <div>
       {/* Teacher Calendar */}
       {!selectedWeek && (
-        <section className="border overflow-hidden shadow rounded-lg">
+        <section className="border border-primary rounded-lg shadow bg-white">
           <header className="p-2 flex items-center">
             <h2 className="text-xl my-1.5 font-medium flex-1">
               Teacher's Calendar
@@ -82,7 +82,7 @@ function TeacherCalendar({ teacherId }: Props) {
                     return new Date(prev);
                   });
                 }}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+                className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
               >
                 &lt;
               </button>
@@ -94,7 +94,7 @@ function TeacherCalendar({ teacherId }: Props) {
                     return new Date(prev);
                   });
                 }}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+                className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
               >
                 &gt;
               </button>
@@ -114,7 +114,7 @@ function TeacherCalendar({ teacherId }: Props) {
 
       {/* Teacher Schedule */}
       {selectedWeek && (
-        <section className="border shadow rounded-lg">
+        <section className="border border-primary rounded-lg shadow bg-white">
           <TeacherWeekSchedule
             bookings={bookings ?? []}
             schedules={schedules ?? []}

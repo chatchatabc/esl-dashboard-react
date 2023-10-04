@@ -202,7 +202,7 @@ function TeacherWeekSchedule({
             setCalendarDate(now);
             setSelectedWeek(null);
           }}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+          className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
         >
           Back
         </button>
@@ -210,7 +210,7 @@ function TeacherWeekSchedule({
         {editing && (
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+            className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
           >
             Save
           </button>
@@ -233,7 +233,7 @@ function TeacherWeekSchedule({
 
                 setLocalDate(prevWeek);
               }}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+              className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
             >
               &lt;
             </button>
@@ -253,7 +253,7 @@ function TeacherWeekSchedule({
 
                 setLocalDate(nextWeek);
               }}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+              className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
             >
               &gt;
             </button>
@@ -264,7 +264,7 @@ function TeacherWeekSchedule({
           onClick={() => {
             setEditing(!editing);
           }}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+          className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
         >
           {editing ? "Cancel" : "Edit"}
         </button>
