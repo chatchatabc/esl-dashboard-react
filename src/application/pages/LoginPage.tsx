@@ -47,7 +47,7 @@ export function LoginPage() {
   });
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center">
+    <div className="flex-1 flex flex-col bg-background-50 items-center justify-center">
       <header className="w-64">
         <h1 className="sr-only">登录到您的帐户</h1>
         <img src="/images/logo-horizontal.webp" alt="logo" />
@@ -56,7 +56,7 @@ export function LoginPage() {
       <Form
         layout="vertical"
         onFinish={handleSubmit}
-        className="max-w-lg w-full mt-8 bg-blue-500 bg-opacity-10 mx-auto p-8 border shadow-xl rounded-3xl"
+        className="max-w-lg w-full mt-8 mx-auto bg-primary-100 p-8 shadow-xl rounded-3xl"
       >
         <header>
           <h2 className="text-2xl font-bold">登录到您的帐户</h2>
@@ -99,7 +99,7 @@ export function LoginPage() {
             htmlType="submit"
             size="large"
             loading={loading}
-            className="px-3 py-1 rounded-md bg-blue-500 text-white"
+            className="px-3 py-1 rounded-md bg-primary text-white hover:bg-primary-600"
           >
             登入
           </Button>
@@ -109,7 +109,7 @@ export function LoginPage() {
       <section className="mt-8">
         <a
           href="https://esl-cca.pages.dev"
-          className="text-blue-500 font-bold hover:text-blue-600"
+          className="text-accent font-bold hover:underline"
         >
           &lt;&lt; 返回主页
         </a>
