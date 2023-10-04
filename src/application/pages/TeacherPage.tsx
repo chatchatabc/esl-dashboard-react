@@ -36,7 +36,7 @@ export function TeacherPage() {
   return (
     <section className="p-4">
       {/* First section */}
-      <section className="border rounded-lg shadow">
+      <section className="rounded-lg shadow border border-primary shadow-accent bg-white overflow-hidden">
         <header className="p-2 flex items-center">
           <h2 className="text-xl font-medium mr-auto my-2">Teachers</h2>
           {userQuery.data?.roleId === 1 && (
@@ -50,7 +50,7 @@ export function TeacherPage() {
                   })
                 );
               }}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+              className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
             >
               Add +
             </button>
