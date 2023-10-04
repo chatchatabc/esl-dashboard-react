@@ -23,7 +23,7 @@ export function MessageTemplatePage() {
   return (
     <section className="p-4">
       {/* First section */}
-      <section className="rounded-lg overflow-hidden shadow border">
+      <section className="rounded-lg shadow border border-primary shadow-accent bg-white overflow-hidden">
         {/* Header */}
         <header className="p-2 flex items-center">
           <h2 className="text-xl font-medium mr-auto">Message Templates</h2>
@@ -38,7 +38,7 @@ export function MessageTemplatePage() {
                 })
               );
             }}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md transition hover:bg-blue-400"
+            className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
           >
             Add +
           </button>
