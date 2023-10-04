@@ -119,8 +119,8 @@ export function TeacherProfilePage() {
   return (
     <section className="p-4 space-y-4">
       {/* Teacher's Profile Information */}
-      <section className="border rounded-lg shadow">
-        <header className="p-2 flex items-center border-b">
+      <section className="border border-primary rounded-lg shadow bg-white">
+        <header className="p-2 flex items-center border-b border-primary">
           <h2 className="text-xl font-medium mr-auto">Teacher's Profile</h2>
 
           <button
@@ -134,7 +134,7 @@ export function TeacherProfilePage() {
                 })
               );
             }}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+            className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
           >
             Edit
           </button>
@@ -201,8 +201,8 @@ export function TeacherProfilePage() {
       {/* Teacher Courses */}
       {user?.roleId !== 2 && (
         <>
-          <section className="border shadow rounded-lg">
-            <header className="p-2 border-b-2 flex items-center">
+          <section className="border border-primary rounded-lg shadow bg-white">
+            <header className="p-2 border-b border-primary flex items-center">
               <h2 className="text-xl font-medium mr-auto">Teacher's Courses</h2>
 
               <button
@@ -216,7 +216,7 @@ export function TeacherProfilePage() {
                     })
                   );
                 }}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400"
+                className="px-4 py-2 bg-primary text-white rounded-md transition hover:opacity-80"
               >
                 Add +
               </button>
