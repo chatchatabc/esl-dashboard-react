@@ -96,10 +96,8 @@ function Sidebar() {
               <NavLink
                 to={navLink.href}
                 className={`flex rounded-md items-center ${
-                  pathname.startsWith(navLink.href)
-                    ? "bg-primary-100 text-primary"
-                    : ""
-                } transition hover:bg-primary-100 hover:text-primary`}
+                  pathname.startsWith(navLink.href) ? "bg-secondary" : ""
+                } transition hover:bg-secondary`}
               >
                 <span className={`mr-2 w-10 h-10 p-1 `}>{navLink.icon}</span>
                 <span>{navLink.label}</span>
