@@ -102,7 +102,7 @@ function EvaluationsTable({ data, roleId, ...props }: Props) {
                   })
                 );
               }}
-              className="bg-blue-500 text-white"
+              className="bg-primary text-white transition hover:bg-opacity-80"
             >
               <div className="w-4 h-4">
                 <EditIcon />

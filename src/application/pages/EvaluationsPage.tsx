@@ -31,7 +31,7 @@ function CompletedBookingsPage() {
   return (
     <section className="p-4">
       {/* First section */}
-      <section className="rounded-lg shadow border">
+      <section className="rounded-lg shadow border border-primary shadow-accent bg-white overflow-hidden">
         <header className="p-2 py-3 flex items-center border-b">
           <h2 className="text-xl font-medium mr-auto">Evaluations</h2>
         </header>
