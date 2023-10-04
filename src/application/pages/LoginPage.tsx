@@ -56,7 +56,7 @@ export function LoginPage() {
       <Form
         layout="vertical"
         onFinish={handleSubmit}
-        className="max-w-lg w-full mt-8 mx-auto bg-secondary p-8 shadow-xl rounded-3xl"
+        className="max-w-lg w-full mt-8 mx-auto bg-primary bg-opacity-10 p-8 shadow-xl rounded-3xl"
       >
         <header>
           <h2 className="text-2xl font-bold">登录到您的帐户</h2>
