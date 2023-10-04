@@ -6,6 +6,9 @@ import TemplateIcon from "../../assets/TemplateIcon";
 import TeacherIcon from "../../assets/TeacherIcon";
 import { useQuery } from "@tanstack/react-query";
 import { userGetProfile } from "../../../domain/services/userService";
+import CalendarIcon from "../../assets/CalendarIcon";
+import CheckIcon from "../../assets/CheckIcon";
+import FutureIcon from "../../assets/FutureIcon";
 
 function Sidebar() {
   const location = useLocation();
@@ -58,12 +61,12 @@ function Sidebar() {
     navLinks.push(
       {
         label: "Upcoming Classes",
-        icon: <MessageIcon />,
+        icon: <FutureIcon />,
         href: "/upcoming-classes",
       },
       {
         label: "Evaluations",
-        icon: <MessageIcon />,
+        icon: <CheckIcon />,
         href: "/evaluations",
       }
     );
@@ -71,17 +74,17 @@ function Sidebar() {
     navLinks.push(
       {
         label: "Calendar",
-        icon: <MessageIcon />,
+        icon: <CalendarIcon />,
         href: "/calendar",
       },
       {
         label: "Evaluations",
-        icon: <MessageIcon />,
+        icon: <CheckIcon />,
         href: "/evaluations",
       },
       {
         label: "Upcoming Classes",
-        icon: <MessageIcon />,
+        icon: <FutureIcon />,
         href: "/upcoming-classes",
       }
     );
