@@ -120,7 +120,6 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
 
   return (
     <Form
-      className="overflow-hidden"
       layout="vertical"
       form={formRef}
       onFinish={(e) => {
@@ -162,10 +161,9 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
     >
       <Form.Item name="id" hidden></Form.Item>
 
-      <div className="flex -mx-1">
+      <div className="grid grid-cols-2 gap-x-2">
         {/* Teacher */}
         <Form.Item
-          className="w-1/2 px-1"
           name="teacherId"
           rules={[
             {
@@ -204,7 +202,6 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
 
         {/* Student */}
         <Form.Item
-          className="w-1/2 px-1"
           name="studentId"
           rules={[
             {
@@ -241,35 +238,33 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
             })}
           />
         </Form.Item>
-      </div>
 
-      {/* Course */}
-      <Form.Item
-        name="courseId"
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        label="Course"
-      >
-        <Select
-          disabled={formValues.id ? true : false}
-          placeholder="Select a course"
-          options={courses.map((course) => {
-            return {
-              value: course.id,
-              label: `(${course.price}点) ${course.name}`,
-            };
-          })}
-        />
-      </Form.Item>
+        {/* Course */}
+        <Form.Item
+          className="col-span-2"
+          name="courseId"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          label="Course"
+        >
+          <Select
+            disabled={formValues.id ? true : false}
+            placeholder="Select a course"
+            options={courses.map((course) => {
+              return {
+                value: course.id,
+                label: `(${course.price}点) ${course.name}`,
+              };
+            })}
+          />
+        </Form.Item>
 
-      <div className="flex -mx-1">
         {/* Start Time */}
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -288,7 +283,6 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
 
         {/* End Time */}
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -304,73 +298,68 @@ function BookingForm({ loading, handleSubmit, formRef }: Props) {
             showTime
           />
         </Form.Item>
+
+        {!formValues.id && (
+          <>
+            {/* Advance Booking */}
+            <Form.Item
+              name="advanceBooking"
+              label="Advance Booking"
+              rules={[
+                {
+                  pattern: new RegExp(/^[0-9]*$/),
+                  message: "Please input a number",
+                },
+              ]}
+            >
+              <Input
+                onChange={(e) => {
+                  setAdvanceBooking(e.target.value);
+                }}
+                placeholder="Optional"
+              />
+            </Form.Item>
+
+            {/* Amount */}
+            <Form.Item name="amount" label="Override Amount">
+              <Input placeholder="Optional" />
+            </Form.Item>
+          </>
+        )}
+
+        {!formValues.id && (
+          <>
+            <section className="w-1/2 px-1">
+              <header>
+                <h3>User Credit Points</h3>
+              </header>
+
+              <section>
+                <p>{selectedStudent?.user.credits ?? "N/A"}</p>
+              </section>
+            </section>
+
+            <section className="w-1/2 px-1">
+              <header>
+                <h3>Booking amount</h3>
+              </header>
+
+              <section>
+                {selectedCourse ? (
+                  <p>
+                    {selectedCourse.price *
+                      Number(advanceBooking === "" ? "1" : advanceBooking) *
+                      sessions}
+                    点
+                  </p>
+                ) : (
+                  <p>N/A</p>
+                )}
+              </section>
+            </section>
+          </>
+        )}
       </div>
-
-      {!formValues.id && (
-        <div className="flex -mx-1">
-          {/* Advance Booking */}
-          <Form.Item
-            className="w-1/2 px-1"
-            name="advanceBooking"
-            label="Advance Booking"
-            rules={[
-              {
-                pattern: new RegExp(/^[0-9]*$/),
-                message: "Please input a number",
-              },
-            ]}
-          >
-            <Input
-              onChange={(e) => {
-                setAdvanceBooking(e.target.value);
-              }}
-              placeholder="Optional"
-            />
-          </Form.Item>
-
-          {/* Amount */}
-          <Form.Item
-            className="w-1/2 px-1"
-            name="amount"
-            label="Override Amount"
-          >
-            <Input placeholder="Optional" />
-          </Form.Item>
-        </div>
-      )}
-
-      {!formValues.id && (
-        <div className="flex -mx-1">
-          <section className="w-1/2 px-1">
-            <header>
-              <h3>User Credit Points</h3>
-            </header>
-
-            <section>
-              <p>{selectedStudent?.user.credits ?? "N/A"}</p>
-            </section>
-          </section>
-
-          <section className="w-1/2 px-1">
-            <header>
-              <h3>Booking amount</h3>
-            </header>
-
-            <section>
-              {selectedCourse ? (
-                <p>
-                  {selectedCourse.price *
-                    Number(advanceBooking === "" ? "1" : advanceBooking) *
-                    sessions}
-                  点
-                </p>
-              ) : (
-                <p>N/A</p>
-              )}
-            </section>
-          </section>
-        </div>
-      )}
 
       <Form.Item
         name="status"
