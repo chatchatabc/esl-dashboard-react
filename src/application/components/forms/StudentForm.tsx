@@ -29,9 +29,8 @@ function StudentForm({ loading, handleSubmit, formRef }: Props) {
         );
       }}
     >
-      <div className="flex -mx-1 flex-wrap">
+      <div className="grid grid-cols-2 gap-x-2">
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -45,7 +44,6 @@ function StudentForm({ loading, handleSubmit, formRef }: Props) {
         </Form.Item>
 
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -59,7 +57,6 @@ function StudentForm({ loading, handleSubmit, formRef }: Props) {
         </Form.Item>
 
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -73,7 +70,6 @@ function StudentForm({ loading, handleSubmit, formRef }: Props) {
         </Form.Item>
 
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -88,7 +84,6 @@ function StudentForm({ loading, handleSubmit, formRef }: Props) {
 
         {/* First Name */}
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -103,7 +98,6 @@ function StudentForm({ loading, handleSubmit, formRef }: Props) {
 
         {/* Last Name */}
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -118,7 +112,6 @@ function StudentForm({ loading, handleSubmit, formRef }: Props) {
 
         {/* Phone */}
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -133,7 +126,6 @@ function StudentForm({ loading, handleSubmit, formRef }: Props) {
 
         {/* Credits */}
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
