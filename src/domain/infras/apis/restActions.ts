@@ -1,7 +1,9 @@
 import { AxiosRequestConfig } from "axios";
 import { axiosDelete, axiosGet, axiosPost, axiosPut } from "../axiosActions";
 
-const baseUrl = "/api";
+const baseUrl = "http://localhost:5000/api"; // Dev
+// const baseUrl = "https://esl-trpc.bonjomontes.workers.dev/api"; // Prod
+
 function restConfig() {
   const config: AxiosRequestConfig = {
     headers: {
