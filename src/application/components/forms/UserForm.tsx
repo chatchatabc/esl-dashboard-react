@@ -58,9 +58,8 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
         <Input />
       </Form.Item>
 
-      <div className="flex -mx-1">
+      <div className="grid grid-cols-2 gap-x-2">
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -74,7 +73,6 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
         </Form.Item>
 
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -86,44 +84,39 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
         >
           <Input placeholder="Nickname" />
         </Form.Item>
-      </div>
 
-      {formRef.getFieldValue("id") === undefined && (
-        <div className="flex -mx-1">
-          <Form.Item
-            className="w-1/2 px-1"
-            rules={[
-              {
-                required: true,
-                message: "Need some input here",
-              },
-            ]}
-            name="password"
-            label="Password"
-          >
-            <Input.Password placeholder="Password" />
-          </Form.Item>
+        {formRef.getFieldValue("id") === undefined && (
+          <>
+            <Form.Item
+              rules={[
+                {
+                  required: true,
+                  message: "Need some input here",
+                },
+              ]}
+              name="password"
+              label="Password"
+            >
+              <Input.Password placeholder="Password" />
+            </Form.Item>
 
-          <Form.Item
-            className="w-1/2 px-1"
-            rules={[
-              {
-                required: true,
-                message: "Need some input here",
-              },
-            ]}
-            name="confirmPassword"
-            label="Confirm Password"
-          >
-            <Input.Password placeholder="Confirm Password" />
-          </Form.Item>
-        </div>
-      )}
+            <Form.Item
+              rules={[
+                {
+                  required: true,
+                  message: "Need some input here",
+                },
+              ]}
+              name="confirmPassword"
+              label="Confirm Password"
+            >
+              <Input.Password placeholder="Confirm Password" />
+            </Form.Item>
+          </>
+        )}
 
-      <div className="flex -mx-1">
         {/* Role */}
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -146,7 +139,6 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
 
         {/* Status */}
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -163,12 +155,9 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
             placeholder="User Status"
           />
         </Form.Item>
-      </div>
 
-      <div className="flex -mx-1">
         {/* First Name */}
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -183,7 +172,6 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
 
         {/* Last Name */}
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -195,12 +183,9 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
         >
           <Input placeholder="Last Name" />
         </Form.Item>
-      </div>
 
-      <div className="flex -mx-1">
         {/* Phone */}
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
@@ -215,7 +200,6 @@ function UserForm({ loading, handleSubmit, formRef }: Props) {
 
         {/* Credits */}
         <Form.Item
-          className="w-1/2 px-1"
           rules={[
             {
               required: true,
