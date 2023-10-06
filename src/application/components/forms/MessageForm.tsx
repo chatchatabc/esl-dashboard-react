@@ -141,57 +141,52 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
         }
       }}
     >
-      <Form.Item name="id" hidden></Form.Item>
-      <Form.Item name="templateValues" hidden></Form.Item>
+      <div className="grid grid-cols-2 gap-x-2">
+        <Form.Item name="id" hidden></Form.Item>
+        <Form.Item name="templateValues" hidden></Form.Item>
 
-      <Form.Item name="userId" label="User">
-        <Select
-          placeholder="Select a user"
-          onChange={(e) => {
-            const user = users.find((user) => user.id === e);
-            if (user && user.phone) {
-              formRef.setFieldsValue({ phone: user.phone });
-            }
-          }}
-          options={users.map((user) => {
-            const { firstName, lastName, alias } = user;
-            if (firstName && lastName) {
-              return {
-                label: `${firstName} ${lastName}`,
-                value: user.id,
-              };
-            } else if (alias) {
-              return { label: alias, value: user.id };
-            }
-            return { label: user.username, value: user.id };
-          })}
-        />
-      </Form.Item>
+        <Form.Item name="userId" label="User">
+          <Select
+            placeholder="Select a user"
+            onChange={(e) => {
+              const user = users.find((user) => user.id === e);
+              if (user && user.phone) {
+                formRef.setFieldsValue({ phone: user.phone });
+              }
+            }}
+            options={users.map((user) => {
+              const { firstName, lastName, alias } = user;
+              if (firstName && lastName) {
+                return {
+                  label: `${firstName} ${lastName}`,
+                  value: user.id,
+                };
+              } else if (alias) {
+                return { label: alias, value: user.id };
+              }
+              return { label: user.username, value: user.id };
+            })}
+          />
+        </Form.Item>
 
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-          {
-            pattern: /^(\+)?[0-9]+$/,
-            message: "Only numbers are allowed",
-          },
-        ]}
-        name="phone"
-        label="Phone Number"
-      >
-        <Input placeholder="Phone Number" />
-      </Form.Item>
-
-      <div className="flex -mx-1">
         <Form.Item
-          className="w-1/2 px-1"
-          label="Type"
-          name="type"
-          initialValue={type}
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+            {
+              pattern: /^(\+)?[0-9]+$/,
+              message: "Only numbers are allowed",
+            },
+          ]}
+          name="phone"
+          label="Phone Number"
         >
+          <Input placeholder="Phone Number" />
+        </Form.Item>
+
+        <Form.Item label="Type" name="type" initialValue={type}>
           <Select
             onChange={(e) => {
               setType(e);
@@ -213,12 +208,7 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
           ></Select>
         </Form.Item>
 
-        <Form.Item
-          className="w-1/2 px-1"
-          label="Status"
-          name="status"
-          initialValue={1}
-        >
+        <Form.Item label="Status" name="status" initialValue={1}>
           <Select
             options={[
               {
@@ -232,100 +222,102 @@ function MessageForm({ loading, handleSubmit, formRef }: Props) {
             ]}
           ></Select>
         </Form.Item>
-      </div>
 
-      <Form.Item name="sendAt" label="Send at" hidden={type !== 2}>
-        <DatePicker popupClassName="override" className="w-full" showTime />
-      </Form.Item>
+        <Form.Item name="sendAt" label="Send at" hidden={type !== 2}>
+          <DatePicker popupClassName="override" className="w-full" showTime />
+        </Form.Item>
 
-      <Form.Item
-        name="cron"
-        label="Schedule"
-        hidden={type !== 3}
-        initialValue={"0 0 1 1 1"}
-      >
-        <Cron
-          onChange={(e) => {
-            setCronValue(e.split(" ").splice(0, 5).join(" "));
-          }}
-          value={cronValue}
-          showResultText={true}
-          showResultCron={false}
-          options={{
-            headers: [
-              HEADER.MONTHLY,
-              HEADER.WEEKLY,
-              HEADER.MINUTES,
-              HEADER.HOURLY,
-              HEADER.DAILY,
-            ],
-          }}
-        />
-      </Form.Item>
+        <Form.Item
+          name="cron"
+          label="Schedule"
+          hidden={type !== 3}
+          initialValue={"0 0 1 1 1"}
+        >
+          <Cron
+            onChange={(e) => {
+              setCronValue(e.split(" ").splice(0, 5).join(" "));
+            }}
+            value={cronValue}
+            showResultText={true}
+            showResultCron={false}
+            options={{
+              headers: [
+                HEADER.MONTHLY,
+                HEADER.WEEKLY,
+                HEADER.MINUTES,
+                HEADER.HOURLY,
+                HEADER.DAILY,
+              ],
+            }}
+          />
+        </Form.Item>
 
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="messageTemplateId"
-        label="Message Template"
-      >
-        <Select
-          placeholder="Select a message template"
-          onChange={(e) => {
-            const template = templates.find((t) => {
-              return t.id === e;
-            });
-
-            if (template && template.variables) {
-              setVariables(template.variables.split(", "));
-              formRef.setFieldsValue({
-                message: `【${template.signature}】${template.message}`,
+        <Form.Item
+          className="col-span-2"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="messageTemplateId"
+          label="Message Template"
+        >
+          <Select
+            placeholder="Select a message template"
+            onChange={(e) => {
+              const template = templates.find((t) => {
+                return t.id === e;
               });
-            }
-          }}
-          options={templates.map((template) => {
-            return {
-              label: template.title,
-              value: template.id,
-            };
-          })}
-        />
-      </Form.Item>
 
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message: "Need some input here",
-          },
-        ]}
-        name="message"
-        label="Message"
-      >
-        <Input.TextArea placeholder="Select a message template" readOnly />
-      </Form.Item>
+              if (template && template.variables) {
+                setVariables(template.variables.split(", "));
+                formRef.setFieldsValue({
+                  message: `【${template.signature}】${template.message}`,
+                });
+              }
+            }}
+            options={templates.map((template) => {
+              return {
+                label: template.title,
+                value: template.id,
+              };
+            })}
+          />
+        </Form.Item>
 
-      {variables.map((variable) => {
-        return (
-          <Form.Item
-            key={variable}
-            rules={[
-              {
-                required: true,
-                message: "Need some input here",
-              },
-            ]}
-            name={`variables.${variable}`}
-            label={variable}
-          >
-            <Input placeholder={variable} />
-          </Form.Item>
-        );
-      })}
+        <Form.Item
+          className="col-span-2"
+          rules={[
+            {
+              required: true,
+              message: "Need some input here",
+            },
+          ]}
+          name="message"
+          label="Message"
+        >
+          <Input.TextArea placeholder="Select a message template" readOnly />
+        </Form.Item>
+
+        {variables.map((variable) => {
+          return (
+            <Form.Item
+              key={variable}
+              rules={[
+                {
+                  required: true,
+                  message: "Need some input here",
+                },
+              ]}
+              name={`variables.${variable}`}
+              label={variable}
+            >
+              <Input placeholder={variable} />
+            </Form.Item>
+          );
+        })}
+      </div>
 
       <Form.Item hidden>
         <Button htmlType="submit" loading={loading}></Button>
